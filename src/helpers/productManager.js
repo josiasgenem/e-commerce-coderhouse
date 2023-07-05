@@ -8,13 +8,10 @@ export class ProductManager {
 
     async addProduct(product) {
         try {
-            // Verifica si el producto está completo.
             this.#isCompleteProduct(product)
 
-            // Obtiene los productos del archivo.
             const products = await this.getProducts();
             
-            // Verifica que el código del producto a ingresar no exista previamente.
             this.#isUniqueCode(product.code, products)
             
             // Agrega el producto como objeto al array y actualiza el archivo completo.
@@ -25,7 +22,6 @@ export class ProductManager {
             products.push(product);
             await this.#updateFileProducts(products);
             
-            // Devuelve el producto
             // console.info("---> addProduct", "El producto fue agregado exitósamente", product);
             return product;
             
@@ -62,22 +58,18 @@ export class ProductManager {
         const products = await this.getProducts();
         const product = products.filter(product => product.id === id);
         
-        // Si no existe retorna un array vacío.
         if (product.length === 0) {
             throw new Error(`El producto con id ${id} no existe`)
         }
         
-        // Retorna el producto buscado por Id como objeto.
         // console.info("---> getProductById", `El producto con Id ${id} es:`, product[0]);
         return product[0];
     }
     
     async updateProduct(id, productUpd) {
-        try {
-            
+        try {    
             const products = await this.getProducts();
             
-            // Verifica si el producto está completo y si tiene un código único.
             this.#isCompleteProduct(productUpd);
             this.#isUniqueCode(productUpd.code, products, id);
             
@@ -90,11 +82,9 @@ export class ProductManager {
                 }
                 return product;
             })
-            
 
             await this.#updateFileProducts(newProductsList);
             
-            // Devuelve el producto actualizado.
             // console.info("---> updateProduct", "El producto fue actualizado exitósamente", productUpd);
             return {id, ...productUpd};
 
@@ -154,7 +144,6 @@ export class ProductManager {
     }
 
     async #updateFileProducts(newProductsList) {
-        // Actualiza todos los productos reemplazando el contenido del archivo.
         try {
             const json = await JSON.stringify(newProductsList)
             await fs.promises.writeFile(this.path, json);
