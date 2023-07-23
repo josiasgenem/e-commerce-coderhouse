@@ -1,37 +1,19 @@
 import fs from 'fs';
 
-export class CartsManager {
+export class CartsDaoFileSystem {
     constructor(path) {
         this.path = path;
         this.carts = [];
     }
 
-    async addCart() {
-        try {
-            // Obtiene los carritos del archivo.
-            const carts = await this.getCarts();
-            const newCart = {
-                id: this.#getId(carts),
-                products: []
-            }
-    
-            carts.push(newCart);
-            await this.#updateFileCarts(carts);
-    
-            return newCart;
-            
-        } catch (err) {
-            throw new Error(`---> addCart error. El carrito no se pudo agregar: ${err}`);
-        }
-    }
-
-    async getCarts() {
+    async getAll(limit) {
         try {
             // Retorna todos los carritos en un Array.
             // Si el archivo está vacío o contiene un error retorna un array vacío.
             const json = await fs.promises.readFile(this.path, 'utf-8');
             if(json) {
-                const fileCarts = await JSON.parse(json);
+                let fileCarts = await JSON.parse(json);
+                if (limit) fileCarts = [...fileCarts.slice(0, parseInt(limit))];
                 // console.log("---> getCarts", [...fileCarts]);
                 return [...fileCarts];
             }
@@ -49,8 +31,9 @@ export class CartsManager {
         }
     }
 
-    async getCartById(id) {
-        const carts = await this.getCarts();
+    async getById(id) {
+        id = parseInt(id);
+        const carts = await this.getAll();
         const cart = carts.filter(cart => cart.id === id);
         
         // Si no existe retorna un array vacío.
@@ -66,26 +49,53 @@ export class CartsManager {
         return cart[0];
     }
 
-    async addProductToCart(cid, pid) {
+    async create(products) {
         try {
-            const carts = await this.getCarts();
+            // Obtiene los carritos del archivo.
+            const carts = await this.getAll();
+            const newCart = {
+                id: this.#getId(carts),
+                products
+            }
+    
+            carts.push(newCart);
+            await this.#updateFileCarts(carts);
+    
+            return newCart;
+            
+        } catch (err) {
+            throw new Error(`---> addCart error. El carrito no se pudo agregar: ${err}`);
+        }
+    }
+
+    async updateProducts(cid, products) {
+        cid = parseInt(cid);
+        products = products.map(product => {
+            product.productId = parseInt(product.productId);
+            return product;
+        })
+
+        try {
+            const carts = await this.getAll();
             const newCartsList = carts.map(cart => {
+                if(cart.id === cid) cart.products = products;
+                
                 // Busca el carrito y verifica que no esté vacío.
-                let hasProduct = false;
+                // let hasProduct = false;
                 // Busca si tiene el producto, y agrega una unidad del mismo.
-                if (cart.id === parseInt(cid) && cart.products.length > 0) {
-                    for (let i = 0; i < cart.products.length; i++) {
-                        if (cart.products[i].product === parseInt(pid)) {
-                            cart.products[i].quantity++    
-                            hasProduct = true;
-                            break;
-                        } 
-                    }
-                }
-                // Si NO tiene el producto, lo agrega con una sola unidad.
-                if (cart.id === parseInt(cid) && !hasProduct) {
-                    cart.products.push({ product: parseInt(pid), quantity: 1 });
-                }
+                // if (cart.id === parseInt(cid) && cart.products.length > 0) {
+                //     for (let i = 0; i < cart.products.length; i++) {
+                //         if (cart.products[i].productId === parseInt(pid)) {
+                //             cart.products[i].quantity++    
+                //             hasProduct = true;
+                //             break;
+                //         } 
+                //     }
+                // }
+                // // Si NO tiene el producto, lo agrega con una sola unidad.
+                // if (cart.id === parseInt(cid) && !hasProduct) {
+                //     cart.products.push({ productId: parseInt(pid), quantity: 1 });
+                // }
                 return cart;
             });
 
@@ -94,6 +104,23 @@ export class CartsManager {
     
         } catch (err) {
             throw new Error(`---> addProductToCart error. El producto no se pudo agregar al carrito: ${err}`);
+        }
+    }
+
+    async remove(id) {
+        id = parseInt(id);
+        try {
+            const carts = await this.getAll();
+            const cartDeleted = carts.filter(cart => cart.id === id);
+            const newCartsList = carts.filter(cart => cart.id !== id);
+            // console.log("---> deleteCart", "Carrito eliminado:", newCartsList);
+            
+            await this.#updateFileCarts(newCartsList);
+            if (cartDeleted.length === 0) throw new Error('El carrito no fue encontrado!')
+            // console.log("---> deleteCart", "El carrito fue eliminado exitósamente")
+            return cartDeleted
+        } catch (err) {
+            console.log(err);
         }
     }
 

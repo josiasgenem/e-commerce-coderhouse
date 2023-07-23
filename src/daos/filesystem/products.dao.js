@@ -1,18 +1,60 @@
 import fs from 'fs';
 
-export class ProductManager {
+export class ProductDaoFileSystem {
     
     constructor(path) {
         this.path = path;
     }
+    
+    async getAll(limit) {
+        limit = parseInt(limit);
+        try {
+            // Retorna todos los productos en un Array.
+            // Si el archivo está vacío o contiene un error retorna un array vacío.
+            const json = await fs.promises.readFile(this.path, 'utf-8');
+            if(json) {
+                let fileProducts = await JSON.parse(json);
+                if(limit) fileProducts = [...fileProducts.slice(0, limit)];
+                // console.log("---> getProducts", [...fileProducts]);
+                return [...fileProducts];
+            }
+            // console.log("---> getProducts Vacío", []);
+            return [];
+            
+        } catch (err) {
+            // El archivo con el path dado no existe. Por lo que devuelve un array vacío de los productos.
+            if(err.code === "ENOENT") {
+                // console.log("---> getProducts Error", `El archivo con el path "${this.path}" no existe.`, err);
+                return [];
+            }
+            // console.log("---> getProducts Error", "Ocurrió un error al intentar conectarse con la DB. Vuelva a intentarlo!", err);
+            return [];
+        }
+    }
+    
+    async getById(id) {
+    id = parseInt(id);
 
-    async addProduct(product) {
+        const products = await this.getAll();
+        const product = products.filter(product => product.id === id);
+        
+        // Si no existe retorna un array vacío.
+        if (product.length === 0) {
+            throw new Error(`El producto con id ${id} no existe`)
+        }
+        
+        // Retorna el producto buscado por Id como objeto.
+        // console.info("---> getProductById", `El producto con Id ${id} es:`, product[0]);
+        return product[0];
+    }
+
+    async create(product) {
         try {
             // Verifica si el producto está completo.
             this.#isCompleteProduct(product)
 
             // Obtiene los productos del archivo.
-            const products = await this.getProducts();
+            const products = await this.getAll();
             
             // Verifica que el código del producto a ingresar no exista previamente.
             this.#isUniqueCode(product.code, products)
@@ -34,48 +76,10 @@ export class ProductManager {
         }
     }
     
-    async getProducts() {
+    async update(id, productUpd) {
+        id = parseInt(id);
         try {
-            // Retorna todos los productos en un Array.
-            // Si el archivo está vacío o contiene un error retorna un array vacío.
-            const json = await fs.promises.readFile(this.path, 'utf-8');
-            if(json) {
-                const fileProducts = await JSON.parse(json);
-                // console.log("---> getProducts", [...fileProducts]);
-                return [...fileProducts];
-            }
-            // console.log("---> getProducts Vacío", []);
-            return [];
-            
-        } catch (err) {
-            // El archivo con el path dado no existe. Por lo que devuelve un array vacío de los productos.
-            if(err.code === "ENOENT") {
-                // console.log("---> getProducts Error", `El archivo con el path "${this.path}" no existe.`, err);
-                return [];
-            }
-            // console.log("---> getProducts Error", "Ocurrió un error al intentar conectarse con la DB. Vuelva a intentarlo!", err);
-            return [];
-        }
-    }
-    
-    async getProductById(id) {
-        const products = await this.getProducts();
-        const product = products.filter(product => product.id === id);
-        
-        // Si no existe retorna un array vacío.
-        if (product.length === 0) {
-            throw new Error(`El producto con id ${id} no existe`)
-        }
-        
-        // Retorna el producto buscado por Id como objeto.
-        // console.info("---> getProductById", `El producto con Id ${id} es:`, product[0]);
-        return product[0];
-    }
-    
-    async updateProduct(id, productUpd) {
-        try {
-            
-            const products = await this.getProducts();
+            const products = await this.getAll();
             
             // Verifica si el producto está completo y si tiene un código único.
             this.#isCompleteProduct(productUpd);
@@ -103,9 +107,11 @@ export class ProductManager {
         }
     }
 
-    async deleteProduct(id) {
+    async remove(id) {
+        id = parseInt(id);
+        
         try {
-            const products = await this.getProducts();
+            const products = await this.getAll();
             const productDeleted = products.filter(product => product.id === id);
             const newProductsList = products.filter(product => product.id !== id);
             // console.log("---> deleteProduct", "Producto eliminado:", newProductsList);
