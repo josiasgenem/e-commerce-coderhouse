@@ -1,11 +1,10 @@
 import * as service from '../services/carts.service.js';
 
 export const getAll = async (req, res) => {
-    const { limit } = req.query;
-
+    // const { page, limit, sort, query } = req.query;
     try {
-        const response = await service.getAll(limit);
-        res.status(200).send(response);
+        const response = await service.getAll();
+        res.status(200).json(response);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -16,7 +15,8 @@ export const getById = async (req, res) => {
 
     try {
         const response = await service.getById(cid);
-        res.status(200).send(response);
+        res.status(200).render('cart', response);
+        // res.status(200).json(response);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -27,7 +27,7 @@ export const create = async (req, res) => {
 
     try {
         const response = await service.create(products);
-        res.status(200).send(`El carrito fue agregado exitosamente: ${JSON.stringify(response)}`);
+        res.status(200).json(response);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -38,18 +38,59 @@ export const addProduct = async (req, res) => {
     
     try {
         const response = await service.addProduct(cid, pid);
-        res.status(200).send(`El carrito fue actualizado exitosamente: ${JSON.stringify(response)}`);
+        res.status(200).json(response);
     } catch (err) {
         res.status(500).send(err.message);
     }
 }
 
-export const remove = async (req, res) => {
+export const updateAllProducts = async (req, res) => {
+    const { cid } = req.params;
+    const { products } = req.body;
+    
+    try {
+        if (!Array.isArray(products)) throw new Error('Invalid Products')
+
+        const response = await service.updateAllProducts(cid, products);
+        res.status(200).send(`El carrito fue actualizado exitosamente: ${JSON.stringify(response)}`);
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+export const updateProductQty = async (req, res) => {
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
+    
+    try {
+        if (typeof quantity !== 'number') throw new Error('Invalid Quantity')
+
+        const response = await service.updateProductQty(cid, pid, quantity);
+        res.status(200).send(`El producto fue actualizado exitosamente: ${JSON.stringify(response)}`);
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+export const removeProduct = async (req, res) => {
+    const { cid, pid } = req.params
+    
+    try {
+        const response = await service.removeProduct(cid, pid);
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
+
+export const removeAllProducts = async (req, res) => {
     const { cid } = req.params
     
     try {
-        const response = await service.remove(cid);
-        res.status(200).send(`El carrito fue eliminado exitósamente. Carrito eliminado: ${JSON.stringify(response)}.`);
+        const response = await service.removeAllProducts(cid);
+        res.status(200).send(`El carrito fue vaciado exitósamente. Carrito vacío: ${JSON.stringify(response)}.`);
     } catch (err) {
         res.status(500).send(err.message);
     }

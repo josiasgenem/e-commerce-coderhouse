@@ -1,13 +1,27 @@
 import * as service from '../services/products.service.js';
+import { formatResponse } from '../helpers/helpers.js'
 
 export const getAll = async (req, res) => {
-    const { limit } = req.query;
+    const { limit, page, sort, category, stock } = req.query;
+    const sanitizedQuery = {
+        limit: parseInt(limit) || undefined,
+        page: parseInt(page) || undefined,
+        sort: sort?.match(/(asc)|(desc)/i)[0] || null,
+        category: category?.match(/[a-z0-9À-ÿ]*/i)[0] || null,
+        stock: (/(existance)|(nonexistance)/i).test(stock) ?
+                stock.toLowerCase() :
+                (/[0-9]+/i).test(stock) ?
+                parseInt(stock) :
+                null
+    }
 
     try {
-        const response = await service.getAll(limit);
-        res.status(200).send(response);
+        const response = await service.getAll(sanitizedQuery);
+        const resp = formatResponse(200, response, sanitizedQuery, req.baseUrl)
+        res.status(200).render('products.hbs', resp);
+        // res.status(200).send(resp);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).json(formatResponse(500, [], null, req.baseUrl));
     }
 }
 

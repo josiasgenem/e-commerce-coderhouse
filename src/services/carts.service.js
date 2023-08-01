@@ -1,13 +1,16 @@
 import CartsDaoMongoDB from "../daos/mongodb/carts.dao.js";
-const cartsDao = new CartsDaoMongoDB();
+import CartsDaoFileSystem from "../daos/filesystem/carts.dao.js";
 
-// import { CartsDaoFileSystem } from "../daos/filesystem/carts.dao.js";
-// const cartsDao = new CartsDaoFileSystem('./src/daos/filesystem/carrito.json');
+let cartsDao;
+if (process.env.DB_SYSTEM === 'MONGODB') cartsDao = new CartsDaoMongoDB();
+if (process.env.DB_SYSTEM === 'FILESYSTEM') cartsDao = new CartsDaoFileSystem('./src/daos/filesystem/carrito.json');
 
-export const getAll = async (limit) => {
+export const getAll = async (/* {page = 1, limit = 10, sort, query = null} */) => {
     try {
-        const response = await cartsDao.getAll(limit);
-        return response;
+        // sort === "asc" ? sort = 1 :
+        // sort === "desc" ? sort = -1 : sort = null;
+        const carts = await cartsDao.getAll();
+        return carts;
     } catch (err) {
         console.log(err);
     }
@@ -15,8 +18,12 @@ export const getAll = async (limit) => {
 
 export const getById = async (id) => {
     try {
-        const response = await cartsDao.getById(id);
-        return response;
+        const cart = await cartsDao.getById(id);
+        if (!cart) return {
+            message: "Not Found!",
+            status: 404
+        }
+        return cart;
     } catch (err) {
         console.log(err);
     }
@@ -24,8 +31,8 @@ export const getById = async (id) => {
 
 export const create = async (products) => {
     try {
-        const response = await cartsDao.create(products);
-        return response;
+        const newCart = await cartsDao.create(products);
+        return newCart;
     } catch (err) {
         console.log(err);
     }
@@ -34,28 +41,59 @@ export const create = async (products) => {
 export const addProduct = async (cid, pid) => {
     try {
         const cart = await getById(cid);
+
+        //TODO: Falta chequear si el producto existe antes de agregarlo
+        
         let exist = false;
+
         cart.products.map(product => {
-            if (product.productId.toString() === pid.toString()) {
+            if (product.product._id.toString() === pid.toString()) {
                 product.quantity++;
                 exist = true;
             }
             return product;
         })
         if (!exist) cart.products.push({
-            productId: pid,
+            product: pid,
             quantity: 1
         })
-        const response = await cartsDao.updateProducts(cid, cart.products);
+        const updCarts = await cartsDao.updateAllProducts(cid, cart.products);
+        return updCarts;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const updateAllProducts = async (cid, products) => {
+    try {
+        const updCart = await cartsDao.updateAllProducts(cid, products);
+        return updCart;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const updateProductQty = async (cid, pid, quantity) => {
+    try {
+        const updCart = await cartsDao.updateProductQty(cid, pid, quantity);
+        return updCart;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const removeProduct = async (cid, pid) => {
+    try {
+        const response = await cartsDao.removeProduct(cid, pid);
         return response;
     } catch (err) {
         console.log(err);
     }
 }
 
-export const remove = async (id) => {
+export const removeAllProducts = async (id) => {
     try {
-        const response = await cartsDao.remove(id);
+        const response = await cartsDao.removeAllProducts(id);
         return response;
     } catch (err) {
         console.log(err);

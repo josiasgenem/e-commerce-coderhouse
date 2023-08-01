@@ -1,0 +1,46 @@
+<div>
+    <h1>Cart</h1>
+    <a href="/api/products">Go to Products</a>
+</div>
+
+<div class="products-container">
+
+    {{#if products}}
+    {{#each products}}
+        <div id={{_id}} class="product-card">
+                <div class="card-header">
+                    <h3 class="product-title">
+                        {{ product.title }}
+                    </h3>
+                    <p class="product-price">
+                        $ {{ product.price }}
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="body-left-content">
+                    <p class="product-description">
+                        {{ product.description }}
+                    </p>
+                    </div>
+                    <div class="body-right-content">
+                        <p class="product-quantity">x {{ quantity }}</p>
+                        <i data-id="{{ product._id }}" class="btn-deleteFromCart fa fa-trash"></i>
+                    </div>
+                    {{!-- <div class="body-right-content">
+                        <button class="btn-addToCart" data-id="{{_id}}">Add to Cart</button>
+                    </div> --}}
+                </div>
+                <div class="card-footer">
+                    <p class="product-category">
+                        Category: <strong>{{ product.category }}</strong>
+                    </p>
+                </div>
+
+        </div>
+
+    {{/each}}
+    {{else}}
+        <p class="no-data">There are no Products to show</p>
+    {{/if}}
+
+</div>

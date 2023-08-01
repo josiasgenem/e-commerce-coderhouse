@@ -1,0 +1,119 @@
+body {
+    background-color: #eee;
+}
+
+h1 {
+    color: #376;
+    font-size: 2.5rem;
+    font-weight: 800;
+    font-style: oblique;
+}
+
+button {
+    border: 2px solid #376;
+    border-radius: 3px;
+    background-color: #3764;
+    color: #376;
+    font-size: medium;
+    font-weight: 600;
+    font-style: oblique;
+    outline: none;
+    padding: 5px 10px;
+    transition: all ease-out 300ms;
+}
+
+button:hover {
+    background-color: #376;
+    color: #fafafa;
+}
+
+.no-data {
+    color: red;
+    font-weight: 600;
+}
+
+.products-container {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.product-card {
+    background-color: #fafafa;
+    border: 1px solid #376;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.card-header, .card-body, .card-footer {
+    padding: 5px 20px;
+}
+
+.card-header {
+    align-items: center;
+    background-color: #376;
+    border-bottom: 1px solid #aaa;
+    color: #fafafa;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-body {
+    display: flex;
+    flex-wrap: none;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-footer {
+    border-top: 1px solid #376;
+    /* padding-top: 2px;
+    padding-bottom: 2px; */
+}
+
+.pagination-container {
+    align-items: center;
+    color: #376;
+    font-style: oblique;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    margin: 30px auto;
+    max-width: 800px;
+}
+
+.current-page {
+    align-items: center;
+    background-color: #eee;
+    border: 1px solid #376;
+    border-radius: 2px;
+    color: #376;
+    display: flex;
+    height: 30px;
+    justify-content: center;
+    margin: auto 40px;
+    width: 30px;
+    text-align: center;
+}
+
+.current-page p {
+    font-size: 1.2rem;
+    font-weight: 600px;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    font-weight: 800px;
+    font-style: oblique;
+}
+
+.body-right-content {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-deleteFromCart {
+    color: #333;
+    margin-left: 10px;
+}

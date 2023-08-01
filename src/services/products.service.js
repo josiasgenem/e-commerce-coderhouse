@@ -1,31 +1,66 @@
 import ProductDaoMongoDB from "../daos/mongodb/products.dao.js";
-const productDao = new ProductDaoMongoDB();
+import ProductDaoFileSystem from "../daos/filesystem/products.dao.js";
 
-// import { ProductDaoFileSystem } from "../daos/filesystem/products.dao.js";
-// const productDao = new ProductDaoFileSystem('./src/daos/filesystem/productos.json');
+let productDao;
+if (process.env.DB_SYSTEM === 'MONGODB') productDao = new ProductDaoMongoDB();
+if (process.env.DB_SYSTEM === 'FILESYSTEM') productDao = new ProductDaoFileSystem('./src/daos/filesystem/productos.json');
 
+export const getAll = async ({ limit = 10, page = 1, sort, category = null, stock = null }) => {
+    try {
+        sort === 'asc' ? sort = 1 :
+        sort === 'desc' ? sort = -1 : sort = null;
+        
+        const query = {};
+        if (category) query.category = category;
+        if (stock) {
+            if (typeof stock === 'string' && stock === 'existance') query.stock = { $gt: 0 };
+            if (typeof stock === 'string' && stock === 'nonexistance') query.stock = { $eq: 0 };
+            if (typeof stock === 'number') query.stock = { $eq: stock };
+        }
 
-export const getAll = async (limit) => {
-    const response = await productDao.getAll(parseInt(limit));
-    return response;
+        const response = await productDao.getAll(query, { limit, page, sort });
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 export const getById = async (id) => {
-    const response = await productDao.getById(id);
-    return response;
+    try {
+        const response = await productDao.getById(id);
+        if (!response) return {
+            message: "Not Found!",
+            status: 404
+        }
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 export const create = async (product) => {
-    const response = await productDao.create(product);
-    return response;
+    try {
+        const response = await productDao.create(product);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 export const update = async (id, productUpd) => {
-    const response = await productDao.update(id, productUpd);
-    return response;
+    try {
+        const response = await productDao.update(id, productUpd);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 export const remove = async (id) => {
-    const response = await productDao.remove(id);
-    return response;
+    try {
+        const response = await productDao.remove(id);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
 }

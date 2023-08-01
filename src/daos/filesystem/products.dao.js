@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-export class ProductDaoFileSystem {
+export default class ProductDaoFileSystem {
     
     constructor(path) {
         this.path = path;

@@ -2,12 +2,11 @@ import { CartModel } from "./models/carts.model.js";
 
 export default class CartsDaoMongoDB {
     
-    async getAll(limit) {
+    async getAll() {
         try {
-            const response = limit ?
-                await CartModel.find({}):
-                await CartModel.find({}).limit(limit);
-            return response;
+            const carts = await CartModel.find();
+            
+            return carts;
         } catch (err) {
             console.log(err);
         }
@@ -15,8 +14,8 @@ export default class CartsDaoMongoDB {
     
     async getById(id) {
         try {
-            const response = await CartModel.findById(id);
-            return response;
+            const cart = await CartModel.findById(id).lean();
+            return cart;
         } catch (err) {
             console.log(err);
         }
@@ -24,26 +23,44 @@ export default class CartsDaoMongoDB {
     
     async create(products) {
         try {
-            const response = await CartModel.create({products});
-            return response;
+            const newCart = await CartModel.create({products});
+            return newCart;
         } catch (err) {
             console.log(err);
         }
     }
     
-    async updateProducts(cid, products) {
+    async updateAllProducts(cid, products) {
         try {
-            const response = await CartModel.findByIdAndUpdate(cid, {$set: {products}}, {new: true});
-            return response;
+            const updCart = await CartModel.findByIdAndUpdate(cid, {$set: {products}}, {new: true});
+            return updCart;
         } catch (err) {
             console.log(err);
         }
     }
     
-    async remove(id) {
+    async updateProductQty(cid, pid, quantity) {
         try {
-            const response = await CartModel.findByIdAndDelete(id);
-            return response;
+            const updCart = await CartModel.findOneAndUpdate({ _id: cid, "products.product": pid }, {$set: {"products.$.quantity": quantity}}, {new: true});
+            return updCart;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    
+    async removeProduct(cid, pid) {
+        try {
+            const updCart = await CartModel.findByIdAndUpdate(cid, { $pull: { products: { product: pid } } }, { new: true });
+            return updCart;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    
+    async removeAllProducts(id) {
+        try {
+            const delCart = await CartModel.findByIdAndUpdate(id, { $set: { products: [] }});
+            return delCart;
         } catch (err) {
             console.log(err);
         }

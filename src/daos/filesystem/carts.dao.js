@@ -1,12 +1,16 @@
 import fs from 'fs';
 
-export class CartsDaoFileSystem {
+export default class CartsDaoFileSystem {
+    
     constructor(path) {
         this.path = path;
         this.carts = [];
     }
 
-    async getAll(limit) {
+    async getAll({limit}) {
+
+        // TODO: Cambió y ahora recibe una query, no un 'limit'. Refactorizar!
+
         try {
             // Retorna todos los carritos en un Array.
             // Si el archivo está vacío o contiene un error retorna un array vacío.
@@ -71,7 +75,7 @@ export class CartsDaoFileSystem {
     async updateProducts(cid, products) {
         cid = parseInt(cid);
         products = products.map(product => {
-            product.productId = parseInt(product.productId);
+            product.product = parseInt(product.product);
             return product;
         })
 
@@ -85,7 +89,7 @@ export class CartsDaoFileSystem {
                 // Busca si tiene el producto, y agrega una unidad del mismo.
                 // if (cart.id === parseInt(cid) && cart.products.length > 0) {
                 //     for (let i = 0; i < cart.products.length; i++) {
-                //         if (cart.products[i].productId === parseInt(pid)) {
+                //         if (cart.products[i].product === parseInt(pid)) {
                 //             cart.products[i].quantity++    
                 //             hasProduct = true;
                 //             break;
@@ -94,7 +98,7 @@ export class CartsDaoFileSystem {
                 // }
                 // // Si NO tiene el producto, lo agrega con una sola unidad.
                 // if (cart.id === parseInt(cid) && !hasProduct) {
-                //     cart.products.push({ productId: parseInt(pid), quantity: 1 });
+                //     cart.products.push({ product: parseInt(pid), quantity: 1 });
                 // }
                 return cart;
             });

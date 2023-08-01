@@ -9,8 +9,14 @@ router.get('/:cid', cartsController.getById);
 
 router.post('/', cartsController.create);
 
-router.post('/:cid/product/:pid', cartsController.addProduct);
+router.post('/:cid/products/:pid', cartsController.addProduct);
 
-router.delete('/:cid', cartsController.remove);
+router.put('/:cid', cartsController.updateAllProducts);
+
+router.put('/:cid/products/:pid', cartsController.updateProductQty);
+
+router.delete('/:cid/products/:pid', cartsController.removeProduct);
+
+router.delete('/:cid', cartsController.removeAllProducts);
 
 export default router;

@@ -1,0 +1,56 @@
+<div>
+    <h1>Products</h1>
+    <a id="toCartLink" >Go to Cart</a>
+</div>
+
+
+<div class="products-container">
+
+    {{#if payload}}
+    {{#each payload}}
+        <div id={{_id}} class="product-card">
+                <div class="card-header">
+                    <h3 class="product-title">
+                        {{ title }}
+                    </h3>
+                    <p class="product-price">
+                        $ {{ price }}
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="body-left-content">
+                    <p class="product-description">
+                        {{ description }}
+                    </p>
+                    </div>
+                    <div class="body-right-content">
+                        <button class="btn-addToCart" data-id="{{_id}}">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p class="product-category">
+                        Category: <strong>{{ category }}</strong>
+                    </p>
+                </div>
+
+        </div>
+
+    {{/each}}
+
+        <div class="pagination-container">
+            {{#if hasPrevPage}}
+                <a id="prevPageLink" href={{prevLink}} target="_self">Previous Page</a>
+            {{/if}}
+            <div class="current-page">
+                <p> {{page}} </p>
+            </div>
+            {{#if hasNextPage}}
+                <a id="nextPageLink" href={{nextLink}} target="_self">Next Page</a>
+            {{/if}}
+        </div>
+    
+    {{else}}
+        <p class="no-data">There are no Products to show</p>
+    {{/if}}
+
+</div>
