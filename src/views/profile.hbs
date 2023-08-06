@@ -1,0 +1,14 @@
+{{> navbar user=user  }}
+
+<h2>Profile</h2>
+<div>
+    <h3>Hello {{ user.first_name }}!</h3>
+
+    <p>Name: {{ user.first_name }}</p>
+    <p>Lastname: {{ user.last_name }}</p>
+    <p>Email: {{ user.email }}</p>
+    {{#if user.age}}
+        <p>Age: {{ user.age }}</p>
+    {{/if}}
+    <p>Role: {{ user.role }}</p>
+</div>

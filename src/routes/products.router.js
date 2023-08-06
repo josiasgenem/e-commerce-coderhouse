@@ -1,16 +1,17 @@
 import * as controller from '../controllers/products.controller.js'
 
 import { Router } from 'express';
+import { isAdmin, isAuthenticated } from '../middlewares/auth.middleware.js';
 const router = Router();
 
-router.get('/', controller.getAll)
+router.get('/', isAuthenticated, controller.getAll)
 
-router.get('/:pid', controller.getById)
+router.get('/:pid', isAuthenticated, controller.getById)
 
-router.post('/', controller.create)
+router.post('/', isAuthenticated, isAdmin, controller.create)
 
-router.put('/:pid', controller.update)
+router.put('/:pid', isAuthenticated, isAdmin, controller.update)
 
-router.delete('/:pid', controller.remove)
+router.delete('/:pid', isAuthenticated, isAdmin, controller.remove)
 
 export default router;

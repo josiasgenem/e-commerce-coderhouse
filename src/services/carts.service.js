@@ -5,10 +5,8 @@ let cartsDao;
 if (process.env.DB_SYSTEM === 'MONGODB') cartsDao = new CartsDaoMongoDB();
 if (process.env.DB_SYSTEM === 'FILESYSTEM') cartsDao = new CartsDaoFileSystem('./src/daos/filesystem/carrito.json');
 
-export const getAll = async (/* {page = 1, limit = 10, sort, query = null} */) => {
+export const getAll = async () => {
     try {
-        // sort === "asc" ? sort = 1 :
-        // sort === "desc" ? sort = -1 : sort = null;
         const carts = await cartsDao.getAll();
         return carts;
     } catch (err) {
@@ -19,10 +17,11 @@ export const getAll = async (/* {page = 1, limit = 10, sort, query = null} */) =
 export const getById = async (id) => {
     try {
         const cart = await cartsDao.getById(id);
-        if (!cart) return {
-            message: "Not Found!",
-            status: 404
-        }
+        if (!cart) throw new Error('Cart does not exist!');
+        // return {
+        //     message: "Not Found!",
+        //     status: 404
+        // }
         return cart;
     } catch (err) {
         console.log(err);

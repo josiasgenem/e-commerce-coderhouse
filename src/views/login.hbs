@@ -1,0 +1,17 @@
+{{> navbar}}
+
+<h2>Login</h2>
+<form action="/users/login" method="post">
+    <label for="email">
+        <p>Email</p>
+        <input type="email" name="email" placeholder="johndoe@example.com" required>
+    </label>
+    <label for="password">
+        <p>Password</p>
+        <input type="password" name="password" required>
+    </label>
+    <button type="submit">Login!</button>
+</form>
+
+<p>Are you not registered yet?</p>
+<a href="/register">Register Now!</a>

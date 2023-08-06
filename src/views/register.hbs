@@ -1,0 +1,29 @@
+{{> navbar}}
+
+<h2>Register</h2>
+<form action="/users/register" method="POST">
+    <label for="first_name">
+        <p>First Name:</p>
+        <input type="text" name="first_name" placeholder="John" required>
+    </label>
+    <label for="last_name">
+        <p>Last Name:</p>
+        <input type="text" name="last_name" placeholder="Doe" required>
+    </label>
+    <label for="age">
+        <p>Age:</p>
+        <input type="number" max="119" name="age" placeholder="23">
+    </label>
+    <label for="email">
+        <p>Email</p>
+        <input type="email" name="email" placeholder="johndoe@example.com" required>
+    </label>
+    <label for="password">
+        <p>Password</p>
+        <input type="password" name="password" placeholder="Password123" required>
+    </label>
+    <button type="submit">Register!</button>
+</form>
+
+<p>Are you registered?</p>
+<a href="/login">Please Login!</a>

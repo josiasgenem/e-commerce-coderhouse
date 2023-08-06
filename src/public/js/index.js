@@ -1,6 +1,8 @@
 const addToCartBtns = document.getElementsByClassName('btn-addToCart');
 const deleteFromCartBtns = document.getElementsByClassName('btn-deleteFromCart');
 const toCartLink = document.getElementById('toCartLink');
+const logoutBtn = document.getElementById('logout');
+const firstNameSpan = document.getElementById('first_name');
 
 let cid = sessionStorage.getItem('cid');
 
@@ -39,6 +41,7 @@ function createCart() {
 }
 
 function addToCart(pid) {
+    console.log(`/api/carts/${cid}/products/${pid}`);
     fetch(`/api/carts/${cid}/products/${pid}`, {
         method: "post",
         headers: {
@@ -61,7 +64,6 @@ function deleteFromCart(pid) {
             'Content-Type': 'application/json'
         }
     })
-    // .then(res => res)
     .then(res => {
         console.log(res);
         location.reload();

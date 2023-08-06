@@ -1,7 +1,6 @@
 import * as service from '../services/carts.service.js';
 
 export const getAll = async (req, res) => {
-    // const { page, limit, sort, query } = req.query;
     try {
         const response = await service.getAll();
         res.status(200).json(response);
@@ -15,7 +14,8 @@ export const getById = async (req, res) => {
 
     try {
         const response = await service.getById(cid);
-        res.status(200).render('cart', response);
+        console.log('--->controller', response);
+        res.status(200).render('cart', {resp: response, user: req.session.user});
         // res.status(200).json(response);
     } catch (err) {
         res.status(500).send(err.message);

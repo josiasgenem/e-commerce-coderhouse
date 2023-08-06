@@ -1,34 +1,37 @@
 import express from "express";
 import "./config/dotenv.js";
-import bodyParser from "body-parser";
 import { engine } from "express-handlebars";
 import path from 'path';
 import fileDirName from './utils/es6-path.js';
-import {productsRouter, cartsRouter} from './routes/index.js';
+import { viewsRouter, productsRouter, cartsRouter, usersRouter } from './routes/index.js';
+import { mongoStoreSession } from "./middlewares/sessions.middleware.js";
 
 // Presets
 if (process.env.DB_SYSTEM === 'MONGODB') import('./daos/mongodb/mongoConnection.js');
 const port = (process.env.STATUS === 'production' ?
-                process.env.PROD_PORT : 
-                process.env.DEV_PORT) || 8080;
+    process.env.PROD_PORT :
+    process.env.DEV_PORT) || 8080;
 const { __dirname } = fileDirName(import.meta)
 
-// Server
+// Iniitializations
 const app = express();
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 })
 
-// Settings
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+// Middlewares
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, '/public')));
+app.use(mongoStoreSession)
 
 //  Views
-app.engine('.hbs', engine({extname: '.hbs'}));
+app.engine('.hbs', engine({ extname: '.hbs', partialsDir: path.join(__dirname,'/views/partials') }));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, '/views'));
 
 // Routes
+app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
+app.use('/users', usersRouter);

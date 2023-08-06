@@ -1,3 +1,5 @@
+{{> navbar user=user}}
+
 <div>
     <h1>Cart</h1>
     <a href="/api/products">Go to Products</a>
@@ -5,8 +7,8 @@
 
 <div class="products-container">
 
-    {{#if products}}
-    {{#each products}}
+    {{#if resp.products}}
+    {{#each resp.products}}
         <div id={{_id}} class="product-card">
                 <div class="card-header">
                     <h3 class="product-title">

@@ -117,3 +117,8 @@ button:hover {
     color: #333;
     margin-left: 10px;
 }
+
+.btn-navbar {
+    color: #fafafa;
+    border-color: #fafafa;
+}

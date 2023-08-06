@@ -1,3 +1,5 @@
+{{> navbar user=user}}
+
 <div>
     <h1>Products</h1>
     <a id="toCartLink" >Go to Cart</a>
@@ -6,8 +8,8 @@
 
 <div class="products-container">
 
-    {{#if payload}}
-    {{#each payload}}
+    {{#if resp.payload}}
+    {{#each resp.payload}}
         <div id={{_id}} class="product-card">
                 <div class="card-header">
                     <h3 class="product-title">
@@ -38,14 +40,14 @@
     {{/each}}
 
         <div class="pagination-container">
-            {{#if hasPrevPage}}
-                <a id="prevPageLink" href={{prevLink}} target="_self">Previous Page</a>
+            {{#if resp.hasPrevPage}}
+                <a id="prevPageLink" href={{resp.prevLink}} target="_self">Previous Page</a>
             {{/if}}
             <div class="current-page">
-                <p> {{page}} </p>
+                <p> {{resp.page}} </p>
             </div>
-            {{#if hasNextPage}}
-                <a id="nextPageLink" href={{nextLink}} target="_self">Next Page</a>
+            {{#if resp.hasNextPage}}
+                <a id="nextPageLink" href={{resp.nextLink}} target="_self">Next Page</a>
             {{/if}}
         </div>
     
