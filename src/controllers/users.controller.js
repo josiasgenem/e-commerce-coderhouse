@@ -12,7 +12,7 @@ export const register = async ( req, res ) => {
         if (!namesRegEx.test(last_name)) throw new Error('Last name seems to be not written correctly.');
         if (!emailRegEx.test(email)) throw new Error('Email seems to be not written correctly.');
         if (!passwordRegEx.test(password)) throw new Error('Password must contain at least 6 characters, 1 uppercase, 1 lowercase and 1 number.');
-        if (typeof age !== 'number' && age >= 120) throw new Error('Age must be a valid number minor to 120 years');
+        if (typeof age !== 'number' || age >= 120) throw new Error('Age must be a valid number minor to 120 years');
 
         const user = await service.register({ first_name, last_name, email, password, age: parseInt(age), role });
         if(!user) throw new Error('Something went wrong!');
