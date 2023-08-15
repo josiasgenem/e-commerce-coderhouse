@@ -1,6 +1,7 @@
 const addToCartBtns = document.getElementsByClassName('btn-addToCart');
 const deleteFromCartBtns = document.getElementsByClassName('btn-deleteFromCart');
 const toCartLink = document.getElementById('toCartLink');
+const loginGithubBtn = document.getElementById('login-github');
 const logoutBtn = document.getElementById('logout');
 const firstNameSpan = document.getElementById('first_name');
 
@@ -9,17 +10,27 @@ let cid = sessionStorage.getItem('cid');
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
-    if (!cid) createCart();
-    if (cid && toCartLink) toCartLink.setAttribute('href', `/api/carts/${cid}`)
+    if (!cid || cid == 'undefined') createCart();
+    if (cid && toCartLink) {
+        fetch(`/api/carts/${cid}`)
+            .then(resp => {
+                console.log(resp);
+                resp.status === 404 ?
+                createCart() :
+                toCartLink.setAttribute('href', `/api/carts/${cid}`)
+            })
+    }
+
+    if (loginGithubBtn) loginGithubBtn.addEventListener('click', () => loginGithub())
 
     for (const btn of addToCartBtns) {
         let pid = btn.getAttribute('data-id');
-        btn.addEventListener('click', () => addToCart(pid))
+        btn.addEventListener('click', () => addToCart(pid));
     }
 
     for (const btn of deleteFromCartBtns) {
         let pid = btn.getAttribute('data-id');
-        btn.addEventListener('click', () => deleteFromCart(pid))
+        btn.addEventListener('click', () => deleteFromCart(pid));
     }
 }
 
@@ -69,4 +80,16 @@ function deleteFromCart(pid) {
         location.reload();
     })
     .catch(err => console.log('---> Error:', err));
+}
+
+function loginGithub() {
+    console.log('Entró');
+    fetch('/users/login-github', {
+        mode: 'no-cors',
+        method: "get",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
 }

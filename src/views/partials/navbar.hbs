@@ -3,13 +3,13 @@
     {{#if user}}
         <div>
             <button class="btn-navbar" onclick="location.href='/api/products'">Products</button>
-            <button class="btn-navbar" onclick="location.href='/profile'">Profile</button>
+            <button class="btn-navbar" onclick="location.href='/users/profile'">Profile</button>
             <button class="btn-navbar" onclick="location.href = '/users/logout'">Logout!</button>
         </div>
     {{else}}
         <div>
-            <button class="btn-navbar" onclick="location.href='/login'">Login</button>
-            <button class="btn-navbar" onclick="location.href='/register'">Register</button>
+            <button class="btn-navbar" onclick="location.href='/users/login'">Login</button>
+            <button class="btn-navbar" onclick="location.href='/users/register'">Register</button>
         </div>
     {{/if}}
 </div>

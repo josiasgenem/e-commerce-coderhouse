@@ -17,7 +17,7 @@ export const getAll = async () => {
 export const getById = async (id) => {
     try {
         const cart = await cartsDao.getById(id);
-        if (!cart) throw new Error('Cart does not exist!');
+        if (!cart) return false;
         // return {
         //     message: "Not Found!",
         //     status: 404

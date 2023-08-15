@@ -14,8 +14,9 @@ export const getById = async (req, res) => {
 
     try {
         const response = await service.getById(cid);
-        console.log('--->controller', response);
-        res.status(200).render('cart', {resp: response, user: req.session.user});
+        if (!response) return res.status(404).json({message: 'Not Found!'})
+        console.log('Pas+o después de res en controller');
+        return res.status(200).render('cart', {resp: response, user: req.user});
         // res.status(200).json(response);
     } catch (err) {
         res.status(500).send(err.message);
@@ -29,6 +30,7 @@ export const create = async (req, res) => {
         const response = await service.create(products);
         res.status(200).json(response);
     } catch (err) {
+        console.log('--->error create cart: ',err);
         res.status(500).send(err.message);
     }
 }

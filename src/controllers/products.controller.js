@@ -18,7 +18,7 @@ export const getAll = async (req, res) => {
     try {
         const response = await service.getAll(sanitizedQuery);
         const resp = formatResponse(200, response, sanitizedQuery, req.baseUrl)
-        res.status(200).render('products.hbs', { resp, user: req.session.user });
+        res.status(200).render('products.hbs', { resp, user: req.user });
         // res.status(200).send(resp);
     } catch (err) {
         res.status(500).json(formatResponse(500, [], null, req.baseUrl));

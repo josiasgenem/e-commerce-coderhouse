@@ -1,12 +1,19 @@
 import * as controller from '../controllers/users.controller.js';
-
 import { Router } from 'express';
-import { isAuthenticated } from '../middlewares/auth.middleware.js';
+import { isAuthenticated, isNotAuthenticated } from '../middlewares/auth.middleware.js';
 const router = Router();
 
-router.post('/register', controller.register);
+router.get('/register', isNotAuthenticated, controller.viewRegister);
 
-router.post('/login', controller.login);
+router.post('/register', isNotAuthenticated, controller.register);
+
+router.get('/login', isNotAuthenticated, controller.viewLogin);
+
+router.post('/login', isNotAuthenticated, controller.login);
+
+router.get('/login-github', isNotAuthenticated, controller.loginGithub);
+
+router.get('/profile', isAuthenticated, controller.viewProfile);
 
 router.get('/logout', isAuthenticated, controller.logout);
 
