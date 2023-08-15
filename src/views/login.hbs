@@ -1,21 +1,28 @@
 {{> navbar}}
 
 <h2>Login</h2>
-<form action="/users/login" method="post">
-    <label for="email">
-        <p>Email</p>
-        <input type="email" name="email" placeholder="johndoe@example.com" required>
-    </label>
-    <label for="password">
-        <p>Password</p>
-        <input type="password" name="password" required>
-    </label>
-    <button type="submit">Login!</button>
-</form>
+<div id="login-card">
 
-<button id="login-github"> 
-    Login with GitHub!
-</button>
+    <form id="local-login" action="/users/login" method="post">
+        <label for="email">
+            <p>Email:</p>
+            <input type="email" name="email" placeholder="johndoe@example.com" required>
+        </label>
+        <label for="password">
+            <p>Password:</p>
+            <input type="password" name="password" required>
+        </label>
+        <button id="btn-login" type="submit">Login!</button>
+    </form>
+    <div id="login-github">
+        <button id="btn-login-github" onclick="document.location.href='/users/login-github'"> 
+            Login with GitHub!
+        </button>
+    </div>
 
-<p>Are you not registered yet?</p>
-<a href="/users/register">Register Now!</a>
+    <div id="login-footer">
+        <p>Are you not registered yet?</p>
+        <a href="/users/register">Register Now!</a>
+    </div>
+
+</div>

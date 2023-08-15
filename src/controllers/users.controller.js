@@ -19,7 +19,9 @@ export const login = passport.authenticate('login', {
     failureRedirect: '/users/login'
 })
 
-export const loginGithub = passport.authenticate('github', {
+export const authGitHub = passport.authenticate('github', { scope: ['user:email'] })
+
+export const authGitHubCallback = passport.authenticate('github', {
     successRedirect: '/users/profile',
     failureRedirect: '/users/login'
 })

@@ -15,7 +15,7 @@ export const getById = async (req, res) => {
     try {
         const response = await service.getById(cid);
         if (!response) return res.status(404).json({message: 'Not Found!'})
-        console.log('Pas+o después de res en controller');
+        
         return res.status(200).render('cart', {resp: response, user: req.user});
         // res.status(200).json(response);
     } catch (err) {

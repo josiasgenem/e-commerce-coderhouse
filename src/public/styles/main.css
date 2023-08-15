@@ -122,3 +122,69 @@ button:hover {
     color: #fafafa;
     border-color: #fafafa;
 }
+
+#login-card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px 20px;
+    width: 300px;
+}
+
+#local-login {
+    border-bottom: 1px solid #ccc;
+    display: block;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+#local-login label {
+    display: block;
+    margin: 10px auto;
+}
+
+#local-login p, #local-login input {
+    display: inline;
+    margin-left: 10px;
+}
+
+#btn-login {
+    display: block;
+    margin: 10px auto;
+}
+
+#login-github {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+
+#btn-login-github {
+    background-color: #0001;
+    border: 2px solid #777;
+    color: #777;
+    display: block;
+}
+
+#btn-login-github:hover {
+    background-color: #376;
+    border-color: #376;
+    color: #fafafa;
+}
+
+#login-footer {
+    align-items: center;
+    border-top: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px auto;
+    padding-top: 20px;
+    width: 300px;
+}
+
+#login-footer p, #login-footer a {
+    margin: 0px auto;
+}

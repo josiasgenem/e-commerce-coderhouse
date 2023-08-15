@@ -16,11 +16,11 @@ export default class UserDaoMongoDB {
         try {
             const user = selects.length > 0 ?
                             await UserModel.findOne({ email }, selects) :
-                            await UserModel.findOne({ email }).lean();
+                            await UserModel.findOne({ email });
             if (!user) return false;
             return user;
         } catch (err) {
-            throw err;
+            throw err;                                                               
         }
     }
     
@@ -31,7 +31,7 @@ export default class UserDaoMongoDB {
         try {
             const user = selects.length > 0 ?
                             await UserModel.findById(id, selects) :
-                            await UserModel.findById(id).lean();
+                            await UserModel.findById(id);
             if (!user) return false;
             return user;
         } catch (err) {

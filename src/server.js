@@ -10,7 +10,7 @@ import './config/passport.js';
 
 // Presets
 if (process.env.DB_SYSTEM === 'MONGODB') import('./daos/mongodb/mongoConnection.js');
-const port = (process.env.STATUS === 'production' ?
+export const port = (process.env.STATUS === 'production' ?
     process.env.PROD_PORT :
     process.env.DEV_PORT) || 8080;
 const { __dirname } = fileDirName(import.meta)
