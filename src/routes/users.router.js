@@ -11,9 +11,13 @@ router.get('/login', isNotAuthenticated, controller.viewLogin);
 
 router.post('/login', isNotAuthenticated, controller.login);
 
-router.get('/login-github', isNotAuthenticated, controller.authGitHub);
+router.get('/github', isNotAuthenticated, controller.authGitHub);
 
-router.get('/login-github-callback', controller.authGitHubCallback, (req, res) => res.redirect('/profile'));
+router.get('/github/callback', controller.authGitHubCallback, (req, res) => res.redirect('/profile'));
+
+router.get('/google', isNotAuthenticated, controller.authGoogle);
+
+router.get('/google/callback', controller.authGoogleCallback, (req, res) => res.redirect('/profile'));
 
 router.get('/profile', isAuthenticated, controller.viewProfile);
 

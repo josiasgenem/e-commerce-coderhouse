@@ -154,10 +154,11 @@ button:hover {
     margin: 10px auto;
 }
 
-#login-github {
-    display: flex;
-    justify-content: center;
+#login-oauth {
     align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: 20px 0;
 }
 
@@ -166,9 +167,23 @@ button:hover {
     border: 2px solid #777;
     color: #777;
     display: block;
+    margin-bottom: 12px;
 }
 
 #btn-login-github:hover {
+    background-color: #376;
+    border-color: #376;
+    color: #fafafa;
+}
+
+#btn-login-google {
+    background-color: #0001;
+    border: 2px solid #777;
+    color: #777;
+    display: block;
+}
+
+#btn-login-google:hover {
     background-color: #376;
     border-color: #376;
     color: #fafafa;

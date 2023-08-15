@@ -26,6 +26,13 @@ export const authGitHubCallback = passport.authenticate('github', {
     failureRedirect: '/users/login'
 })
 
+export const authGoogle = passport.authenticate('google', { scope: ['email', 'profile'] })
+
+export const authGoogleCallback = passport.authenticate('google', {
+    successRedirect: '/users/profile',
+    failureRedirect: '/users/login'
+})
+
 export const viewProfile = async (req, res) => {
     res.render('profile', { user: req.user })
 }

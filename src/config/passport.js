@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GithubStrategy } from "passport-github2";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import * as userService from "../services/users.service.js";
 import UserDaoMongoDB from "../daos/mongodb/users.dao.js";
 const userDao = new UserDaoMongoDB();
@@ -13,17 +14,23 @@ const localStrategyOptions = {
 const githubStrategyOptions = {
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: `http://localhost:8080/users/login-github-callback`
+    callbackURL: `http://localhost:8080/users/github/callback`
+}
+
+const googleStrategyOptions = {
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: `http://localhost:8080/users/google/callback`
 }
 
 const registerOrLogin = async (accessToken, refreshToken, profile, done) => {
     const email = profile._json.email || profile._json.blog;
-    const first_name = profile._json.name?.split(' ').slice(0,1)[0] || profile.username;
-    const last_name = profile._json.name?.split(' ').slice(1).join(' ');
+    const first_name = profile.given_name || profile._json.name?.split(' ').slice(0,1)[0] || profile.username;
+    const last_name = profile.family_name || profile._json.name?.split(' ').slice(1).join(' ');
 
     console.log(profile);
 
-    if (!email) return done('Debes poner tu email como público en tu cuenta de GitHub!\nDeselecciona la opción: "Keep my email addresses private." en "email settings" de GitHub.', false)
+    if (!email) return done(`Debes poner tu email como público en tu cuenta de GitHub!\nDeselecciona la opción: "Keep my email addresses private." en "email settings" de GitHub.`, false)
 
     const user = await userDao.getByEmail(email);
     if (user) return done(null, user.toJSON());
@@ -36,11 +43,13 @@ const registerOrLogin = async (accessToken, refreshToken, profile, done) => {
 const registerStrategy = new LocalStrategy( localStrategyOptions, userService.register);
 const loginStrategy = new LocalStrategy( localStrategyOptions, userService.login);
 const githubStrategy = new GithubStrategy( githubStrategyOptions, registerOrLogin )
+const googleStrategy = new GoogleStrategy( googleStrategyOptions, registerOrLogin )
 
 
 passport.use('register', registerStrategy);
 passport.use('login', loginStrategy);
 passport.use('github', githubStrategy)
+passport.use('google', googleStrategy)
 
 passport.serializeUser((user, done) => {
     if (!user.id) return done('User ID not found!', false);
