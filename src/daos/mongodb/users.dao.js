@@ -38,4 +38,26 @@ export default class UserDaoMongoDB {
             throw err;
         }
     }
+
+    async updateByEmail(email, toUpdateObj) {
+        try {
+            const user = await UserModel.findOneAndUpdate({email}, toUpdateObj, {new: true})
+            if(!user) return false;
+            return user;
+        } catch (err) {
+            throw err
+        }
+    }
+
+    async saveRefreshToken(email, refreshToken) {
+        try {
+            const user = await UserModel.findOne({email});
+            const existToken = user.refreshTokens.filter(token => refreshToken === token)
+            if(existToken) return false;
+            
+        } catch (err) {
+            
+        }
+    }
+
 }

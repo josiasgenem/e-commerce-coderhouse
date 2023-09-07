@@ -14,10 +14,14 @@ export const viewLogin = async (req, res) => {
     res.render('login'); 
 }
 
-export const login = passport.authenticate('login', {
-    successRedirect: '/users/profile',
-    failureRedirect: '/users/login'
-})
+export const login = service.jwtLogin;
+
+export const refreshToken = service.refreshToken;
+
+// export const login = passport.authenticate('sessionLogin', {
+//     successRedirect: '/users/profile',
+//     failureRedirect: '/users/login'
+// })
 
 export const authGitHub = passport.authenticate('github', { scope: ['user:email'] })
 
@@ -37,9 +41,11 @@ export const viewProfile = async (req, res) => {
     res.render('profile', { user: req.user })
 }
 
-export const logout = (req, res) => {
-    req.logout((err) => {
-        if (err) return next(err);
-        res.redirect('/users/login');
-    });
-}
+export const logout = service.jwtLogout;
+
+// export const logout = (req, res) => {
+//     req.logout((err) => {
+//         if (err) return next(err);
+//         res.redirect('/users/login');
+//     });
+// }

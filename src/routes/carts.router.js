@@ -1,23 +1,27 @@
 import * as cartsController from '../controllers/carts.controller.js';
 
 import { Router } from 'express';
-import { isAuthenticated } from '../middlewares/auth.middleware.js';
+import { isAdmin, isAuth } from '../middlewares/auth.middlewares.js';
 const router = Router();
 
-router.get('/', isAuthenticated, cartsController.getAll);
+// router.get('/', isAuth, cartsController.getAll);
 
-router.get('/:cid', isAuthenticated, cartsController.getById);
+// Obtiene el carrito del suuario logueado actualmente.
+router.get('/', isAuth, cartsController.getCurrentUserCart);
 
-router.post('/', isAuthenticated, cartsController.create);
+// Si es Admin obtiene el carrito que desee, sino obtiene el propio del usuario logueado.
+router.get('/:cid', isAuth, cartsController.getById);
 
-router.post('/:cid/products/:pid', isAuthenticated, cartsController.addProduct);
+// router.post('/', isAuth, cartsController.create);
 
-router.put('/:cid', isAuthenticated, cartsController.updateAllProducts);
+router.post('/:cid/products/:pid', isAuth, cartsController.addProduct);
 
-router.put('/:cid/products/:pid', isAuthenticated, cartsController.updateProductQty);
+router.put('/:cid', isAuth, isAdmin, cartsController.updateAllProducts);
 
-router.delete('/:cid/products/:pid', isAuthenticated, cartsController.removeProduct);
+router.put('/:cid/products/:pid', isAuth, cartsController.updateProductQty);
 
-router.delete('/:cid', isAuthenticated, cartsController.removeAllProducts);
+router.delete('/:cid/products/:pid', isAuth, cartsController.removeProduct);
+
+router.delete('/:cid', isAuth, cartsController.removeAllProducts);
 
 export default router;

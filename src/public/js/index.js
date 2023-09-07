@@ -1,24 +1,17 @@
 const addToCartBtns = document.getElementsByClassName('btn-addToCart');
 const deleteFromCartBtns = document.getElementsByClassName('btn-deleteFromCart');
 const toCartLink = document.getElementById('toCartLink');
-const logoutBtn = document.getElementById('logout');
-const firstNameSpan = document.getElementById('first_name');
+// const firstNameSpan = document.getElementById('first_name');
 
-let cid = sessionStorage.getItem('cid');
+let accessToken, cid;
 
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
-    if (!cid || cid == 'undefined') createCart();
-    if (cid && toCartLink) {
-        fetch(`/api/carts/${cid}`)
-            .then(resp => {
-                resp.status === 404 ?
-                createCart() :
-                toCartLink.setAttribute('href', `/api/carts/${cid}`)
-            })
-    }
-
+    cid = getCartId();
+    console.log(cid, '---> CART ID');
+    if (cid) toCartLink?.setAttribute('href', `/api/carts/${cid}`);
+    
     for (const btn of addToCartBtns) {
         let pid = btn.getAttribute('data-id');
         btn.addEventListener('click', () => addToCart(pid));
@@ -30,45 +23,65 @@ function init() {
     }
 }
 
-function createCart() {
-    fetch("/api/carts", {
-        method: "post",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+export function getAccessToken () { return accessToken };
+
+export function getCartId () {
+    return document.cookie.split(';').map(pair => {
+        let [key, value] = pair.split('=');
+        key = key?.trim();
+        value = value?.trim();
+        if(key === 'coderhouse-ecommerce-cart-id') return value;
+    })[0];
+}
+
+export async function checkRedirects(response) {
+    // console.log(response.url, 'REDIRECTION FROM CHECKER');
+    // console.log(response, 'RESPONSE FROM CHECKER');
+    if (response.redirected) {
+        const json = response.json();
+        if (json.redirect && typeof json.redirect === 'object') {
+            const { path, method } = response.redirect;
+            fetch(path, {
+                method,
+                redirect: "follow",
+                headers: setHeaders()
+            })
+            .then(resp => checkRedirects(resp))
         }
-    })
-    .then(res => res.json())
-    .then(json => {
-        cid = json._id;
-        toCartLink?.setAttribute('href', `/api/carts/${cid}`);
-        sessionStorage.setItem('cid', json._id);
-    })
-    .catch(err => console.log(err));
+        if (response.redirected) {
+            window.location.href = response.url;
+        }
+    }
+}
+
+export function setHeaders() {
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+    return headers;
 }
 
 function addToCart(pid) {
     fetch(`/api/carts/${cid}/products/${pid}`, {
-        method: "post",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
+        method: "POST",
+        headers: setHeaders()
     })
     .then(res => res.json())
+    .then(json => checkRedirects(json))
     .catch(err => console.log(err));
 }
 
 function deleteFromCart(pid) {
     fetch(`/api/carts/${cid}/products/${pid}`, {
-        method: "delete",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
+        method: "DELETE",
+        headers: setHeaders()
     })
-    .then(res => {
-        location.reload();
+    .then(res => res.json())
+    .then(json => {
+            checkRedirects(json);
+            location.reload();
     })
     .catch(err => console.log('---> Error:', err));
 }

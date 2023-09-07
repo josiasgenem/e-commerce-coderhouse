@@ -18,19 +18,36 @@ export const getById = async (id) => {
     try {
         const cart = await cartsDao.getById(id);
         if (!cart) return false;
-        // return {
-        //     message: "Not Found!",
-        //     status: 404
-        // }
+
         return cart;
     } catch (err) {
         console.log(err);
     }
 }
 
-export const create = async (products) => {
+export const getCurrentUserCartId = (req) => req.user.cartId;
+
+export const getCurrentUserCart = async (req) => {
     try {
-        const newCart = await cartsDao.create(products);
+        const cartId = getCurrentUserCartId(req);
+        let cart = await getById(cartId);
+        if (!cart) cart = await create(cartId, []);   
+    
+        return cart;
+    } catch (err) {
+        console.log(err, '---> getCurrentUserCart error.');
+        return false;
+    }
+}
+
+export const create = async (cartId, products) => {
+    try {
+        if (!cartId) throw new Error('Any Cart ID received, you must create a cart with the cart ID saved for the user!');
+        const cartExist = await getById(cartId);
+        if (cartExist) throw new Error(`Cart ID already exist!`)
+
+        const newCart = await cartsDao.create(cartId, products);
+        
         return newCart;
     } catch (err) {
         console.log(err);

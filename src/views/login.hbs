@@ -1,9 +1,15 @@
 {{> navbar}}
 
+<div id="alert-login" class="hidden">
+    <p>
+
+    </p>
+</div>
+
 <h2>Login</h2>
 <div id="login-card">
 
-    <form id="local-login" action="/users/login" method="post">
+    <div id="local-login" {{!-- action="/users/login" method="post" --}}>
         <label for="email">
             <p>Email:</p>
             <input type="email" name="email" placeholder="johndoe@example.com" required>
@@ -12,8 +18,8 @@
             <p>Password:</p>
             <input type="password" name="password" required>
         </label>
-        <button id="btn-login" type="submit">Login!</button>
-    </form>
+        <button id="btn-login" {{!-- type="submit" --}}>Login!</button>
+    </div>
     <div id="login-oauth">
         <button id="btn-login-github" onclick="document.location.href='/users/github'"> 
             Login with GitHub!
@@ -29,3 +35,5 @@
     </div>
 
 </div>
+
+{{!-- <script type="module" src="/js/login.js"></script> --}}

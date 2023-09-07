@@ -4,30 +4,47 @@ import { engine } from "express-handlebars";
 import path from 'path';
 import fileDirName from './utils/es6-path.js';
 import { homeRouter, productsRouter, cartsRouter, usersRouter } from './routes/index.js';
-import { mongoStoreSession } from "./middlewares/sessions.middleware.js";
+import { mongoStoreSession } from "./middlewares/sessions.middlewares.js";
 import passport from "passport";
 import './config/passport.js';
+import { COOKIES_SECRET, PORT } from "./config/environment.js";
+import cookieParser from "cookie-parser";
+import session from "express-session";
 
-// Presets
-if (process.env.DB_SYSTEM === 'MONGODB') import('./daos/mongodb/mongoConnection.js');
-export const port = (process.env.STATUS === 'production' ?
-    process.env.PROD_PORT :
-    process.env.DEV_PORT) || 8080;
-const { __dirname } = fileDirName(import.meta)
+// Environment
+// if (process.env.DB_SYSTEM === 'MONGODB') import('./daos/mongodb/mongoConnection.js');
+// export const port = (process.env.STATUS === 'production' ?
+//     process.env.PROD_PORT :
+//     process.env.DEV_PORT) || 8080;
+export const { __dirname } = fileDirName(import.meta)
 
 // Iniitializations
 const app = express();
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 })
 
 // Middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(session({
+    secret: COOKIES_SECRET,
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(cookieParser(COOKIES_SECRET));
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(mongoStoreSession)
 app.use(passport.initialize());
 app.use(passport.session());
+// import cors from "cors";
+
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: 'http://localhost:8080',
+//   })
+// );
 
 //  Views
 app.engine('.hbs', engine({ extname: '.hbs', partialsDir: path.join(__dirname,'/views/partials') }));
