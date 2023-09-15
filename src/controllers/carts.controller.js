@@ -1,4 +1,5 @@
 import * as service from '../services/carts.service.js';
+import * as productsService from '../services/products.service.js';
 
 export const getAll = async (req, res) => {
     try {
@@ -61,6 +62,8 @@ export const addProduct = async (req, res) => {
             req.session.context = { message: "You're Not Authorized to add products to carts that you are not owner!" }
             return res.status(403).redirect(`/api/carts/${userCartId}`);
         }
+        if (!await productsService.isAvailable(pid, 1)) return res.status(400).json({message: 'There aren\'t sufficent products to add to the cart.'}) 
+        
         const response = await service.addProduct(cid, pid);
         res.status(200).json(response);
     } catch (err) {

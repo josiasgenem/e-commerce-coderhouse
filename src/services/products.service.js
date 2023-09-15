@@ -21,7 +21,7 @@ export const getAll = async ({ limit = 10, page = 1, sort, category = null, stoc
         const response = await productDao.getAll(query, { limit, page, sort });
         return response;
     } catch (err) {
-        console.log(err);
+        console.log(err, '---> getAll:productService');
     }
 }
 
@@ -34,7 +34,7 @@ export const getById = async (id) => {
         }
         return response;
     } catch (err) {
-        console.log(err);
+        console.log(err, '---> getById:productService');
     }
 }
 
@@ -43,7 +43,7 @@ export const create = async (product) => {
         const response = await productDao.create(product);
         return response;
     } catch (err) {
-        console.log(err);
+        console.log(err, '---> create:productService');
     }
 }
 
@@ -52,7 +52,7 @@ export const update = async (id, productUpd) => {
         const response = await productDao.update(id, productUpd);
         return response;
     } catch (err) {
-        console.log(err);
+        console.log(err, '---> update:productService');
     }
 }
 
@@ -61,6 +61,17 @@ export const remove = async (id) => {
         const response = await productDao.remove(id);
         return response;
     } catch (err) {
-        console.log(err);
+        console.log(err, '---> remove:productService');
+    }
+}
+
+export const isAvailable = async (id, qty = 1) => {
+    try {
+        const product = await getById(id);
+        if (!product || product.status === 404 || product.stock < qty) return false;
+        return true;
+    } catch (err) {
+        console.log(err, '---> isAvailable:productService');
+        return false;
     }
 }

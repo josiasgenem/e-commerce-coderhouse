@@ -57,8 +57,6 @@ export const create = async (cartId, products) => {
 export const addProduct = async (cid, pid) => {
     try {
         const cart = await getById(cid);
-
-        //TODO: Falta chequear si el producto existe antes de agregarlo
         
         let exist = false;
 
