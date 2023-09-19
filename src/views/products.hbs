@@ -10,7 +10,7 @@
 
     {{#if resp.payload}}
     {{#each resp.payload}}
-        <div id={{_id}} class="product-card">
+        <div id={{id}} class="product-card">
                 <div class="card-header">
                     <h3 class="product-title">
                         {{ title }}
@@ -26,7 +26,7 @@
                     </p>
                     </div>
                     <div class="body-right-content">
-                        <button class="btn-addToCart" data-id="{{_id}}">Add to Cart</button>
+                        <button type="submit" class="btn-addToCart" data-id="{{id}}">Add to Cart</button>
                     </div>
                 </div>
                 <div class="card-footer">

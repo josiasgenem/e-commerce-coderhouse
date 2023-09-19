@@ -1,9 +1,11 @@
-import ProductDaoMongoDB from "../daos/mongodb/products.dao.js";
-import ProductDaoFileSystem from "../daos/filesystem/products.dao.js";
+// import ProductDaoMongoDB from "../daos/mongodb/products.dao.js";
+// import ProductDaoFileSystem from "../daos/filesystem/products.dao.js";
 
-let productDao;
-if (process.env.DB_SYSTEM === 'MONGODB') productDao = new ProductDaoMongoDB();
-if (process.env.DB_SYSTEM === 'FILESYSTEM') productDao = new ProductDaoFileSystem('./src/daos/filesystem/productos.json');
+// let productDao;
+// if (process.env.DB_ENGINE === 'MONGODB') productDao = new ProductDaoMongoDB();
+// if (process.env.DB_ENGINE === 'FILESYSTEM') productDao = new ProductDaoFileSystem('./src/daos/filesystem/productos.json');
+import { productsDao } from "../persistence/factory.js";
+import ProductsRepository from "../persistence/repository/products/product.repository.js";
 
 export const getAll = async ({ limit = 10, page = 1, sort, category = null, stock = null }) => {
     try {
@@ -18,21 +20,23 @@ export const getAll = async ({ limit = 10, page = 1, sort, category = null, stoc
             if (typeof stock === 'number') query.stock = { $eq: stock };
         }
 
-        const response = await productDao.getAll(query, { limit, page, sort });
+        const response = await productsDao.getMany(query, { limit, page, sort, lean: true });
+        response.docs = response.docs.map(doc => doc = (new ProductsRepository()).formatFromDB(doc));
         return response;
     } catch (err) {
-        console.log(err, '---> getAll:productService');
+        console.log(err, '---> getMany:productService');
     }
 }
 
 export const getById = async (id) => {
     try {
-        const response = await productDao.getById(id);
+        const response = await productsDao.getById(id);
         if (!response) return {
             message: "Not Found!",
             status: 404
         }
-        return response;
+        const repositoryResp = (new ProductsRepository()).formatFromDB(response);
+        return repositoryResp;
     } catch (err) {
         console.log(err, '---> getById:productService');
     }
@@ -40,8 +44,9 @@ export const getById = async (id) => {
 
 export const create = async (product) => {
     try {
-        const response = await productDao.create(product);
-        return response;
+        const response = await productsDao.create(product);
+        const repositoryResp = (new ProductsRepository()).formatFromDB(response);
+        return repositoryResp;
     } catch (err) {
         console.log(err, '---> create:productService');
     }
@@ -49,8 +54,9 @@ export const create = async (product) => {
 
 export const update = async (id, productUpd) => {
     try {
-        const response = await productDao.update(id, productUpd);
-        return response;
+        const response = await productsDao.update(id, productUpd);
+        const repositoryResp = (new ProductsRepository()).formatFromDB(response);
+        return repositoryResp;
     } catch (err) {
         console.log(err, '---> update:productService');
     }
@@ -58,8 +64,9 @@ export const update = async (id, productUpd) => {
 
 export const remove = async (id) => {
     try {
-        const response = await productDao.remove(id);
-        return response;
+        const response = await productsDao.remove(id);
+        const repositoryResp = (new ProductsRepository()).formatFromDB(response);
+        return repositoryResp;
     } catch (err) {
         console.log(err, '---> remove:productService');
     }

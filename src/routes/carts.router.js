@@ -20,7 +20,7 @@ router.put('/:cid', isAuth, isAdmin, cartsController.updateAllProducts);
 
 router.put('/:cid/products/:pid', isAuth, cartsController.updateProductQty);
 
-router.delete('/:cid/products/:pid', isAuth, cartsController.removeProduct);
+router.delete('/:cid/products/:pid', isAuth, cartsController.removeOneProduct);
 
 router.delete('/:cid', isAuth, cartsController.removeAllProducts);
 

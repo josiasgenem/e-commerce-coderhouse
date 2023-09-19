@@ -1,14 +1,18 @@
-import CartsDaoMongoDB from "../daos/mongodb/carts.dao.js";
-import CartsDaoFileSystem from "../daos/filesystem/carts.dao.js";
+// import CartsDaoMongoDB from "../persistence/mongodb/carts.dao.js";
+// import CartsDaoFileSystem from "../persistence/daos/filesystem/carts.dao.js";
 
-let cartsDao;
-if (process.env.DB_SYSTEM === 'MONGODB') cartsDao = new CartsDaoMongoDB();
-if (process.env.DB_SYSTEM === 'FILESYSTEM') cartsDao = new CartsDaoFileSystem('./src/daos/filesystem/carrito.json');
+// let cartsDao;
+// if (process.env.DB_ENGINE === 'MONGODB') cartsDao = new CartsDaoMongoDB();
+// if (process.env.DB_ENGINE === 'FILESYSTEM') cartsDao = new CartsDaoFileSystem('./src/persistence/filesystem/carrito.json');
+import { cartsDao } from "../persistence/factory.js";
+import CartsRepository from "../persistence/repository/carts/carts.repository.js";
+const cartRepository = new CartsRepository();
 
 export const getAll = async () => {
     try {
-        const carts = await cartsDao.getAll();
-        return carts;
+        const carts = await cartsDao.getMany();
+        const repositoryCarts = carts.map(cart => cartRepository.formatFromDB(cart));
+        return repositoryCarts;
     } catch (err) {
         console.log(err);
     }
@@ -19,7 +23,8 @@ export const getById = async (id) => {
         const cart = await cartsDao.getById(id);
         if (!cart) return false;
 
-        return cart;
+        const repositoryCart = cartRepository.formatFromDB(cart);
+        return repositoryCart;
     } catch (err) {
         console.log(err);
     }
@@ -30,10 +35,12 @@ export const getCurrentUserCartId = (req) => req.user.cartId;
 export const getCurrentUserCart = async (req) => {
     try {
         const cartId = getCurrentUserCartId(req);
-        let cart = await getById(cartId);
-        if (!cart) cart = await create(cartId, []);   
-    
-        return cart;
+        let repositoryCart = await getById(cartId);
+        if (!repositoryCart) {
+            let cart = await create(cartId, []);
+            repositoryCart = cartRepository.formatFromDB(cart);
+        }
+        return repositoryCart;
     } catch (err) {
         console.log(err, '---> getCurrentUserCart error.');
         return false;
@@ -43,12 +50,13 @@ export const getCurrentUserCart = async (req) => {
 export const create = async (cartId, products) => {
     try {
         if (!cartId) throw new Error('Any Cart ID received, you must create a cart with the cart ID saved for the user!');
-        const cartExist = await getById(cartId);
-        if (cartExist) throw new Error(`Cart ID already exist!`)
+        const repositoryCartExist = await getById(cartId);
+        if (repositoryCartExist) throw new Error(`Cart ID already exist!`)
 
-        const newCart = await cartsDao.create(cartId, products);
+        const newRepositoryCart = await cartsDao.create(cartRepository.formatToDB({id: cartId, products}));
+        // const newCart = await cartsDao.create({_id: cartId, products});
         
-        return newCart;
+        return newRepositoryCart;
     } catch (err) {
         console.log(err);
     }
@@ -56,23 +64,24 @@ export const create = async (cartId, products) => {
 
 export const addProduct = async (cid, pid) => {
     try {
-        const cart = await getById(cid);
+        const repositoryCart = await getById(cid);
         
         let exist = false;
 
-        cart.products.map(product => {
-            if (product.product._id.toString() === pid.toString()) {
+        repositoryCart.products.map(product => {
+            if (product.product.id.toString() === pid.toString()) {
                 product.quantity++;
                 exist = true;
             }
             return product;
         })
-        if (!exist) cart.products.push({
+        if (!exist) repositoryCart.products.push({
             product: pid,
             quantity: 1
         })
-        const updCarts = await cartsDao.updateAllProducts(cid, cart.products);
-        return updCarts;
+        
+        const updRepositoryCarts = await updateAllProducts(cid, cartRepository.formatToDB(repositoryCart).products);
+        return updRepositoryCarts;
     } catch (err) {
         console.log(err);
     }
@@ -81,7 +90,8 @@ export const addProduct = async (cid, pid) => {
 export const updateAllProducts = async (cid, products) => {
     try {
         const updCart = await cartsDao.updateAllProducts(cid, products);
-        return updCart;
+        const updRepositoryCarts = cartRepository.formatFromDB(updCart);
+        return updRepositoryCarts;
     } catch (err) {
         console.log(err);
     }
@@ -90,16 +100,18 @@ export const updateAllProducts = async (cid, products) => {
 export const updateProductQty = async (cid, pid, quantity) => {
     try {
         const updCart = await cartsDao.updateProductQty(cid, pid, quantity);
-        return updCart;
+        const updRepositoryCart = cartRepository.formatFromDB(updCart);
+        return updRepositoryCart;
     } catch (err) {
         console.log(err);
     }
 }
 
-export const removeProduct = async (cid, pid) => {
+export const removeOneProduct = async (cid, pid) => {
     try {
-        const response = await cartsDao.removeProduct(cid, pid);
-        return response;
+        const updCart = await cartsDao.removeOneProduct(cid, pid);
+        const updRepositoryCart = cartRepository.formatFromDB(updCart);
+        return updRepositoryCart;
     } catch (err) {
         console.log(err);
     }
@@ -107,8 +119,9 @@ export const removeProduct = async (cid, pid) => {
 
 export const removeAllProducts = async (id) => {
     try {
-        const response = await cartsDao.removeAllProducts(id);
-        return response;
+        const updCart = await cartsDao.removeAllProducts(id);
+        const updRepositoryCart = cartRepository.formatFromDB(updCart);
+        return updRepositoryCart;
     } catch (err) {
         console.log(err);
     }

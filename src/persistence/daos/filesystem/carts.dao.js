@@ -37,7 +37,7 @@ export default class CartsDaoFileSystem {
 
     async getById(id) {
         id = parseInt(id);
-        const carts = await this.getAll();
+        const carts = await this.getMany();
         const cart = carts.filter(cart => cart.id === id);
         
         // Si no existe retorna un array vacío.
@@ -56,7 +56,7 @@ export default class CartsDaoFileSystem {
     async create(products) {
         try {
             // Obtiene los carritos del archivo.
-            const carts = await this.getAll();
+            const carts = await this.getMany();
             const newCart = {
                 id: this.#getId(carts),
                 products
@@ -114,7 +114,7 @@ export default class CartsDaoFileSystem {
     async remove(id) {
         id = parseInt(id);
         try {
-            const carts = await this.getAll();
+            const carts = await this.getMany();
             const cartDeleted = carts.filter(cart => cart.id === id);
             const newCartsList = carts.filter(cart => cart.id !== id);
             // console.log("---> deleteCart", "Carrito eliminado:", newCartsList);

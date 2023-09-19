@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-export default class ProductDaoFileSystem {
+export default class ProductsDaoFileSystem {
     
     constructor(path) {
         this.path = path;
@@ -35,7 +35,7 @@ export default class ProductDaoFileSystem {
     async getById(id) {
     id = parseInt(id);
 
-        const products = await this.getAll();
+        const products = await this.getMany();
         const product = products.filter(product => product.id === id);
         
         // Si no existe retorna un array vacío.
@@ -54,7 +54,7 @@ export default class ProductDaoFileSystem {
             this.#isCompleteProduct(product)
 
             // Obtiene los productos del archivo.
-            const products = await this.getAll();
+            const products = await this.getMany();
             
             // Verifica que el código del producto a ingresar no exista previamente.
             this.#isUniqueCode(product.code, products)
@@ -79,7 +79,7 @@ export default class ProductDaoFileSystem {
     async update(id, productUpd) {
         id = parseInt(id);
         try {
-            const products = await this.getAll();
+            const products = await this.getMany();
             
             // Verifica si el producto está completo y si tiene un código único.
             this.#isCompleteProduct(productUpd);
@@ -111,7 +111,7 @@ export default class ProductDaoFileSystem {
         id = parseInt(id);
         
         try {
-            const products = await this.getAll();
+            const products = await this.getMany();
             const productDeleted = products.filter(product => product.id === id);
             const newProductsList = products.filter(product => product.id !== id);
             // console.log("---> deleteProduct", "Producto eliminado:", newProductsList);

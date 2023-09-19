@@ -41,6 +41,7 @@ export const isAuth = (req, res, next) => {
         }
         return res.redirect('/users/refresh');
     }
+
     req.user = payload;
     checkCartIdCookie(req, res);
 

@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", init);
 
 function init() {
     cid = getCartId();
-    console.log(cid, '---> CART ID');
     if (cid) toCartLink?.setAttribute('href', `/api/carts/${cid}`);
     
     for (const btn of addToCartBtns) {
@@ -68,7 +67,11 @@ function addToCart(pid) {
         method: "POST",
         headers: setHeaders()
     })
-    .then(res => res.json())
+    .then(res => {
+        const resp = res.json();
+        console.log(resp);
+        return resp;
+    })
     .then(json => checkRedirects(json))
     .catch(err => console.log(err));
 }

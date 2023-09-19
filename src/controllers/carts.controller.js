@@ -25,11 +25,10 @@ export const getById = async (req, res) => {
     const { cid } = req.params;
     try {
         let cart = await service.getCurrentUserCart(req);
-        console.log(cart._id.toString(), 'CART USER!!!');
-        if (cart._id.toString() !== cid) {
+        if (cart.id.toString() !== cid) {
             if (req.user.role !== 'admin') {
                 req.session.context = { message: "You're Not Authorized to get carts that you are not owner!" }
-                return res.status(403).redirect(`/api/carts/${cart._id.toString()}`);
+                return res.status(403).redirect(`/api/carts/${cart.id.toString()}`);
             }
 
             cart = await service.getById(cid);
@@ -106,7 +105,7 @@ export const updateProductQty = async (req, res) => {
     }
 }
 
-export const removeProduct = async (req, res) => {
+export const removeOneProduct = async (req, res) => {
     const { cid, pid } = req.params
     
     try {
@@ -116,7 +115,7 @@ export const removeProduct = async (req, res) => {
             return res.status(403).redirect(`/api/carts/${userCartId}`);
         }
 
-        const response = await service.removeProduct(cid, pid);
+        const response = await service.removeOneProduct(cid, pid);
         res.status(200).json(response);
     } catch (err) {
         res.status(500).send(err.message);

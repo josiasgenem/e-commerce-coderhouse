@@ -1,3 +1,4 @@
+import { usersDao } from '../persistence/factory.js';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
 import { 
@@ -7,17 +8,18 @@ import {
     sendAccessRefreshTokens,
     verifyRefreshToken
 } from "../helpers/helpers.js";
-import UserDaoMongoDB from "../daos/mongodb/users.dao.js";
-const userDao = new UserDaoMongoDB();
+import UsersRepository from '../persistence/repository/users/users.repository.js';
+// import UserDaoMongoDB from "../daos/mongodb/users.dao.js";
+// const usersDao = new UserDaoMongoDB();
 
 const   namesRegEx = /[a-zÀ-ÿ]{2,30}/i,
         emailRegEx = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-        passwordRegEx = /(?=.{6,})(?=.*[a-zA-Z])(?=.*\d)/;
+        passwordRegEx = /(?=.{6,})(?=.*[a-zA-Z])(?=.*\d)/,
+        userRepository = new UsersRepository();
 
 export const register = async (req, username, pass, done) => {
     const {first_name, last_name, email, password, age, role} = req.body;
     try {
-        console.log('INGRESÓ A REGISTER PASSPORT');
         if (!namesRegEx.test(first_name)) done('First name seems to be not written correctly.', false);
         if (!namesRegEx.test(last_name)) done('Last name seems to be not written correctly.', false);
         if (!emailRegEx.test(email)) done('Email seems to be not written correctly.', false);
@@ -27,12 +29,15 @@ export const register = async (req, username, pass, done) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
-        const userExist = await userDao.getByEmail(email);
+        const userExist = await usersDao.getByEmail(email);
         if(userExist) return done('El usuario ya existe!', false);
 
-        const user = await userDao.create({first_name, last_name, email, password: hash, age: parseInt(age), role, isThirdAuth: false});
+        const user = await usersDao.create(userRepository.formatToDB({
+            first_name, last_name, email, password: hash, age: parseInt(age), role, isThirdAuth: false
+        }));
+        const repositoryUser = userRepository.formatFromDB(user);
 
-        return done(null, user.toJSON());
+        return done(null, repositoryUser.toJSON());
     } catch (err) {
         console.log('---> Register Service:', err);
         return done(err.message, false);
@@ -52,7 +57,7 @@ export const register = async (req, username, pass, done) => {
 //                 role: 'admin'
 //             })
 //         }
-//         const user = await userDao.getByEmail(email, true);
+//         const user = await usersDao.getByEmail(email, true);
 //         if (!user) done(null, false, {message: "Email or Password wrong"});
 //         const match = await bcrypt.compare(password, user.password);
 //         if (!match) done(null, false, {message: "Email or Password wrong"});
@@ -73,17 +78,22 @@ export const jwtLogin = async (req, res) => {
             accessToken,
             refreshToken;
         
-        let user = await userDao.getByEmail(email, true);
+        let user = await usersDao.getByEmail(email, true);
 
         if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
             if(!user) {
                 // Intenta registrar al admin en la DB utilizando la estrategia de register.
-                req.body.first_name = payload.first_name;
-                req.body.last_name = payload.last_name;
-                req.body.email = payload.email;
-                req.body.role = payload.role;
-                req.body.password = password;
+                // req.body.first_name = payload.first_name;
+                // req.body.last_name = payload.last_name;
+                // req.body.email = payload.email;
+                // req.body.role = payload.role;
+                // req.body.password = password;
                 
+                req.body = {
+                    ...req.body,
+                    ...userRepository.formatToDB({first_name, last_name, email, role, password, isThirdAuth: false})
+                }
+
                 passport.authenticate('register', { 
                     successRedirect: '/users/login',
                     failureRedirect: '/users/register'
@@ -91,42 +101,29 @@ export const jwtLogin = async (req, res) => {
                 
                 console.log(user, 'ADMIN USER');
             
-            user = await userDao.getByEmail(email, true);
-
-            // payload = {
-            //     first_name: 'Coder',
-            //     last_name: 'House',
-            //     email: 'adminCoder@coder.com',
-            //     role: 'admin'
-            // }
-            
-                // --------------------------------------------
-                // NO ESTOY CREANDO EL USUARIO EN LA DB ??? PARA MI QUE SEE
-                // --------------------------------------------
+                user = await usersDao.getByEmail(email, true);
             }
-
-        } 
-        // else {
+        }
 
             if (!user) return res.status(401).json({message: "Email or Password wrong"});
             if (!user.password) return res.status(401).json({message: "You've registered with a Third part service. \n Try to login with Google or Github, and then set a password to enable local login."});
             const match = await bcrypt.compare(password, user.password);
             if (!match) return res.status(401).json({message: "Email or Password wrong"});
-            payload = {
-                first_name: user.first_name,
-                last_name: user.last_name,
-                email: user.email,
-                cartId: user.cart,
-                role: user.role
-            }
-        // }
+            
+            payload = userRepository.formatFromDB(user).sanitize();
+            // payload = {
+            //     first_name: user.first_name,
+            //     last_name: user.last_name,
+            //     email: user.email,
+            //     cartId: user.cart,
+            //     role: user.role
+            // }
         
         accessToken = generateAccessToken(payload);
         refreshToken = generateRefreshToken(payload);
-
-        user.refreshTokens.push(refreshToken);
-        const updUser = await user.save();
-        if(!updUser) return res.status(500).json({message: "Something went wrong!"})
+        
+        const updUser = await usersDao.saveRefreshToken(user.email, refreshToken);
+        if (!updUser) return res.status(500).json({message: "Something went wrong!"})
         
         return sendAccessRefreshTokens(res, 201, accessToken, refreshToken, '/users/profile');
         
@@ -147,14 +144,14 @@ export const refreshToken = async (req, res) => {
             console.log(req.session, 'REQ.SESSION');
             if (req && req.user && req.user.email) {
                 console.log('ENTRÓ ------------------------------------------------------------------------');
-                const user = await userDao.getByEmail(req.user.email)
+                const user = await usersDao.getByEmail(req.user.email)
                 user.refreshTokens = [];
                 await user.save();
             }
             return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: Invalid Token received');
         }
         
-        const user = await userDao.getByEmail(payload.email);
+        const user = await usersDao.getByEmail(payload.email);
         if (!user.refreshTokens.some(token => token === refreshToken)) {
             user.refreshTokens = [];
             await user.save();
@@ -194,7 +191,7 @@ export const jwtLogout = async (req, res) => {
         const payload = verifyRefreshToken(refreshToken);
         if (typeof payload !== 'object') return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: Invalid Token received');
 
-        const user = await userDao.getByEmail(payload.email);
+        const user = await usersDao.getByEmail(payload.email);
         user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
         await user.save();
 
@@ -214,7 +211,7 @@ export const registerOrLogin = async (req, accessToken, refreshToken, profile, d
     if (!email) return done(`Debes poner tu email como público en tu cuenta de GitHub!\nDeselecciona la opción: "Keep my email addresses private." en "email settings" de GitHub.`, false)
 
     // THIRD AUTH LOGIN
-    const user = await userDao.getByEmail(email);
+    const user = await usersDao.getByEmail(email);
     if (user) {
         const payload = {
                 first_name: user.first_name,
@@ -238,6 +235,6 @@ export const registerOrLogin = async (req, accessToken, refreshToken, profile, d
     }
     
     // THIRD AUTH REGISTER
-    const newUser = await userDao.create({first_name, last_name, email, isThirdAuth: true})
+    const newUser = await usersDao.create({first_name, last_name, email, isThirdAuth: true})
     return done(null, newUser.toJSON());
 }

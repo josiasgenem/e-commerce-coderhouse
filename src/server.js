@@ -11,20 +11,22 @@ import { COOKIES_SECRET, PORT } from "./config/environment.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 
-// Environment
-// if (process.env.DB_SYSTEM === 'MONGODB') import('./daos/mongodb/mongoConnection.js');
-// export const port = (process.env.STATUS === 'production' ?
-//     process.env.PROD_PORT :
-//     process.env.DEV_PORT) || 8080;
+/* -------------------------------------------------------------------------- */
+/*                                Environment                                 */
+/* -------------------------------------------------------------------------- */
 export const { __dirname } = fileDirName(import.meta)
 
-// Iniitializations
+/* -------------------------------------------------------------------------- */
+/*                              Iniitializations                              */
+/* -------------------------------------------------------------------------- */
 const app = express();
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 })
 
-// Middlewares
+/* -------------------------------------------------------------------------- */
+/*                                 Middlewares                                */
+/* -------------------------------------------------------------------------- */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({
@@ -37,21 +39,17 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use(mongoStoreSession)
 app.use(passport.initialize());
 app.use(passport.session());
-// import cors from "cors";
 
-// app.use(
-//   cors({
-//     credentials: true,
-//     origin: 'http://localhost:8080',
-//   })
-// );
-
-//  Views
+ /* -------------------------------------------------------------------------- */
+ /*                                    Views                                   */
+ /* -------------------------------------------------------------------------- */
 app.engine('.hbs', engine({ extname: '.hbs', partialsDir: path.join(__dirname,'/views/partials') }));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, '/views'));
 
-// Routes
+/* -------------------------------------------------------------------------- */
+/*                                   Routes                                   */
+/* -------------------------------------------------------------------------- */
 app.use('/', homeRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);

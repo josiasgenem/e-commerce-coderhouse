@@ -9,7 +9,7 @@
 
     {{#if resp.products}}
     {{#each resp.products}}
-        <div id={{_id}} class="product-card">
+        <div id={{id}} class="product-card">
                 <div class="card-header">
                     <h3 class="product-title">
                         {{ product.title }}
@@ -26,7 +26,7 @@
                     </div>
                     <div class="body-right-content">
                         <p class="product-quantity">x {{ quantity }}</p>
-                        <i data-id="{{ product._id }}" class="btn-deleteFromCart fa fa-trash"></i>
+                        <i data-id="{{ product.id }}" class="btn-deleteFromCart fa fa-trash"></i>
                     </div>
                 </div>
                 <div class="card-footer">

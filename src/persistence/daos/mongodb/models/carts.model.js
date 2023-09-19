@@ -1,5 +1,5 @@
 import mongoose, {Schema} from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+// import mongoosePaginate from 'mongoose-paginate-v2';
 
 const cartSchema = new Schema({
     _id: { type: Schema.ObjectId, required: true },
@@ -21,8 +21,8 @@ const cartSchema = new Schema({
 })
 
 cartSchema.pre(/^find/, function (next) {
-    this.id = this._id
-    delete this._id;
+    // this.id = this._id
+    // delete this._id;
     this.populate('products.product');
     next();
 })
