@@ -1,6 +1,7 @@
 const addToCartBtns = document.getElementsByClassName('btn-addToCart');
 const deleteFromCartBtns = document.getElementsByClassName('btn-deleteFromCart');
 const toCartLink = document.getElementById('toCartLink');
+const buyBtn = document.getElementById('buy-btn');
 // const firstNameSpan = document.getElementById('first_name');
 
 let accessToken, cid;
@@ -10,6 +11,7 @@ document.addEventListener("DOMContentLoaded", init);
 function init() {
     cid = getCartId();
     if (cid) toCartLink?.setAttribute('href', `/api/carts/${cid}`);
+    if (cid && buyBtn) buyBtn.addEventListener('click', () => buyCart(cid));
     
     for (const btn of addToCartBtns) {
         let pid = btn.getAttribute('data-id');
@@ -34,8 +36,6 @@ export function getCartId () {
 }
 
 export async function checkRedirects(response) {
-    // console.log(response.url, 'REDIRECTION FROM CHECKER');
-    // console.log(response, 'RESPONSE FROM CHECKER');
     if (response.redirected) {
         const json = response.json();
         if (json.redirect && typeof json.redirect === 'object') {
@@ -65,13 +65,10 @@ export function setHeaders() {
 function addToCart(pid) {
     fetch(`/api/carts/${cid}/products/${pid}`, {
         method: "POST",
+        redirect: 'follow',
         headers: setHeaders()
     })
-    .then(res => {
-        const resp = res.json();
-        console.log(resp);
-        return resp;
-    })
+    .then(res => res.json())
     .then(json => checkRedirects(json))
     .catch(err => console.log(err));
 }
@@ -79,12 +76,32 @@ function addToCart(pid) {
 function deleteFromCart(pid) {
     fetch(`/api/carts/${cid}/products/${pid}`, {
         method: "DELETE",
+        redirect: 'follow',
         headers: setHeaders()
     })
-    .then(res => res.json())
+    .then(res => {
+        checkRedirects(res);
+        return res.json()
+    })
     .then(json => {
-            checkRedirects(json);
-            location.reload();
+        console.log(json);
+        location.reload();
+    })
+    .catch(err => console.log('---> Error:', err));
+}
+
+export function buyCart(cid) {
+    fetch(`/api/carts/${cid}/purchase`, {
+        method: "POST",
+        redirect: 'follow',
+        headers: setHeaders()
+    })
+    .then(res => {
+        checkRedirects(res);
+        return res.json();
+    })
+    .then(json => {
+        console.log(json);
     })
     .catch(err => console.log('---> Error:', err));
 }

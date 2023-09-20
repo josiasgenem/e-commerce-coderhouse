@@ -41,6 +41,15 @@ export const viewProfile = async (req, res) => {
     res.render('profile', { user: req.user })
 }
 
+export const current = async (req, res) => {
+    const { email } = req.user;
+    const user = await service.current(email);
+    if (!user) res.status(500).json({ message: "Something went wrong!" });
+
+    res.status(200).json(user);
+}
+
+
 export const logout = service.jwtLogout;
 
 // export const logout = (req, res) => {

@@ -3,11 +3,11 @@ import ProductsRepository from '../../repository/products/product.repository.js'
 export default class CartsResDTO {
     constructor(dbCart) {
         this.id = dbCart._id;
-        this.products = dbCart.products.map(prod => {
+        this.products = dbCart.products.map(cartElement => {
             return {
-                id: prod._id,
-                quantity: prod.quantity,
-                product: (new ProductsRepository).formatFromDB(prod)
+                // id: cartElem.product._id,
+                quantity: cartElement.quantity,
+                product: (new ProductsRepository).formatFromDB(cartElement.product)
             }
         });
     }

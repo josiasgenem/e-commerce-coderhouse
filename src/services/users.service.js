@@ -9,6 +9,7 @@ import {
     verifyRefreshToken
 } from "../helpers/helpers.js";
 import UsersRepository from '../persistence/repository/users/users.repository.js';
+const usersRepository = new UsersRepository();
 // import UserDaoMongoDB from "../daos/mongodb/users.dao.js";
 // const usersDao = new UserDaoMongoDB();
 
@@ -167,7 +168,7 @@ export const refreshToken = async (req, res) => {
         
         const newRefreshToken = generateRefreshToken(payload);
         const newAccessToken = generateAccessToken(payload);
-        console.log('------ NUEVOS TOKENS GENERADOS -----');
+        console.log('\x1b[32m------ NUEVOS TOKENS GENERADOS -----\x1b[0m');
         
         user.refreshTokens.push(newRefreshToken);
         await user.save();
@@ -182,11 +183,14 @@ export const refreshToken = async (req, res) => {
 
 export const jwtLogout = async (req, res) => {
     
-    // A veces genera Error: ERR_TOO_MANY_REDIRECTS.
+    //! A veces genera Error: ERR_TOO_MANY_REDIRECTS.
 
     try {
         const refreshToken = getRefreshToken(req);
-        if (!refreshToken) return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong authentication: No Token received!');
+        if (!refreshToken) {
+            console.log('\x1b[31m-------- QUISO DESLOGEARSE PERO NO MANDÓ REFRESH TOKENS!!!!!!!!!!!! ------------\x1b[31m');
+            return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong authentication: No Token received!');
+        }
         
         const payload = verifyRefreshToken(refreshToken);
         if (typeof payload !== 'object') return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: Invalid Token received');
@@ -207,34 +211,42 @@ export const registerOrLogin = async (req, accessToken, refreshToken, profile, d
     const email = profile._json.email || profile._json.blog;
     const first_name = profile.given_name || profile._json.name?.split(' ').slice(0,1)[0] || profile.username;
     const last_name = profile.family_name || profile._json.name?.split(' ').slice(1).join(' ');
-
+    
     if (!email) return done(`Debes poner tu email como público en tu cuenta de GitHub!\nDeselecciona la opción: "Keep my email addresses private." en "email settings" de GitHub.`, false)
-
+    
     // THIRD AUTH LOGIN
     const user = await usersDao.getByEmail(email);
     if (user) {
         const payload = {
-                first_name: user.first_name,
-                last_name: user.last_name,
-                email: user.email,
-                role: user.role
-            },
-            accessToken = generateAccessToken(payload),
-            refreshToken = generateRefreshToken(payload);
-
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            role: user.role
+        },
+        accessToken = generateAccessToken(payload),
+        refreshToken = generateRefreshToken(payload);
+        
         user.refreshTokens.push(refreshToken);
         const updUser = await user.save();
         if(!updUser) {
             res.status(500).json({message: "Something went wrong!"});
             return done("Something went wrong!", null);
         }
-
+        
         sendAccessRefreshTokens(res, 201, accessToken, refreshToken, '/users/profile')
-
+        
         return done(null, user.toJSON());
     }
     
     // THIRD AUTH REGISTER
     const newUser = await usersDao.create({first_name, last_name, email, isThirdAuth: true})
     return done(null, newUser.toJSON());
+}
+
+export const current = async (email) => {
+    const user = await usersDao.getByEmail(email, true);
+    console.log(user, 'USER FROM CURRENT ENDPOINT');
+    const repositoryUser = userRepository.formatFromDB(user).sanitize();
+    console.log(repositoryUser, 'REPOSITORY USER FROM CURRENT ENDPOINT');
+    return repositoryUser;
 }

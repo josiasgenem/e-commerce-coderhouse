@@ -53,20 +53,22 @@ export const getById = async (req, res) => {
 //     }
 // }
 
-export const addProduct = async (req, res) => {
-    const { cid, pid } = req.params;
+export const addOneProduct = async (req, res) => {
+    const { cid, pid, pQty } = req.params;
     try {
         const userCartId = service.getCurrentUserCartId(req);
         if (cid !== userCartId && req.user.role !== 'admin') {
             req.session.context = { message: "You're Not Authorized to add products to carts that you are not owner!" }
             return res.status(403).redirect(`/api/carts/${userCartId}`);
         }
-        if (!await productsService.isAvailable(pid, 1)) return res.status(400).json({message: 'There aren\'t sufficent products to add to the cart.'}) 
+        // const isProductAvailable = await productsService.isAvailable(pid, pQty);
+        // if (!isProductAvailable) return res.status(400).json({message: 'There aren\'t sufficent products to add to the cart.'}) 
         
-        const response = await service.addProduct(cid, pid);
-        res.status(200).json(response);
+        const cart = await service.addOneProduct(cid, pid);
+        if (!cart) return res.status(400).json({ message: "Something went wrong trying to add product to cart. It seems product stock is not enough!"});
+        return res.status(200).json(cart);
     } catch (err) {
-        res.status(500).send(err.message);
+        return res.status(500).send(err.message);
     }
 }
 
@@ -119,6 +121,17 @@ export const removeOneProduct = async (req, res) => {
         res.status(200).json(response);
     } catch (err) {
         res.status(500).send(err.message);
+    }
+}
+
+export const purchase = async (req, res) => {
+    const { cid } = req.params;
+    
+    try {
+        const ticket = await service.purchase(cid, req.user);
+        return res.status(301).redirect(`/api/tickets/${ticket.id}`);
+    } catch (err) {
+        res.status(500).json({message: err.message});
     }
 }
 

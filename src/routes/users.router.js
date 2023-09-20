@@ -25,5 +25,7 @@ router.get('/google/callback', controller.authGoogleCallback, (req, res) => res.
 
 router.get('/profile', isAuth, controller.viewProfile);
 
+router.get('/current', isAuth, controller.current);
+
 
 export default router;

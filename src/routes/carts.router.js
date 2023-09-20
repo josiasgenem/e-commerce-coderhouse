@@ -14,13 +14,15 @@ router.get('/:cid', isAuth, cartsController.getById);
 
 // router.post('/', isAuth, cartsController.create);
 
-router.post('/:cid/products/:pid', isAuth, cartsController.addProduct);
+router.post('/:cid/products/:pid', isAuth, cartsController.addOneProduct);
 
 router.put('/:cid', isAuth, isAdmin, cartsController.updateAllProducts);
 
 router.put('/:cid/products/:pid', isAuth, cartsController.updateProductQty);
 
 router.delete('/:cid/products/:pid', isAuth, cartsController.removeOneProduct);
+
+router.post('/:cid/purchase', isAuth, cartsController.purchase)
 
 router.delete('/:cid', isAuth, cartsController.removeAllProducts);
 

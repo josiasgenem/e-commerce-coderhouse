@@ -97,7 +97,7 @@ export const getAccessToken = (req) => {
     if (!accessToken && req.signedCookies) {
         accessToken = getCookieByName(req.signedCookies, 'coderhouse-ecommerce-access-token');
     }
-    console.log(accessToken, `---> getAccessToken called from: ${req.method} ${req.originalUrl}`);
+    console.log(accessToken, `\x1b[32m---> getAccessToken called from: ${req.method} ${req.originalUrl}\x1b[0m`);
     return accessToken || null;
 }
 
@@ -110,7 +110,7 @@ export const getRefreshToken = (req) => {
     if (!refreshToken && req.signedCookies) {
         refreshToken = getCookieByName(req.signedCookies, 'coderhouse-ecommerce-refresh-token');
     }
-    console.log(refreshToken, `---> getRefreshToken called from: ${req.method} ${req.originalUrl}`);
+    console.log(refreshToken, `\x1b[32m---> getRefreshToken called from: ${req.method} ${req.originalUrl}\x1b[0m`);
 
     return refreshToken || null;
 }
@@ -165,7 +165,7 @@ export const verifyAccessToken = (accessToken) => {
         
     } catch (err) {
         if (err.name === 'TokenExpiredError'){
-            console.log('---> verifyAccessToken error:', err.name);
+            console.log('\x1b[33m---> verifyAccessToken error:\x1b[0m', err.name);
             return {
                 error: err.name,
                 ...jwt.verify(accessToken, ACCESS_TOKEN_SECRET, {
@@ -174,7 +174,7 @@ export const verifyAccessToken = (accessToken) => {
                 })
             }
         }
-        console.log('---> verifyAccessToken error:', err);
+        console.log('\x1b[33m---> verifyAccessToken error:\x1b[0m', err);
         return err.name;
     }
 }
@@ -194,7 +194,7 @@ export const verifyRefreshToken = (refreshToken) => {
         
         return payload;
     } catch (err) {
-        console.log('---> verifyRefreshToken error:', err);
+        console.log('\x1b[33m---> verifyRefreshToken error:\x1b[0m', err);
         if (err.name === 'TokenExpiredError'){
             return {
                 error: err.name,
@@ -223,7 +223,7 @@ export const sendAccessRefreshTokens = (res, status, accessToken, refreshToken, 
     if (!refreshToken) refreshCookieOptions.maxAge = 0;
     if (!accessToken) accessCookieOptions.maxAge = 0;
     
-    console.log(redirect, 'REDIRECT: FROM TOKENS SENDER');
+    console.log(redirect, '\x1b[33mREDIRECT: FROM TOKENS SENDER\x1b[0m');
     return res
             // .status(status)
             .cookie('coderhouse-ecommerce-refresh-token', refreshToken, refreshCookieOptions)

@@ -62,6 +62,17 @@ export const update = async (id, productUpd) => {
     }
 }
 
+export const updateStock = async (id, newStock) => {
+    try {
+        const response = await productsDao.updateStock(id, newStock);
+        if (!response) return false;
+        const repositoryResp = (new ProductsRepository()).formatFromDB(response);
+        return repositoryResp;
+    } catch (err) {
+        console.log(err, '---> updateStock:productService');
+    }
+}
+
 export const remove = async (id) => {
     try {
         const response = await productsDao.remove(id);

@@ -9,7 +9,7 @@
 
     {{#if resp.products}}
     {{#each resp.products}}
-        <div id={{id}} class="product-card">
+        <div id={{product.id}} class="product-card">
                 <div class="card-header">
                     <h3 class="product-title">
                         {{ product.title }}
@@ -43,3 +43,11 @@
     {{/if}}
 
 </div>
+
+{{#if resp.products}}
+
+<div>
+    <button id="buy-btn" data-id={{resp.id}}>Buy!</button>
+</div>
+
+{{/if}}

@@ -37,7 +37,6 @@ export class MongoDao {
     async getById(id) {
         try {
             const result = await this.model.findById(id);
-            console.log(result, 'CART FROM MONGO DAO');
             return result;
         } catch (err) {
             console.log(err, '---> MongoDao getById error.');

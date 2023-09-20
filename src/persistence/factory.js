@@ -7,11 +7,13 @@ import { initMongoDB } from './daos/mongodb/mongoConnection.js';
 import ProductsDaoMongoDB from './daos/mongodb/products.dao.js';
 import CartsDaoMongoDB from './daos/mongodb/carts.dao.js';
 import UsersDaoMongoDB from './daos/mongodb/users.dao.js';
+import TicketDaoMongoDB from './daos/mongodb/ticket.dao.js';
 
 
 let productsDao,
     cartsDao,
-    usersDao;
+    usersDao,
+    ticketsDao;
 
 const DB_ENGINE_CLI = process.argv[2];
 let dbEngineSelected = DB_ENGINE_CLI === 'MONGODB' || DB_ENGINE_CLI === 'FILESYSTEM' ?
@@ -23,6 +25,7 @@ if (dbEngineSelected === 'MONGODB') {
     productsDao = new ProductsDaoMongoDB();
     cartsDao = new CartsDaoMongoDB();
     usersDao = new UsersDaoMongoDB();
+    ticketsDao = new TicketDaoMongoDB();
 }
 
 if (dbEngineSelected === 'FILESYSTEM') {
@@ -30,4 +33,4 @@ if (dbEngineSelected === 'FILESYSTEM') {
     cartsDao = new CartsDaoFileSystem('./src/persistence/filesystem/carrito.json');
 }
 
-export { usersDao, productsDao, cartsDao };
+export { usersDao, productsDao, cartsDao, ticketsDao };
