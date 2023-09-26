@@ -10,6 +10,8 @@ router.get('/:pid', isAuth, controller.getById)
 
 router.post('/', isAuth, isAdmin, controller.create)
 
+router.post('/mockingproducts', isAuth, isAdmin, controller.mock)
+
 router.put('/:pid', isAuth, isAdmin, controller.update)
 
 router.delete('/:pid', isAuth, isAdmin, controller.remove)

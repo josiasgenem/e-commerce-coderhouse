@@ -1,4 +1,5 @@
-import * as service from '../services/products.service.js';
+import ProductService from '../services/products.service.js';
+const service = new ProductService();
 import { formatResponse } from '../helpers/helpers.js'
 
 export const getAll = async (req, res) => {
@@ -44,6 +45,16 @@ export const create = async (req, res) => {
         res.status(200).send(`El producto fue agregado exitosamente: ${JSON.stringify(response)}`);
     } catch (err) {
         res.status(500).send(err.message);
+    }
+}
+
+export const mock = async (req, res) => {
+    const { quantity } = req.body;
+    try {
+        const response = await service.mock(quantity); //! HARDCODED
+        res.status(200).redirect('/api/products');
+    } catch (err) {
+        res.status(500).json({error: err.message});
     }
 }
 

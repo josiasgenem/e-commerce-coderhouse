@@ -97,6 +97,6 @@ export const isNotAuth = (req, res, next) => {
 }
 
 export const isAdmin = (req, res, next) => {
-    if (req.user || req.user.role !== 'admin') return res.status(403).json({ message: "You're Not Authorized!" })
+    if (!req.user || req.user.role !== 'admin') return res.status(403).json({ message: "You're Not Authorized!" })
     return next();
 }
