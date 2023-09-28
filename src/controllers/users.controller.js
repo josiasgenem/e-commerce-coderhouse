@@ -1,7 +1,7 @@
 import * as service from '../services/users.service.js';
 import passport from 'passport';
 
-export const viewRegister = async (req, res) => {
+export const viewRegister = async (req, res, next) => {
     res.render('register'); 
 }
 
@@ -10,7 +10,7 @@ export const register = passport.authenticate('register', {
     failureRedirect: '/users/register'
 })
 
-export const viewLogin = async (req, res) => {
+export const viewLogin = async (req, res, next) => {
     res.render('login'); 
 }
 
@@ -37,22 +37,26 @@ export const authGoogleCallback = passport.authenticate('google', {
     failureRedirect: '/users/login'
 })
 
-export const viewProfile = async (req, res) => {
+export const viewProfile = async (req, res, next) => {
     res.render('profile', { user: req.user })
 }
 
-export const current = async (req, res) => {
+export const current = async (req, res, next) => {
     const { email } = req.user;
-    const user = await service.current(email);
-    if (!user) res.status(500).json({ message: "Something went wrong!" });
-
-    res.status(200).json(user);
+    try {
+        const user = await service.current(email);
+        if (!user) res.status(500).json({ message: "Something went wrong!" });
+        
+        res.status(200).json(user);
+    } catch (err) {
+        return next(err);
+    }
 }
 
 
 export const logout = service.jwtLogout;
 
-// export const logout = (req, res) => {
+// export const logout = (req, res, next) => {
 //     req.logout((err) => {
 //         if (err) return next(err);
 //         res.redirect('/users/login');

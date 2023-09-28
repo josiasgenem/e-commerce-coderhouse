@@ -5,79 +5,91 @@
 // if (process.env.DB_ENGINE === 'MONGODB') cartsDao = new CartsDaoMongoDB();
 // if (process.env.DB_ENGINE === 'FILESYSTEM') cartsDao = new CartsDaoFileSystem('./src/persistence/filesystem/carrito.json');
 import { cartsDao } from "../persistence/factory.js";
-import * as productsService from './products.service.js'
+import ProductsService from './products.service.js'
+const productsService = new ProductsService();
 import TicketService from "./ticket.service.js";
 const ticketService = new TicketService();
 import CartsRepository from "../persistence/repository/carts/carts.repository.js";
+import { BadRequestError, NotFoundError, ServerError } from "../config/errors.js";
 const cartRepository = new CartsRepository();
 
-export const getAll = async () => {
-    try {
-        const carts = await cartsDao.getMany();
-        const repositoryCarts = carts.map(cart => cartRepository.formatFromDB(cart));
-        return repositoryCarts;
-    } catch (err) {
-        console.log(err);
-    }
-}
 
-export const getById = async (id) => {
-    try {
-        const cart = await cartsDao.getById(id);
-        if (!cart) return false;
+export default class CartsService {
 
-        const repositoryCart = cartRepository.formatFromDB(cart);
-        return repositoryCart;
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-export const getCurrentUserCartId = (req) => req.user.cartId;
-
-export const getCurrentUserCart = async (req) => {
-    try {
-        const cartId = getCurrentUserCartId(req);
-        let repositoryCart = await getById(cartId);
-        if (!repositoryCart) {
-            let cart = await create(cartId, []);
-            repositoryCart = cartRepository.formatFromDB(cart);
+    async getAll() {
+        try {
+            const carts = await cartsDao.getMany();
+            const repositoryCarts = carts.map(cart => cartRepository.formatFromDB(cart));
+            return repositoryCarts;
+        } catch (err) {
+            // console.log(err);
+            throw err;
         }
-        return repositoryCart;
-    } catch (err) {
-        console.log(err, '---> getCurrentUserCart error.');
-        return false;
     }
-}
-
-export const create = async (id, products) => {
-    try {
-        if (!id) throw new Error('Any Cart ID received, you must create a cart with the cart ID saved for the user!');
-        const repositoryCartExist = await getById(id);
-        if (repositoryCartExist) throw new Error(`Cart ID already exist!`)
-
-        const newRepositoryCart = await cartsDao.create(cartRepository.formatToDB({id, products}));
-        // const newCart = await cartsDao.create({_id: id, products});
-        
-        return newRepositoryCart;
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-export const addOneProduct = async (id, pid) => {
-    try {
-        const repositoryCart = await getById(id);
-
-        let existInCart = false,
-            prodQty;
+    
+    async getById(id) {
+        try {
+            const cart = await cartsDao.getById(id);
+            if (!cart) return false;
+            // throw new NotFoundError(`Cart with ID: ${id} does not exist!`);
             
-            if (repositoryCart.products.length) {
-                repositoryCart.products.map(cartElement => {
+            const repositoryCart = cartRepository.formatFromDB(cart);
+            return repositoryCart;
+        } catch (err) {
+            // console.log(err);
+            throw err;
+        }
+    }
+    
+    getCurrentUserCartId(req) {
+        return req.user.cartId;
+    }
+    
+    async getCurrentUserCart(req) {
+        try {
+            const cartId = this.getCurrentUserCartId(req);
+            let repositoryCart = await this.getById(cartId);
+            if (!repositoryCart) {
+                let cart = await this.create(cartId, []);
+                repositoryCart = cartRepository.formatFromDB(cart);
+            }
+            return repositoryCart;
+        } catch (err) {
+            // console.log(err, '---> getCurrentUserCart error.');
+            throw err;
+            // return false;
+        }
+    }
+    
+    async create(id, products) {
+        try {
+            if (!id) throw new BadRequestError('Any Cart ID received, you must create a cart with the cart ID saved for the user!');
+            const repositoryCartExist = await this.getById(id);
+            if (repositoryCartExist) throw new BadRequestError(`Cart ID already exist! You can't create a new one with the same ID ${id}.`);
+            
+            const newRepositoryCart = await cartsDao.create(cartRepository.formatToDB({id, products}));
+            // const newCart = await cartsDao.create({_id: id, products});
+            
+            return newRepositoryCart;
+        } catch (err) {
+        // console.log(err);
+        throw err;
+    }
+}
+
+async addOneProduct(id, pid) {
+    try {
+        const repositoryCart = await this.getById(id);
+        
+        let existInCart = false,
+        prodQty;
+        
+        if (repositoryCart.products.length) {
+            repositoryCart.products.map(cartElement => {
                 
                 if (cartElement.product.id == pid) {
                     cartElement.quantity++;
-
+                    
                     prodQty = cartElement.quantity;
                     existInCart = true;
                 }
@@ -93,89 +105,98 @@ export const addOneProduct = async (id, pid) => {
         }
         
         const isProductAvailable = await productsService.isAvailable(pid, prodQty);
-        if (!isProductAvailable) return false;
-
-        const updRepositoryCarts = await updateAllProducts(id, cartRepository.formatToDB(repositoryCart).products);
+        if (!isProductAvailable) throw new NotFoundError(`Product with ID ${id} does not exist, is not in stock or the requested amount is higher than the stock.`);
+        
+        const updRepositoryCarts = await this.updateAllProducts(id, cartRepository.formatToDB(repositoryCart).products);
         return updRepositoryCarts;
     } catch (err) {
-        console.log(err);
+        // console.log(err);
+        throw err;
     }
 }
 
-export const updateAllProducts = async (id, products) => {
+async updateAllProducts(id, products) {
     try {
         const updCart = await cartsDao.updateAllProducts(id, products);
         const updRepositoryCarts = cartRepository.formatFromDB(updCart);
         return updRepositoryCarts;
     } catch (err) {
-        console.log(err);
+        // console.log(err);
+        throw err;
     }
 }
 
-export const updateProductQty = async (id, pid, quantity) => {
+async updateProductQty(id, pid, quantity) {
     try {
         const updCart = await cartsDao.updateProductQty(id, pid, quantity);
         const updRepositoryCart = cartRepository.formatFromDB(updCart);
         return updRepositoryCart;
     } catch (err) {
-        console.log(err);
+        // console.log(err);
+        throw err;
     }
 }
 
-export const removeOneProduct = async (id, pid) => {
+async removeOneProduct(id, pid) {
     try {
         const updCart = await cartsDao.removeOneProduct(id, pid);
         const updRepositoryCart = cartRepository.formatFromDB(updCart);
         return updRepositoryCart;
     } catch (err) {
-        console.log(err);
+        // console.log(err);
+        throw err;
     }
 }
 
-export const removeAllProducts = async (id) => {
+async removeAllProducts(id) {
     try {
         const updCart = await cartsDao.removeAllProducts(id);
         const updRepositoryCart = cartRepository.formatFromDB(updCart);
         return updRepositoryCart;
     } catch (err) {
-        console.log(err);
+        // console.log(err);
+        throw err;
     }
 }
 
-export const purchase = async (id, user) => {
+async purchase(id, user) {
     try {
         
-        const repositoryCart = await getById(id);
-        const notAvailablesProducts = [];
-        let isAllProductsUpdated = true;
+        const repositoryCart = await this.getById(id);
+        const notAvailablesProducts = [],
+        notUpdatedProducts = [];
         let cartAmount = 0;
         
         for (const { product, quantity } of repositoryCart.products) {
             const isAvailableProduct = await productsService.isAvailable(product.id, quantity);
             if (!isAvailableProduct) notAvailablesProducts.push({product, quantity});
         }
-        if (notAvailablesProducts.length) return {
-            error: 'Some products in the cart do not have enough stock!',
-            noStockProducts: notAvailablesProducts
-        }
+        if (notAvailablesProducts.length) throw new BadRequestError('Some products in the cart do not have enough stock!', { notAvailablesProducts });
         
-        //! Manejar mejor los errores que puedan suceder en el servidor.
         for (const { product, quantity } of repositoryCart.products) {
             const repositoryProductUpdated = await productsService.updateStock(product.id, `-${quantity}`);
-            if (!repositoryProductUpdated) isAllProductsUpdated  = false;
-            cartAmount += product.price * quantity;
+            if (!repositoryProductUpdated) notUpdatedProducts.push(
+                {
+                    id: product.id,
+                    modification: `-${quantity}`,
+                    datetime: Date.now()
+                }
+                )
+                cartAmount += product.price * quantity;
+            }
+            
+            //! All errors behind this comment should be handled in its own called service function, I think.
+            if (!notUpdatedProducts.length) throw new ServerError('Some products weren\'t updated', notUpdatedProducts);
+            const repositoryCartUpdated = await this.removeAllProducts(id);
+            if (!repositoryCartUpdated) throw new ServerError(`Cart ${id} weren\'t updated.`);
+            
+            const ticket = await ticketService.create({amount: cartAmount, purchaser: user.id})
+            
+            return ticket;
+            
+        } catch (err) {
+            // console.log(err);
+            throw err;
         }
-
-        if (!isAllProductsUpdated) return { message: 'Something went wrong, please try again!' };
-        const repositoryCartUpdated = await removeAllProducts(id);
-        if (!repositoryCartUpdated) return { message: 'Something went wrong, please try again!' };
-        
-        const ticket = await ticketService.create({amount: cartAmount, purchaser: user.id})
-        if (!ticket) return { message: 'Something went wrong, please try again!' };
-        
-        return ticket;
-
-    } catch (err) {
-        console.log(err);
     }
 }

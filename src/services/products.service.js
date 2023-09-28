@@ -5,6 +5,7 @@
 // if (process.env.DB_ENGINE === 'MONGODB') productDao = new ProductDaoMongoDB();
 // if (process.env.DB_ENGINE === 'FILESYSTEM') productDao = new ProductDaoFileSystem('./src/daos/filesystem/productos.json');
 import { productsDao } from "../persistence/factory.js";
+import { NotFoundError } from '../config/errors.js';
 import ProductsRepository from "../persistence/repository/products/product.repository.js";
 const repository = new ProductsRepository();
 import Mocks from "../utils/mocks.js";
@@ -29,21 +30,20 @@ export default class ProductService {
             response.docs = response.docs.map(doc => doc = repository.formatFromDB(doc));
             return response;
         } catch (err) {
-            console.log(err, '---> getMany:productService');
+            // console.log(err, '---> getMany:productService');
+            throw err;
         }
     }
     
     async getById (id) {
         try {
             const response = await productsDao.getById(id);
-            if (!response) return {
-                message: "Not Found!",
-                status: 404
-            }
+            if (!response) throw new NotFoundError(`Product with ID ${id} does not exist!`);
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            console.log(err, '---> getById:productService');
+            // console.log(err, '---> getById:productService');
+            throw err;
         }
     }
     
@@ -53,7 +53,8 @@ export default class ProductService {
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            console.log(err, '---> create:productService');
+            // console.log(err, '---> create:productService');
+            throw err;
         }
     }
     
@@ -70,7 +71,8 @@ export default class ProductService {
 
             return savedProducts;
         } catch (err) {
-            console.log(err, '---> mock:productService');
+            // console.log(err, '---> mock:productService');
+            throw err;
         }
     }
     
@@ -80,18 +82,20 @@ export default class ProductService {
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            console.log(err, '---> update:productService');
+            // console.log(err, '---> update:productService');
+            throw err;
         }
     }
     
     async updateStock (id, newStock) {
         try {
             const response = await productsDao.updateStock(id, newStock);
-            if (!response) return false;
+            // if (!response) return false;
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            console.log(err, '---> updateStock:productService');
+            // console.log(err, '---> updateStock:productService');
+            throw err;
         }
     }
     
@@ -101,18 +105,20 @@ export default class ProductService {
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            console.log(err, '---> remove:productService');
+            // console.log(err, '---> remove:productService');
+            throw err;
         }
     }
     
     async isAvailable (id, qty = 1) {
         try {
-            const product = await getById(id);
-            if (!product || product.status === 404 || product.stock < qty) return false;
+            const product = await this.getById(id);
+            if (!product || product.stock < qty) return false;
             return true;
         } catch (err) {
-            console.log(err, '---> isAvailable:productService');
-            return false;
+            // console.log(err, '---> isAvailable:productService');
+            // return false;
+            throw err;
         }
     }
 }

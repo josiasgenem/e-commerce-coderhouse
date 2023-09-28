@@ -3,7 +3,7 @@ const ticketService = new TicketService();
 
 export default class TicketController {
     
-    async getById(req, res) {
+    async getById(req, res, next) {
         const { id } = req.params;
         try {
             const ticket = await ticketService.getById(id);
@@ -11,8 +11,9 @@ export default class TicketController {
     
             return res.status(200).json( ticket );
         } catch (err) {
-            console.log(err);
-            return res.status(500).redirect('/users/profile')
+            return next(err);
+            // console.log(err);
+            // return res.status(500).redirect('/users/profile')
         }
     }
 }

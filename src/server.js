@@ -10,6 +10,7 @@ import './config/passport.js';
 import { COOKIES_SECRET, PORT } from "./config/environment.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 
 /* -------------------------------------------------------------------------- */
 /*                                Environment                                 */
@@ -55,3 +56,16 @@ app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/api/tickets', ticketRouter);
 app.use('/users', usersRouter);
+
+/* -------------------------------------------------------------------------- */
+/*                              Error Handling                              */
+/* -------------------------------------------------------------------------- */
+
+app.use(async (err, req, res, next) => {
+    await errorHandler.handleError(err, req, res, next);
+});
+
+process.on('unhandledRejection', (err) => {
+    errorHandler.handleError(err);
+    if (!errorHandler.isTrustedError(err)) process.exit(1);
+})

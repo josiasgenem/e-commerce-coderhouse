@@ -1,7 +1,7 @@
 node_modules
 
-.env
 coderhouse.env
+.env
 
 backlog.txt
 prueba.json

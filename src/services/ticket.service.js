@@ -1,3 +1,4 @@
+import { NotFoundError, ServerError } from "../config/errors.js";
 import { ticketsDao } from "../persistence/factory.js";
 import TicketsRepository from "../persistence/repository/ticket/ticket.repository.js";
 const ticketRepository = new TicketsRepository();
@@ -14,21 +15,20 @@ export default class TicketService {
             response.docs = response.docs.map(doc => doc = ticketRepository.formatFromDB(doc));
             return response;
         } catch (err) {
-            console.log(err, '---> getMany:ticketService');
+            return next(err);
+            // console.log(err, '---> getMany:ticketService');
         }
     }
     
     async getById(id) {
         try {
             const response = await ticketsDao.getById(id);
-            if (!response) return {
-                message: "Not Found!",
-                status: 404
-            }
+            if (!response) throw NotFoundError(`Cart with ID ${id} does not exist!`)
             const repositoryResp = ticketRepository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            console.log(err, '---> getById:ticketService');
+            return next(err);
+            // console.log(err, '---> getById:ticketService');
         }
     }
     
@@ -36,21 +36,27 @@ export default class TicketService {
         try {
             const code = this.#generateCode();
             const formattedTicket = ticketRepository.formatToDB({amount, purchaser, code})
+            
             const response = await ticketsDao.create(formattedTicket);
+            if (!response) throw new ServerError('Ticket couldn\'t be created.');
+
             const repositoryResp = ticketRepository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            console.log(err, '---> create:ticketService');
+            return next(err);
+            // console.log(err, '---> create:ticketService');
         }
     }
     
     async remove(id) {
         try {
             const response = await ticketsDao.remove(id);
+            if (!response) throw new ServerError(`Ticket with ID ${id} couldn\'t be deleted!`)
             const repositoryResp = ticketRepository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            console.log(err, '---> remove:ticketService');
+            return next(err);
+            // console.log(err, '---> remove:ticketService');
         }
     }
 

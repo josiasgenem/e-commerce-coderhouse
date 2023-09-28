@@ -7,44 +7,47 @@ export const httpStatusCodes = {
 }
 
 export class BaseError extends Error {
-    constructor(name, statusCode, isOperational, message) {
+    constructor(name, statusCode, isOperational, message, data = null) {
         super(message);
         Object.setPrototypeOf(this, new.target.prototype);
         
         this.name = name;
         this.statusCode = statusCode;
         this.isOperational = isOperational;
+        this.data = data;
 
         Error.captureStackTrace(this);
     }
 }
 
 export class NotFoundError extends BaseError {
-    constructor(message = 'Resource not found!') {
-        super('NOT_FOUND', httpStatusCodes.NOT_FOUND, true, message);
+    constructor(message = 'Resource not found!', data = null) {
+        super('NOT_FOUND', httpStatusCodes.NOT_FOUND, true, message, data);
     }
 }
 
 export class BadRequestError extends BaseError {
-    constructor(message = 'Bad Request!') {
-        super('BAD_REQUEST', httpStatusCodes.BAD_REQUEST, true, message);
+    constructor(message = 'Bad Request!', data = null) {
+        super('BAD_REQUEST', httpStatusCodes.BAD_REQUEST, true, message, data);
     }
 }
 
 export class UnauthorizedError extends BaseError {
-    constructor(message = 'You must to be logged in to access to this resource!') {
-        super('UNAUTHORIZED', httpStatusCodes.UNAUTHORIZED, true, message);
+    constructor(message = 'You must to be logged in to access to this resource!', data = null) {
+        super('UNAUTHORIZED', httpStatusCodes.UNAUTHORIZED, true, message, data);
     }
 }
 
 export class ForbiddenError extends BaseError {
-    constructor(message = 'You do not have access rights to this resource!') {
-        super('FORBIDDEN', httpStatusCodes.FORBIDDEN, true, message);
+    constructor(message = 'You do not have access rights to this resource!', data = null) {
+        super('FORBIDDEN', httpStatusCodes.FORBIDDEN, true, message, data);
     }
 }
 
 export class ServerError extends BaseError {
-    constructor(message = 'Something went wrong, try again in some minutes please!') {
-        super('INTERNAL_SERVER', httpStatusCodes.INTERNAL_SERVER, false, message);
+    constructor(internalMessage = null, data = null) {
+        super('INTERNAL_SERVER', httpStatusCodes.INTERNAL_SERVER, false, 'Something went wrong, try again in some minutes please!', data);
+        this.internalMessage = internalMessage;
+        // console.log(err, '\x1b[31m---> ########## ¡SERVER ERROR! ##########\x1b[0m');
     }
 }

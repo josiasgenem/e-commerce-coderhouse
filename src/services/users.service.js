@@ -10,13 +10,10 @@ import {
 } from "../helpers/helpers.js";
 import UsersRepository from '../persistence/repository/users/users.repository.js';
 const usersRepository = new UsersRepository();
-// import UserDaoMongoDB from "../daos/mongodb/users.dao.js";
-// const usersDao = new UserDaoMongoDB();
 
 const   namesRegEx = /[a-zÀ-ÿ]{2,30}/i,
         emailRegEx = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-        passwordRegEx = /(?=.{6,})(?=.*[a-zA-Z])(?=.*\d)/,
-        userRepository = new UsersRepository();
+        passwordRegEx = /(?=.{6,})(?=.*[a-zA-Z])(?=.*\d)/;
 
 export const register = async (req, username, pass, done) => {
     const {first_name, last_name, email, password, age, role} = req.body;
@@ -33,12 +30,12 @@ export const register = async (req, username, pass, done) => {
         const userExist = await usersDao.getByEmail(email);
         if(userExist) return done('El usuario ya existe!', false);
 
-        const user = await usersDao.create(userRepository.formatToDB({
+        const user = await usersDao.create(usersRepository.formatToDB({
             first_name, last_name, email, password: hash, age: parseInt(age), role, isThirdAuth: false
         }));
-        const repositoryUser = userRepository.formatFromDB(user);
+        const repositoryUser = usersRepository.formatFromDB(user);
 
-        return done(null, repositoryUser.toJSON());
+        return done(null, repositoryUser.sanitize());
     } catch (err) {
         console.log('---> Register Service:', err);
         return done(err.message, false);
@@ -92,7 +89,7 @@ export const jwtLogin = async (req, res) => {
                 
                 req.body = {
                     ...req.body,
-                    ...userRepository.formatToDB({first_name, last_name, email, role, password, isThirdAuth: false})
+                    ...usersRepository.formatToDB({first_name, last_name, email, role, password, isThirdAuth: false})
                 }
 
                 passport.authenticate('register', { 
@@ -111,7 +108,7 @@ export const jwtLogin = async (req, res) => {
             const match = await bcrypt.compare(password, user.password);
             if (!match) return res.status(401).json({message: "Email or Password wrong"});
             
-            payload = userRepository.formatFromDB(user).sanitize();
+            payload = usersRepository.formatFromDB(user).sanitize();
             // payload = {
             //     first_name: user.first_name,
             //     last_name: user.last_name,
@@ -246,7 +243,7 @@ export const registerOrLogin = async (req, accessToken, refreshToken, profile, d
 export const current = async (email) => {
     const user = await usersDao.getByEmail(email, true);
     console.log(user, 'USER FROM CURRENT ENDPOINT');
-    const repositoryUser = userRepository.formatFromDB(user).sanitize();
+    const repositoryUser = usersRepository.formatFromDB(user).sanitize();
     console.log(repositoryUser, 'REPOSITORY USER FROM CURRENT ENDPOINT');
     return repositoryUser;
 }

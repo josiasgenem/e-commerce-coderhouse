@@ -1,27 +1,30 @@
-import * as service from '../services/carts.service.js';
-import * as productsService from '../services/products.service.js';
+import { NotFoundError } from '../config/errors.js';
+import CartsService from '../services/carts.service.js';
+const service = new CartsService();
 
-export const getAll = async (req, res) => {
+
+export const getAll = async (req, res, next) => {
     try {
         const response = await service.getAll();
         res.status(200).json(response);
     } catch (err) {
-        res.status(500).send(err.message);
+        return next(err);
     }
 }
 
-export const getCurrentUserCart = async (req, res) => {
+export const getCurrentUserCart = async (req, res, next) => {
     try {
-        const cart = await service.getCurrentUserCart(req, res);
+        const cart = await service.getCurrentUserCart(req, res, next);
         if (!cart) return res.status(400).json({ message: 'Not Found!' });
         
         return res.status(301).redirect(`/api/carts/${cart.id}`);
     } catch (err) {
-        res.status(500).send(err.message);
+        return next(err);
+        // res.status(500).send(err.message);
     }
 }
 
-export const getById = async (req, res) => {
+export const getById = async (req, res, next) => {
     const { cid } = req.params;
     try {
         let cart = await service.getCurrentUserCart(req);
@@ -32,17 +35,18 @@ export const getById = async (req, res) => {
             }
 
             cart = await service.getById(cid);
-            if (!cart) return res.status(404).json({message: 'Cart Not Found!'})
+            if (!cart) throw new NotFoundError(`Cart ${cid} Not Found!`);
         }
     
         return res.status(200).render('cart', {resp: cart, user: req.user});
         // res.status(200).json(response);
     } catch (err) {
-        res.status(500).send(err.message);
+        return next(err);
+        // res.status(500).send(err.message);
     }
 }
 
-// export const create = async (req, res) => {
+// export const create = async (req, res, next) => {
 //     const { products } = req.body;
 //     try {        
 //         const response = await service.create(cartId, products);
@@ -53,7 +57,7 @@ export const getById = async (req, res) => {
 //     }
 // }
 
-export const addOneProduct = async (req, res) => {
+export const addOneProduct = async (req, res, next) => {
     const { cid, pid, pQty } = req.params;
     try {
         const userCartId = service.getCurrentUserCartId(req);
@@ -61,18 +65,17 @@ export const addOneProduct = async (req, res) => {
             req.session.context = { message: "You're Not Authorized to add products to carts that you are not owner!" }
             return res.status(403).redirect(`/api/carts/${userCartId}`);
         }
-        // const isProductAvailable = await productsService.isAvailable(pid, pQty);
-        // if (!isProductAvailable) return res.status(400).json({message: 'There aren\'t sufficent products to add to the cart.'}) 
         
         const cart = await service.addOneProduct(cid, pid);
-        if (!cart) return res.status(400).json({ message: "Something went wrong trying to add product to cart. It seems product stock is not enough!"});
+        // if (!cart) return res.status(400).json({ message: "Something went wrong trying to add product to cart. It seems product stock is not enough!"});
         return res.status(200).json(cart);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return next(err);
+        // return res.status(500).send(err.message);
     }
 }
 
-export const updateAllProducts = async (req, res) => {
+export const updateAllProducts = async (req, res, next) => {
     const { cid } = req.params;
     const { products } = req.body;
     
@@ -83,11 +86,12 @@ export const updateAllProducts = async (req, res) => {
         res.status(200).send(`El carrito fue actualizado exitosamente: ${JSON.stringify(response)}`);
 
     } catch (err) {
-        res.status(500).send(err.message);
+        return next(err);
+        // res.status(500).send(err.message);
     }
 }
 
-export const updateProductQty = async (req, res) => {
+export const updateProductQty = async (req, res, next) => {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     
@@ -103,11 +107,12 @@ export const updateProductQty = async (req, res) => {
         res.status(200).send(`El producto fue actualizado exitosamente: ${JSON.stringify(response)}`);
 
     } catch (err) {
-        res.status(500).send(err.message);
+        return next(err);
+        // res.status(500).send(err.message);
     }
 }
 
-export const removeOneProduct = async (req, res) => {
+export const removeOneProduct = async (req, res, next) => {
     const { cid, pid } = req.params
     
     try {
@@ -120,22 +125,24 @@ export const removeOneProduct = async (req, res) => {
         const response = await service.removeOneProduct(cid, pid);
         res.status(200).json(response);
     } catch (err) {
-        res.status(500).send(err.message);
+        return next(err);
+        // res.status(500).send(err.message);
     }
 }
 
-export const purchase = async (req, res) => {
+export const purchase = async (req, res, next) => {
     const { cid } = req.params;
     
     try {
         const ticket = await service.purchase(cid, req.user);
         return res.status(301).redirect(`/api/tickets/${ticket.id}`);
     } catch (err) {
-        res.status(500).json({message: err.message});
+        return next(err);
+        // res.status(500).json({message: err.message});
     }
 }
 
-export const removeAllProducts = async (req, res) => {
+export const removeAllProducts = async (req, res, next) => {
     const { cid } = req.params
     
     try {
@@ -148,6 +155,7 @@ export const removeAllProducts = async (req, res) => {
         const response = await service.removeAllProducts(cid);
         res.status(200).send(`El carrito fue vaciado exitósamente. Carrito vacío: ${JSON.stringify(response)}.`);
     } catch (err) {
-        res.status(500).send(err.message);
+        return next(err);
+        // res.status(500).send(err.message);
     }
 }

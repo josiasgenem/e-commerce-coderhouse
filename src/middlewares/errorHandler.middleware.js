@@ -1,17 +1,18 @@
-import { BaseError, ServerError } from "../config/errors"
+import { BaseError, ServerError } from "../config/errors.js"
 
 class ErrorHandler {
     async handleError(error, req, res, next) {
-        let err;
-        if(error.isOperational) {
-            // TODO: DO SOMETHING TO SEND TO CLIENT.
-            err = error
-        } else {
+        let err = error;
+        if (!this.isTrustedError(err)) err = new ServerError(err);
+        if (!err.isOperational) {
             // TODO: DO SOMETHING TO LOG ERROR WITH A LOGGER OR SOMETHING SIMILAR.
-            err = new ServerError();
-            console.log(err);
+            console.log(err, '\x1b[31m---> ########## ¡NO OPERATIONAL SERVER ERROR! ##########\x1b[0m');
         }
-        return res.status(err.statusCode).json({message: err.message});
+        let payload = err.data ?
+            {message: err.message} :
+            {message: err.message, data: err.data};
+
+        return res.status(err.statusCode).json(payload);
     }
 
     isTrustedError(error) {
