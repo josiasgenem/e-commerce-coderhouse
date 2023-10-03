@@ -21,7 +21,7 @@ let dbEngineSelected = DB_ENGINE_CLI === 'MONGODB' || DB_ENGINE_CLI === 'FILESYS
     DB_ENGINE;
 
 if (dbEngineSelected === 'MONGODB') {
-    initMongoDB();
+    await initMongoDB();
     productsDao = new ProductsDaoMongoDB();
     cartsDao = new CartsDaoMongoDB();
     usersDao = new UsersDaoMongoDB();

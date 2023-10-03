@@ -11,18 +11,20 @@ import { COOKIES_SECRET, PORT } from "./config/environment.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
+import { logger } from "./utils/logger.js";
 
 /* -------------------------------------------------------------------------- */
 /*                                Environment                                 */
 /* -------------------------------------------------------------------------- */
-export const { __dirname } = fileDirName(import.meta)
+export const { __dirname } = fileDirName(import.meta);
 
 /* -------------------------------------------------------------------------- */
 /*                              Iniitializations                              */
 /* -------------------------------------------------------------------------- */
 const app = express();
 app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+    logger.info(`Server listening on port ${PORT}`);
+    // console.log(`Server listening on port ${PORT}`);
 })
 
 /* -------------------------------------------------------------------------- */

@@ -31,7 +31,9 @@
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "winston": "^3.10.0",
+    "winston-mongodb": "^5.1.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",

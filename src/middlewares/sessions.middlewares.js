@@ -1,6 +1,6 @@
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import { MONGO_URL } from "../persistence/daos/mongodb/mongoConnection.js";
+import { MONGO_DB_URI, MONGO_PASSWORD, MONGO_USER } from "../config/environment.js";
 
 
 export const mongoStoreSession = session({
@@ -8,7 +8,7 @@ export const mongoStoreSession = session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: MONGO_URL,
+        mongoUrl: `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_DB_URI}`,
         crypto: 'Coderhouse',
         ttl: 1 * 24 * 60 * 60,
         touchAfter: 24 * 3600

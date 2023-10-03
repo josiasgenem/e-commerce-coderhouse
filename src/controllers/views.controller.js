@@ -1,3 +1,5 @@
+import { logger } from "../utils/logger.js";
+
 export const register = async (req, res) => {
     res.render('register'); 
 }
