@@ -1,3 +1,5 @@
+import { logger } from "../../../utils/logger.js";
+
 export class MongoDao {
     constructor(model) {
         this.model = model;
@@ -19,7 +21,7 @@ export class MongoDao {
     //         return results;
 
     //     } catch (err) {
-    //         console.log(err, '---> MongoDao getMany error.');
+    //         logger.error('---> MongoDao getMany error.', err);
     //         throw err;
     //     }
     // }
@@ -29,7 +31,7 @@ export class MongoDao {
             const results = await this.model.find(query);
             return results;
         } catch (err) {
-            console.log(err, '---> MongoDao getMany error.');
+            logger.error('---> MongoDao getMany error.', err);
             throw err;
         }
     }
@@ -39,7 +41,7 @@ export class MongoDao {
             const result = await this.model.findById(id);
             return result;
         } catch (err) {
-            console.log(err, '---> MongoDao getById error.');
+            logger.error('---> MongoDao getById error.', err);
             throw err;
         }
     }
@@ -49,7 +51,7 @@ export class MongoDao {
             const result = await this.model.create(toCreateObj);
             return result;
         } catch (err) {
-            console.log(err, '---> MongoDao create error.');
+            logger.error('---> MongoDao create error.', err);
             throw err;
         }
     }
@@ -59,7 +61,7 @@ export class MongoDao {
             const result = await this.model.findByIdAndUpdate(id, updObj, {new: true});
             return result;
         } catch (err) {
-            console.log(err, '---> MongoDao update error.');
+            logger.error('---> MongoDao update error.', err);
             throw err;
         }
     }
@@ -69,7 +71,7 @@ export class MongoDao {
             const result = await this.model.findByIdAndDelete(id, { new: true });
             return result;
         } catch (err) {
-            console.log(err, '---> MongoDao remove error.');
+            logger.error('---> MongoDao remove error.', err);
             throw err;
         }
     }

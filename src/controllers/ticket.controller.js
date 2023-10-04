@@ -12,8 +12,6 @@ export default class TicketController {
             return res.status(200).json( ticket );
         } catch (err) {
             return next(err);
-            // console.log(err);
-            // return res.status(500).redirect('/users/profile')
         }
     }
 }

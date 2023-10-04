@@ -22,7 +22,7 @@ export default class ProductsDaoMongoDB extends MongoDao {
             return results;
 
         } catch (err) {
-            console.log(err, '---> ProductsDao getMany error.');
+            logger.error('---> ProductsDao getMany error.', err);
             throw err;
         }
     }
@@ -51,7 +51,7 @@ export default class ProductsDaoMongoDB extends MongoDao {
 
             return result;
         } catch (err) {
-            console.log(err, '---> ProductsDao updateStock error.');
+            logger.error('---> ProductsDao updateStock error.', err);
             throw err;        
         }
     }

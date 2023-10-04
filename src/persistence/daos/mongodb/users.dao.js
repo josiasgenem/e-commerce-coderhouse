@@ -1,3 +1,4 @@
+import { logger } from '../../../utils/logger.js';
 import { UserModel } from './models/users.model.js';
 import { MongoDao } from './mongoDB.dao.js';
 
@@ -17,7 +18,7 @@ export default class UserDaoMongoDB extends MongoDao {
             if (!user) return false;
             return user;
         } catch (err) {
-            console.log(err, '---> UserDaoMongo getById error.');
+            logger.error('---> UserDaoMongo getById error.', err);
             throw err;
         }
     }
@@ -33,7 +34,7 @@ export default class UserDaoMongoDB extends MongoDao {
             if (!user) return false;
             return user;
         } catch (err) {
-            console.log(err, '---> UserDaoMongo getByEmail error.');
+            logger.error('---> UserDaoMongo getByEmail error.', err);
             throw err;                                                               
         }
     }
@@ -44,7 +45,7 @@ export default class UserDaoMongoDB extends MongoDao {
             if(!user) return false;
             return user;
         } catch (err) {
-            console.log(err, '---> UserDaoMongo updateByEmail error.');
+            logger.error('---> UserDaoMongo updateByEmail error.', err);
             throw err
         }
     }
@@ -58,7 +59,7 @@ export default class UserDaoMongoDB extends MongoDao {
             user.refreshTokens.push(refreshToken);
             return await user.save();
         } catch (err) {
-            console.log(err, '---> UserDaoMongo saveRefreshToken error.');
+            logger.error('---> UserDaoMongo saveRefreshToken error.', err);
             throw err
         }
     }

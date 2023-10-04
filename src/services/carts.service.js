@@ -22,7 +22,6 @@ export default class CartsService {
             const repositoryCarts = carts.map(cart => cartRepository.formatFromDB(cart));
             return repositoryCarts;
         } catch (err) {
-            // console.log(err);
             throw err;
         }
     }
@@ -36,7 +35,6 @@ export default class CartsService {
             const repositoryCart = cartRepository.formatFromDB(cart);
             return repositoryCart;
         } catch (err) {
-            // console.log(err);
             throw err;
         }
     }
@@ -55,7 +53,6 @@ export default class CartsService {
             }
             return repositoryCart;
         } catch (err) {
-            // console.log(err, '---> getCurrentUserCart error.');
             throw err;
             // return false;
         }
@@ -72,7 +69,6 @@ export default class CartsService {
             
             return newRepositoryCart;
         } catch (err) {
-        // console.log(err);
         throw err;
     }
 }
@@ -110,7 +106,6 @@ async addOneProduct(id, pid) {
         const updRepositoryCarts = await this.updateAllProducts(id, cartRepository.formatToDB(repositoryCart).products);
         return updRepositoryCarts;
     } catch (err) {
-        // console.log(err);
         throw err;
     }
 }
@@ -121,7 +116,6 @@ async updateAllProducts(id, products) {
         const updRepositoryCarts = cartRepository.formatFromDB(updCart);
         return updRepositoryCarts;
     } catch (err) {
-        // console.log(err);
         throw err;
     }
 }
@@ -132,7 +126,6 @@ async updateProductQty(id, pid, quantity) {
         const updRepositoryCart = cartRepository.formatFromDB(updCart);
         return updRepositoryCart;
     } catch (err) {
-        // console.log(err);
         throw err;
     }
 }
@@ -143,7 +136,6 @@ async removeOneProduct(id, pid) {
         const updRepositoryCart = cartRepository.formatFromDB(updCart);
         return updRepositoryCart;
     } catch (err) {
-        // console.log(err);
         throw err;
     }
 }
@@ -154,7 +146,6 @@ async removeAllProducts(id) {
         const updRepositoryCart = cartRepository.formatFromDB(updCart);
         return updRepositoryCart;
     } catch (err) {
-        // console.log(err);
         throw err;
     }
 }
@@ -195,7 +186,6 @@ async purchase(id, user) {
             return ticket;
             
         } catch (err) {
-            // console.log(err);
             throw err;
         }
     }

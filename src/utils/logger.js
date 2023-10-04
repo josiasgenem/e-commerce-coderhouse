@@ -1,6 +1,6 @@
 import winston from "winston";
 import 'winston-mongodb';
-import { MONGO_DB_URI, MONGO_PASSWORD, MONGO_USER } from "../config/environment.js";
+import { MONGO_DB_URI, MONGO_PASSWORD, MONGO_USER, isProdEnvironment } from "../config/environment.js";
 
 const customLevels = {
     levels: {
@@ -12,41 +12,59 @@ const customLevels = {
         fatal: 0
     },
     colors: {
-        debug: 'white',
-        http: 'blue',
-        info: 'green',
+        debug: 'italic bold white',
+        http: 'bold cyan',
+        info: 'italic green',
         warning: 'yellow',
         error: 'red',
-        fatal: 'red'
+        fatal: 'bold red'
     }
 }
+const formatter = winston.format.combine(
+    winston.format.label({label: 'LOGGER'}),
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
+    winston.format.splat(),
+    winston.format.printf((info) => {
+        const { label, timestamp, level, message, ...meta } = info;
 
-const devLogger = {};
-const prodLogger = {};
+        return `[${label}] ${timestamp} [${level}]: ${message} ${
+            Object.keys(meta).length ? '\n' + 'meta: ' + JSON.stringify(meta, null, 3) : ''
+        }`;
+    }),
+    winston.format.colorize({all: true}),
+    // winston.format.prettyPrint()
+    
+)
 
-export const logger = winston.createLogger({
-    levels: customLevels.levels,
-    level: 'debug',
-    format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.json()
-    ),
-    transports: [
-        new winston.transports.Console({ level: 'debug' }),
+const transports = () => {
+    if (isProdEnvironment) return [
+        new winston.transports.Console({ level: 'info' }),
+        new winston.transports.File({
+            filename: 'src/persistence/logs/errors.log',
+            level: 'error'
+        }),
         new winston.transports.MongoDB({
             db: `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_DB_URI}`,
             options: {
                 useUnifiedTopology: true,
-                useNewUrlParser: true,
-
+                useNewUrlParser: true
             },
             collection: 'logs',
-            level: 'info',
+            level: 'error',
             decolorize: true
         }),
-        new winston.transports.File({
-            filename: '../persistence/errors/errors.log',
-            level: 'error'
-        })
+    ];
+    
+    return [
+        new winston.transports.Console({ level: 'debug' }),
     ]
+};
+
+winston.addColors(customLevels.colors)
+
+export const logger = winston.createLogger({
+    levels: customLevels.levels,
+    level: 'debug',
+    format: formatter,
+    transports: transports()
 })

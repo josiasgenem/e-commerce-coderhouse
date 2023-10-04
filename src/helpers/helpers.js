@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { PORT, ACCESS_TOKEN_EXPIRATION, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_EXPIRATION, REFRESH_TOKEN_SECRET } from '../config/environment.js';
+import { logger } from '../utils/logger.js';
 
 function getStatus(statusCode) {
     if (isNaN(statusCode)) return;
@@ -82,8 +83,8 @@ export const checkCartIdCookie = (req, res) => {
         }
         return cartId;
     } catch (err) {
-        console.log("Unexpected error: Current User should have a Cart ID, but it haven't");
-        console.log(err, '---> handleCartIdCookie error.');
+        logger.warning("Unexpected error: Current User should have a Cart ID, but it haven't");
+        logger.error('---> handleCartIdCookie error.', err);
         return null;
     }
 }
@@ -97,7 +98,7 @@ export const getAccessToken = (req) => {
     if (!accessToken && req.signedCookies) {
         accessToken = getCookieByName(req.signedCookies, 'coderhouse-ecommerce-access-token');
     }
-    console.log(accessToken, `\x1b[32m---> getAccessToken called from: ${req.method} ${req.originalUrl}\x1b[0m`);
+    logger.info({message:`---> getAccessToken called from: ${req.method} ${req.originalUrl}`, meta: accessToken});
     return accessToken || null;
 }
 
@@ -110,7 +111,7 @@ export const getRefreshToken = (req) => {
     if (!refreshToken && req.signedCookies) {
         refreshToken = getCookieByName(req.signedCookies, 'coderhouse-ecommerce-refresh-token');
     }
-    console.log(refreshToken, `\x1b[32m---> getRefreshToken called from: ${req.method} ${req.originalUrl}\x1b[0m`);
+    logger.info(`---> getRefreshToken called from: ${req.method} ${req.originalUrl}`, refreshToken);
 
     return refreshToken || null;
 }
@@ -122,13 +123,12 @@ export const generateAccessToken = (payload) => {
             audience: `http:/localhost:${PORT}`,
             expiresIn: ACCESS_TOKEN_EXPIRATION
         })
-        // console.log(accessToken, `---> generateAccessToken called from: ${req.method} ${req.originalUrl}`);
         
         if (!accessToken) return false;
         
         return accessToken;
     } catch (err) {
-        console.log(err, '---> generateAccessToken');
+        logger.error('---> generateAccessToken', err);
     }
 }
 
@@ -139,13 +139,12 @@ export const generateRefreshToken = (payload) => {
             audience: `http:/localhost:${PORT}`,
             expiresIn: REFRESH_TOKEN_EXPIRATION
         })
-        // console.log(refreshToken, `---> generateRefreshToken called from: ${req.method} ${req.originalUrl}`);
         
         if (!refreshToken) return false;
     
         return refreshToken;
     } catch (err) {
-        console.log(err, '---> generateRefreshToken');
+        logger.info('---> generateRefreshToken', err);
     }
 }
 
@@ -165,7 +164,7 @@ export const verifyAccessToken = (accessToken) => {
         
     } catch (err) {
         if (err.name === 'TokenExpiredError'){
-            console.log('\x1b[33m---> verifyAccessToken error:\x1b[0m', err.name);
+            logger.info('---> verifyAccessToken error');
             return {
                 error: err.name,
                 ...jwt.verify(accessToken, ACCESS_TOKEN_SECRET, {
@@ -174,7 +173,7 @@ export const verifyAccessToken = (accessToken) => {
                 })
             }
         }
-        console.log('\x1b[33m---> verifyAccessToken error:\x1b[0m', err);
+        logger.error('---> verifyAccessToken error', err);
         return err.name;
     }
 }
@@ -194,7 +193,7 @@ export const verifyRefreshToken = (refreshToken) => {
         
         return payload;
     } catch (err) {
-        console.log('\x1b[33m---> verifyRefreshToken error:\x1b[0m', err);
+        logger.error('---> verifyRefreshToken error', err);
         if (err.name === 'TokenExpiredError'){
             return {
                 error: err.name,
@@ -223,7 +222,7 @@ export const sendAccessRefreshTokens = (res, status, accessToken, refreshToken, 
     if (!refreshToken) refreshCookieOptions.maxAge = 0;
     if (!accessToken) accessCookieOptions.maxAge = 0;
     
-    console.log(redirect, '\x1b[33mREDIRECT: FROM TOKENS SENDER\x1b[0m');
+    logger.http('REDIRECT: FROM TOKENS SENDER', redirect);
     return res
             // .status(status)
             .cookie('coderhouse-ecommerce-refresh-token', refreshToken, refreshCookieOptions)

@@ -1,4 +1,5 @@
 import { checkCartIdCookie, getAccessToken, getRefreshToken, sendAccessRefreshTokens, verifyAccessToken } from "../helpers/helpers.js"
+import { logger } from "../utils/logger.js";
 
 // export const isAuth = (req, res, next) => {
 //     if (!req.isAuthenticated()) return res.redirect('/users/login');
@@ -65,7 +66,7 @@ export const isNotAuth = (req, res, next) => {
         if (accessToken) payload = verifyAccessToken(accessToken);
 
         if (typeof payload !== 'object') {
-            console.log('Se quizo ingresar un token inválido en el middleware isNotAuth');
+            logger.warning('Se quizo ingresar un token inválido en el middleware isNotAuth');
             sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong authentication: Invalid Token when trying to access to a non protected path.')
             return next();
         }

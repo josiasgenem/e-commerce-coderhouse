@@ -24,7 +24,6 @@ export const { __dirname } = fileDirName(import.meta);
 const app = express();
 app.listen(PORT, () => {
     logger.info(`Server listening on port ${PORT}`);
-    // console.log(`Server listening on port ${PORT}`);
 })
 
 /* -------------------------------------------------------------------------- */
@@ -46,7 +45,7 @@ app.use(passport.session());
  /* -------------------------------------------------------------------------- */
  /*                                    Views                                   */
  /* -------------------------------------------------------------------------- */
-app.engine('.hbs', engine({ extname: '.hbs', partialsDir: path.join(__dirname,'/views/partials') }));
+app.engine('.hbs', engine({ extname: '.hbs', partialsDir: path.join(__dirname, '/views/partials') }));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, '/views'));
 
@@ -60,7 +59,7 @@ app.use('/api/tickets', ticketRouter);
 app.use('/users', usersRouter);
 
 /* -------------------------------------------------------------------------- */
-/*                              Error Handling                              */
+/*                               Error Catching                               */
 /* -------------------------------------------------------------------------- */
 
 app.use(async (err, req, res, next) => {
@@ -70,4 +69,4 @@ app.use(async (err, req, res, next) => {
 process.on('unhandledRejection', (err) => {
     errorHandler.handleError(err);
     if (!errorHandler.isTrustedError(err)) process.exit(1);
-})
+});

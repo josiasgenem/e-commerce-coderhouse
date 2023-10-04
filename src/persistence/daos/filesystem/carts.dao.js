@@ -18,10 +18,10 @@ export default class CartsDaoFileSystem {
             if(json) {
                 let fileCarts = await JSON.parse(json);
                 if (limit) fileCarts = [...fileCarts.slice(0, parseInt(limit))];
-                // console.log("---> getCarts", [...fileCarts]);
+
                 return [...fileCarts];
             }
-            // console.log("---> getCarts Vacío", []);
+
             return [];
             
         } catch (err) {

@@ -13,6 +13,7 @@ const homeRouter = router
         res.redirect('/users/login');
     })
     .get('/test-logger', (req, res) => {
+        
         logger.debug('Logging debug');
         logger.http('Logging http');
         logger.info('Logging info');

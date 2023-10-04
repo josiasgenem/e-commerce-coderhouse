@@ -1,3 +1,4 @@
+import { logger } from "../../../utils/logger.js";
 import { CartModel } from "./models/carts.model.js";
 import { MongoDao } from "./mongoDB.dao.js";
 
@@ -11,7 +12,7 @@ export default class CartsDaoMongoDB extends MongoDao {
             const updCart = await this.model.findByIdAndUpdate(cartId, {$set: {products}}, {new: true});
             return updCart;
         } catch (err) {
-            console.log(err, '---> CartsDaoMongo updateAllProducts error.');
+            logger.error('---> CartsDaoMongo updateAllProducts error.', err);
             throw err;
         }
     }
@@ -21,7 +22,7 @@ export default class CartsDaoMongoDB extends MongoDao {
             const updCart = await this.model.findOneAndUpdate({ _id: cartId, "products.product": productId }, {$set: {"products.$.quantity": quantity}}, {new: true});
             return updCart;
         } catch (err) {
-            console.log(err, '---> CartsDaoMongo updateProductQty error.');
+            logger.error('---> CartsDaoMongo updateProductQty error.', err);
             throw err;
         }
     }
@@ -31,7 +32,7 @@ export default class CartsDaoMongoDB extends MongoDao {
             const updCart = await this.model.findByIdAndUpdate(cartId, { $pull: { products: { product: productId } } }, { new: true });
             return updCart;
         } catch (err) {
-            console.log(err, '---> CartsDaoMongo removeOneProduct error.');
+            logger.error('---> CartsDaoMongo removeOneProduct error.', err);
             throw err;
         }
     }
@@ -41,7 +42,7 @@ export default class CartsDaoMongoDB extends MongoDao {
             const delCart = await this.model.findByIdAndUpdate(cartId, { $set: { products: [] }});
             return delCart;
         } catch (err) {
-            console.log(err, '---> CartsDaoMongo removeAllProducts error.');
+            logger.error('---> CartsDaoMongo removeAllProducts error.', err);
             throw err;
         }
     }

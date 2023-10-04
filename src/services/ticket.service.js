@@ -16,7 +16,6 @@ export default class TicketService {
             return response;
         } catch (err) {
             return next(err);
-            // console.log(err, '---> getMany:ticketService');
         }
     }
     
@@ -28,7 +27,6 @@ export default class TicketService {
             return repositoryResp;
         } catch (err) {
             return next(err);
-            // console.log(err, '---> getById:ticketService');
         }
     }
     
@@ -44,7 +42,6 @@ export default class TicketService {
             return repositoryResp;
         } catch (err) {
             return next(err);
-            // console.log(err, '---> create:ticketService');
         }
     }
     
@@ -56,7 +53,6 @@ export default class TicketService {
             return repositoryResp;
         } catch (err) {
             return next(err);
-            // console.log(err, '---> remove:ticketService');
         }
     }
 

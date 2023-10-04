@@ -9,6 +9,7 @@ import {
     verifyRefreshToken
 } from "../helpers/helpers.js";
 import UsersRepository from '../persistence/repository/users/users.repository.js';
+import { logger } from '../utils/logger.js';
 const usersRepository = new UsersRepository();
 
 const   namesRegEx = /[a-zÀ-ÿ]{2,30}/i,
@@ -37,7 +38,7 @@ export const register = async (req, username, pass, done) => {
 
         return done(null, repositoryUser.sanitize());
     } catch (err) {
-        console.log('---> Register Service:', err);
+        logger.error('---> Register Service:', err);
         return done(err.message, false);
     }
 }
@@ -62,7 +63,7 @@ export const register = async (req, username, pass, done) => {
         
 //         return done(null, user.toJSON());
 //     } catch (err) {
-//         console.log('---> Login Service:', err);
+//         logger.error('---> Login Service:', err);
 //         return done(err.message, false);
 //     }
 // }
@@ -97,7 +98,7 @@ export const jwtLogin = async (req, res) => {
                     failureRedirect: '/users/register'
                 })
                 
-                console.log(user, 'ADMIN USER');
+                logger.info('ADMIN USER', user);
             
                 user = await usersDao.getByEmail(email, true);
             }
@@ -126,7 +127,7 @@ export const jwtLogin = async (req, res) => {
         return sendAccessRefreshTokens(res, 201, accessToken, refreshToken, '/users/profile');
         
         } catch (err) {
-            console.log('---> Login Service:', err);
+            logger.error('---> Login Service:', err);
             return { status: 'error', message: err.message };
     }
 }
@@ -139,9 +140,8 @@ export const refreshToken = async (req, res) => {
         
         const payload = verifyRefreshToken(refreshToken);
         if (typeof payload !== 'object') {
-            console.log(req.session, 'REQ.SESSION');
             if (req && req.user && req.user.email) {
-                console.log('ENTRÓ ------------------------------------------------------------------------');
+
                 const user = await usersDao.getByEmail(req.user.email)
                 user.refreshTokens = [];
                 await user.save();
@@ -158,14 +158,13 @@ export const refreshToken = async (req, res) => {
         
         user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
         if (payload.error || payload.error === 'TokenExpiredError') {
-            const newUser = await user.save();
-            console.log(newUser);
+            await user.save();
             return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: Invalid Token received');
         }
         
         const newRefreshToken = generateRefreshToken(payload);
         const newAccessToken = generateAccessToken(payload);
-        console.log('\x1b[32m------ NUEVOS TOKENS GENERADOS -----\x1b[0m');
+        logger.info('NUEVOS TOKENS GENERADOS');
         
         user.refreshTokens.push(newRefreshToken);
         await user.save();
@@ -173,7 +172,7 @@ export const refreshToken = async (req, res) => {
         return sendAccessRefreshTokens(res, 201, newAccessToken, newRefreshToken, originalUrl)
         
     } catch (err) {
-        console.log('---> Login Service:', err);
+        logger.error('---> Login Service:', err);
         return { status: 'error', message: err.message };
     }
 }
@@ -185,7 +184,7 @@ export const jwtLogout = async (req, res) => {
     try {
         const refreshToken = getRefreshToken(req);
         if (!refreshToken) {
-            console.log('\x1b[31m-------- QUISO DESLOGEARSE PERO NO MANDÓ REFRESH TOKENS!!!!!!!!!!!! ------------\x1b[31m');
+            logger.warning('QUISO DESLOGEARSE PERO NO MANDÓ REFRESH TOKENS!!!!!!!!!!!!');
             return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong authentication: No Token received!');
         }
         
@@ -199,7 +198,7 @@ export const jwtLogout = async (req, res) => {
         return sendAccessRefreshTokens(res, 201, null, null, '/users/login');
 
     } catch (err) {
-        console.log('---> Login Service:', err);
+        logger.error('---> Login Service:', err);
         return { status: 'error', message: err.message };
     }
 }
@@ -242,8 +241,7 @@ export const registerOrLogin = async (req, accessToken, refreshToken, profile, d
 
 export const current = async (email) => {
     const user = await usersDao.getByEmail(email, true);
-    console.log(user, 'USER FROM CURRENT ENDPOINT');
     const repositoryUser = usersRepository.formatFromDB(user).sanitize();
-    console.log(repositoryUser, 'REPOSITORY USER FROM CURRENT ENDPOINT');
+    logger.info('USER FROM CURRENT ENDPOINT', repositoryUser);
     return repositoryUser;
 }

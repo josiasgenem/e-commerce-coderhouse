@@ -30,7 +30,6 @@ export default class ProductService {
             response.docs = response.docs.map(doc => doc = repository.formatFromDB(doc));
             return response;
         } catch (err) {
-            // console.log(err, '---> getMany:productService');
             throw err;
         }
     }
@@ -42,7 +41,6 @@ export default class ProductService {
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            // console.log(err, '---> getById:productService');
             throw err;
         }
     }
@@ -53,7 +51,6 @@ export default class ProductService {
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            // console.log(err, '---> create:productService');
             throw err;
         }
     }
@@ -71,7 +68,6 @@ export default class ProductService {
 
             return savedProducts;
         } catch (err) {
-            // console.log(err, '---> mock:productService');
             throw err;
         }
     }
@@ -82,7 +78,6 @@ export default class ProductService {
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            // console.log(err, '---> update:productService');
             throw err;
         }
     }
@@ -94,7 +89,6 @@ export default class ProductService {
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            // console.log(err, '---> updateStock:productService');
             throw err;
         }
     }
@@ -105,7 +99,6 @@ export default class ProductService {
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
-            // console.log(err, '---> remove:productService');
             throw err;
         }
     }
@@ -116,8 +109,6 @@ export default class ProductService {
             if (!product || product.stock < qty) return false;
             return true;
         } catch (err) {
-            // console.log(err, '---> isAvailable:productService');
-            // return false;
             throw err;
         }
     }

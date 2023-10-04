@@ -1,0 +1,57 @@
+Logger {
+  logger: <ref *1> DerivedLogger {
+    _readableState: ReadableState {
+      objectMode: true,
+      highWaterMark: 16,
+      buffer: BufferList { head: null, tail: null, length: 0 },
+      length: 0,
+      pipes: [File],
+      pipesCount: 1,
+      flowing: true,
+      ended: false,
+      endEmitted: false,
+      reading: true,
+      sync: false,
+      needReadable: true,
+      emittedReadable: false,
+      readableListening: false,
+      resumeScheduled: false,
+      paused: false,
+      emitClose: true,
+      autoDestroy: false,
+      destroyed: false,
+      defaultEncoding: 'utf8',
+      awaitDrain: 0,
+      readingMore: false,
+      decoder: null,
+      encoding: null
+    },
+    readable: true,
+    _events: [Object: null prototype] {
+      prefinish: [Function: prefinish],
+      end: [Function],
+      data: [Function: ondata]
+    },
+    _eventsCount: 3,
+    _maxListeners: undefined,
+    _writableState: WritableState {
+      objectMode: true,
+      highWaterMark: 16,
+      finalCalled: false,
+      needDrain: false,
+      writecb: null,
+      writechunk: null,
+      writeencoding: 'utf8'
+    },
+    silent: undefined,
+    format: Format { options: {} },
+    defaultMeta: null,
+    levels: { debug: 5, http: 4, info: 3, warning: 2, error: 1, fatal: 0 },
+    level: 'error',
+    exceptions: ExceptionHandler { logger: [Circular *1], handlers: Map(0) {} },
+    rejections: RejectionHandler { logger: [Circular *1], handlers: Map(0) {} },
+    profilers: {},
+    exitOnError: true,
+    [Symbol(kCapture)]: false
+  }
+} ---> LOGGER

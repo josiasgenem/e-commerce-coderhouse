@@ -8,6 +8,6 @@ export const initMongoDB = async () => {
         logger.info('MongoDB connected!');
         return mongoose;
     } catch (err) {
-        console.log(err, 'Mongo Init Connection Error!');
+        logger.error('Mongo Init Connection Error!', err);
     }
 }
