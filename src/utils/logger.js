@@ -23,16 +23,16 @@ const customLevels = {
 const formatter = winston.format.combine(
     winston.format.label({label: 'LOGGER'}),
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
+    winston.format.errors({ stack: true }),
     winston.format.splat(),
     winston.format.printf((info) => {
         const { label, timestamp, level, message, ...meta } = info;
 
-        return `[${label}] ${timestamp} [${level}]: ${message} ${
-            Object.keys(meta).length ? '\n' + 'meta: ' + JSON.stringify(meta, null, 3) : ''
+        return `[${label}: ${level}] [${timestamp}] | ${message} ${
+            Object.keys(meta).length ? '\n' + 'meta: ' + meta.data.stack : ''
         }`;
     }),
-    winston.format.colorize({all: true}),
-    // winston.format.prettyPrint()
+    winston.format.colorize({all: true})
     
 )
 

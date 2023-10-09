@@ -7,7 +7,7 @@ class ErrorHandler {
         if (!this.isTrustedError(err)) err = new ServerError(err.message, err);
         if (!err.isOperational) {
             // TODO: DO SOMETHING TO LOG ERROR WITH A LOGGER OR SOMETHING SIMILAR.
-            console.log(err.data, 'ERROR.DATA FROM CONSOLE');
+            // console.log(err.data, 'ERROR.DATA FROM CONSOLE');
             logger.error(err.message, err);
         }
         let payload = err.data ?

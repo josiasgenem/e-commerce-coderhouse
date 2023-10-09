@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { PORT, ACCESS_TOKEN_EXPIRATION, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_EXPIRATION, REFRESH_TOKEN_SECRET } from '../config/environment.js';
-import { logger } from '../utils/logger.js';
+// import { logger } from '../utils/logger.js';
 
 function getStatus(statusCode) {
     if (isNaN(statusCode)) return;

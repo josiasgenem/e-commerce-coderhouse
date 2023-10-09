@@ -438,3 +438,45 @@
 [31m}[39m
 [31m[LOGGER] 2023-10-03 21:54:12.978 [error]: Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
 [31mmeta: ReferenceError: logger is not defined[39m
+[31m[ LOGGER:error ] [2023-10-03 23:43:12.115] | Logging error [39m
+[31m[1m[ LOGGER:fatal ] [2023-10-03 23:43:12.116] | Logging fatal [22m[39m
+[31m[LOGGER: error] [2023-10-03 23:47:49.213] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: {[39m
+[31m   "name": "INTERNAL_SERVER",[39m
+[31m   "statusCode": 500,[39m
+[31m   "isOperational": false,[39m
+[31m   "data": {},[39m
+[31m   "internalMessage": "ReferenceError: logger is not defined",[39m
+[31m   "stack": "INTERNAL_SERVER: Something went wrong, try again in some minutes please!\n    at new ServerError (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/config/errors.js:60:15)\n    at ErrorHandler.handleError (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/middlewares/errorHandler.middleware.js:7:46)\n    at file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/server.js:66:24\n    at Layer.handle_error (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\layer.js:71:5)\n    at trim_prefix (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:646:15\n    at next (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:265:14)"[39m
+[31m}[39m
+[31m[LOGGER: error] [2023-10-03 23:48:14.279] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: {[39m
+[31m   "name": "INTERNAL_SERVER",[39m
+[31m   "statusCode": 500,[39m
+[31m   "isOperational": false,[39m
+[31m   "data": {},[39m
+[31m   "internalMessage": "ReferenceError: logger is not defined",[39m
+[31m   "stack": "INTERNAL_SERVER: Something went wrong, try again in some minutes please!\n    at new ServerError (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/config/errors.js:60:15)\n    at ErrorHandler.handleError (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/middlewares/errorHandler.middleware.js:7:46)\n    at file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/server.js:66:24\n    at Layer.handle_error (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\layer.js:71:5)\n    at trim_prefix (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:286:9\n    at Function.process_params (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:646:15\n    at next (C:\\Users\\Josias Genem\\OneDrive\\Formación\\Programación\\Backend\\Coder House\\ZZ- Proyectos para entrega\\00- E-COMMERCE 01\\node_modules\\express\\lib\\router\\index.js:265:14)"[39m
+[31m}[39m
+[31m[LOGGER: error] [2023-10-03 23:48:36.773] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: {}[39m
+[31m[LOGGER: error] [2023-10-03 23:49:36.682] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: [object Object][39m
+[31m[LOGGER: error] [2023-10-03 23:49:48.527] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: ReferenceError: logger is not defined[39m
+[31m[LOGGER: error] [2023-10-03 23:50:09.700] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: ReferenceError: logger is not defined[39m
+[31m[LOGGER: error] [2023-10-03 23:51:53.084] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: ReferenceError: logger is not defined[39m
+[31m[LOGGER: error] [2023-10-03 23:52:27.761] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: ReferenceError: logger is not defined[39m
+[31m    at getAccessToken (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/helpers/helpers.js:101:5)[39m
+[31m    at isAuth (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/middlewares/auth.middlewares.js:23:25)[39m
+[31m    at Layer.handle [as handle_request] (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\route.js:144:13)[39m
+[31m    at Route.dispatch (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\route.js:114:3)[39m
+[31m    at Layer.handle [as handle_request] (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:284:15[39m
+[31m    at Function.process_params (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:346:12)[39m
+[31m    at next (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:280:10)[39m
+[31m    at Function.handle (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:175:3)[39m
