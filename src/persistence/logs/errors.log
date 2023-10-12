@@ -480,3 +480,63 @@
 [31m    at Function.process_params (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:346:12)[39m
 [31m    at next (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:280:10)[39m
 [31m    at Function.handle (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:175:3)[39m
+[31m[LOGGER: error] [2023-10-10 16:49:40.951] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: ReferenceError: mailingService is not defined[39m
+[31m    at resetPassword (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/controllers/users.controller.js:60:5)[39m
+[31m    at Layer.handle [as handle_request] (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at next (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\route.js:144:13)[39m
+[31m    at Route.dispatch (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\route.js:114:3)[39m
+[31m    at Layer.handle [as handle_request] (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\layer.js:95:5)[39m
+[31m    at C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:284:15[39m
+[31m    at Function.process_params (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:346:12)[39m
+[31m    at next (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:280:10)[39m
+[31m    at Function.handle (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:175:3)[39m
+[31m    at router (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\express\lib\router\index.js:47:12)[39m
+[31m[LOGGER: error] [2023-10-10 16:50:59.921] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: TypeError: Cannot read properties of undefined (reading 'stack')[39m
+[31m    at Printf.template (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/utils/logger.js:32:68)[39m
+[31m    at Printf.transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\logform\printf.js:11:26)[39m
+[31m    at Format.transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\logform\combine.js:20:24)[39m
+[31m    at DerivedLogger._transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\winston\lib\winston\logger.js:313:29)[39m
+[31m    at Transform._read (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_transform.js:166:10)[39m
+[31m    at Transform._write (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_transform.js:155:83)[39m
+[31m    at doWrite (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:390:139)[39m
+[31m    at writeOrBuffer (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:381:5)[39m
+[31m    at Writable.write (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:302:11)[39m
+[31m    at DerivedLogger.log (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\winston\lib\winston\logger.js:252:14)[39m
+[31m[LOGGER: error] [2023-10-10 16:52:00.753] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: TypeError: Cannot read properties of undefined (reading 'stack')[39m
+[31m    at Printf.template (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/utils/logger.js:32:68)[39m
+[31m    at Printf.transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\logform\printf.js:11:26)[39m
+[31m    at Format.transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\logform\combine.js:20:24)[39m
+[31m    at DerivedLogger._transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\winston\lib\winston\logger.js:313:29)[39m
+[31m    at Transform._read (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_transform.js:166:10)[39m
+[31m    at Transform._write (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_transform.js:155:83)[39m
+[31m    at doWrite (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:390:139)[39m
+[31m    at writeOrBuffer (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:381:5)[39m
+[31m    at Writable.write (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:302:11)[39m
+[31m    at DerivedLogger.log (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\winston\lib\winston\logger.js:252:14)[39m
+[31m[LOGGER: error] [2023-10-10 16:53:30.260] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: TypeError: Cannot read properties of undefined (reading 'stack')[39m
+[31m    at Printf.template (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/utils/logger.js:32:68)[39m
+[31m    at Printf.transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\logform\printf.js:11:26)[39m
+[31m    at Format.transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\logform\combine.js:20:24)[39m
+[31m    at DerivedLogger._transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\winston\lib\winston\logger.js:313:29)[39m
+[31m    at Transform._read (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_transform.js:166:10)[39m
+[31m    at Transform._write (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_transform.js:155:83)[39m
+[31m    at doWrite (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:390:139)[39m
+[31m    at writeOrBuffer (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:381:5)[39m
+[31m    at Writable.write (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:302:11)[39m
+[31m    at DerivedLogger.log (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\winston\lib\winston\logger.js:252:14)[39m
+[31m[LOGGER: error] [2023-10-10 16:56:50.476] | Something went wrong, try again in some minutes please! Something went wrong, try again in some minutes please! [39m
+[31mmeta: TypeError: Cannot read properties of undefined (reading 'stack')[39m
+[31m    at Printf.template (file:///C:/Users/Josias%20Genem/OneDrive/Formaci%C3%B3n/Programaci%C3%B3n/Backend/Coder%20House/ZZ-%20Proyectos%20para%20entrega/00-%20E-COMMERCE%2001/src/utils/logger.js:32:68)[39m
+[31m    at Printf.transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\logform\printf.js:11:26)[39m
+[31m    at Format.transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\logform\combine.js:20:24)[39m
+[31m    at DerivedLogger._transform (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\winston\lib\winston\logger.js:313:29)[39m
+[31m    at Transform._read (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_transform.js:166:10)[39m
+[31m    at Transform._write (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_transform.js:155:83)[39m
+[31m    at doWrite (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:390:139)[39m
+[31m    at writeOrBuffer (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:381:5)[39m
+[31m    at Writable.write (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\readable-stream\lib\_stream_writable.js:302:11)[39m
+[31m    at DerivedLogger.log (C:\Users\Josias Genem\OneDrive\Formación\Programación\Backend\Coder House\ZZ- Proyectos para entrega\00- E-COMMERCE 01\node_modules\winston\lib\winston\logger.js:252:14)[39m

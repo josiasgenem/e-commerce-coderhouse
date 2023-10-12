@@ -2,6 +2,8 @@ const addToCartBtns = document.getElementsByClassName('btn-addToCart');
 const deleteFromCartBtns = document.getElementsByClassName('btn-deleteFromCart');
 const toCartLink = document.getElementById('toCartLink');
 const buyBtn = document.getElementById('buy-btn');
+const reqResetPassBtn = document.getElementById('btn-req-reset');
+const resetPassBtn = document.getElementById('btn-reset-password');
 // const firstNameSpan = document.getElementById('first_name');
 
 let accessToken, cid;
@@ -12,6 +14,8 @@ function init() {
     cid = getCartId();
     if (cid) toCartLink?.setAttribute('href', `/api/carts/${cid}`);
     if (cid && buyBtn) buyBtn.addEventListener('click', () => buyCart(cid));
+    if (reqResetPassBtn) reqResetPassBtn.addEventListener('click', () => reqResetPass());
+    if (resetPassBtn) resetPassBtn.addEventListener('click', () => resetPass());
     
     for (const btn of addToCartBtns) {
         let pid = btn.getAttribute('data-id');
@@ -88,6 +92,50 @@ function deleteFromCart(pid) {
         location.reload();
     })
     .catch(err => console.log('---> Error:', err));
+}
+
+function reqResetPass() {
+    const email = document.getElementsByName('email')[0];
+    const data = {
+        email: email.value
+        // ! ESTOY OBTENIENDO LOS INPUTS PARA MANDAR LOS DATOS AL BACKEND
+        // ! DESPUÉS TENGO QUE SEGUIR CON LAS OTRAS VISTAS Y POST PARA RESETEAR LA PASS
+    }
+    fetch(`/users/reset-password/`, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: setHeaders(),
+        body: JSON.stringify(data)
+    })
+    .then(resp => resp.json())
+    .then(json => {
+        console.log(json);
+        alert(json.message);
+    })
+    .catch(e => console.log(e))
+}
+
+function resetPass() {
+    const password = document.getElementsByName('password')[0];
+    const password2 = document.getElementsByName('repeat-password')[0];
+    
+    
+    if (!password.value || password.value !== password2.value) {
+        alert('Invalid password, or both password are not the same')
+        return;
+    }
+    fetch(window.location.href, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: setHeaders(),
+        body: JSON.stringify({password: password.value})
+    })
+    .then(resp => resp.json())
+    .then(json => {
+        console.log(json);
+        alert(json.message);
+    })
+    .catch(e => console.log(e))
 }
 
 export function buyCart(cid) {

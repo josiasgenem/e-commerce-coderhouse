@@ -7,15 +7,15 @@ const customLevels = {
         debug: 5,
         http: 4,
         info: 3,
-        warning: 2,
+        warn: 2,
         error: 1,
         fatal: 0
     },
     colors: {
         debug: 'italic bold white',
         http: 'bold cyan',
-        info: 'italic green',
-        warning: 'yellow',
+        info: 'italic blue',
+        warn: 'yellow',
         error: 'red',
         fatal: 'bold red'
     }
@@ -25,19 +25,26 @@ const formatter = winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
     winston.format.errors({ stack: true }),
     winston.format.splat(),
+    // winston.format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'label'] }),
     winston.format.printf((info) => {
         const { label, timestamp, level, message, ...meta } = info;
 
-        return `[${label}: ${level}] [${timestamp}] | ${message} ${
-            Object.keys(meta).length ? '\n' + 'meta: ' + meta.data.stack : ''
-        }`;
+        let data; // = JSON.stringify(meta, null, '\r   ');
+        if (typeof meta === 'object' && Object.keys(meta).length) data = JSON.stringify(meta, null, '\r    ');
+        if (level === 'error') Object.keys(meta).length ?
+            data = meta.data?.stack :
+            null;
+        // console.log(meta, 'FROM CONSOLE');
+        return `[${label}: ${level}] [${timestamp}] | ${message} ${data ? '\ndata: ' + data : ''}`;
     }),
-    winston.format.colorize({all: true})
-    
+    winston.format.colorize({all: true}),
+    // winston.format.json()
+    // winston.format.prettyPrint()
 )
 
 const transports = () => {
-    if (isProdEnvironment) return [
+    console.log();
+    if (isProdEnvironment()) return [
         new winston.transports.Console({ level: 'info' }),
         new winston.transports.File({
             filename: 'src/persistence/logs/errors.log',

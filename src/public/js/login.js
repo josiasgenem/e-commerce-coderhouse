@@ -30,7 +30,7 @@ function login(e) {
     })
         .then(resp => {
             checkRedirects(resp);
-            // return resp.json()
+            return resp.json()
         })
         .then(json => {
             console.log(json);

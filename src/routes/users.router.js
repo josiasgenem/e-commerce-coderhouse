@@ -27,5 +27,12 @@ router.get('/profile', isAuth, controller.viewProfile);
 
 router.get('/current', isAuth, controller.current);
 
+router.get('/reset-password', controller.viewRequestResetPassword);
+
+router.post('/reset-password', controller.requestResetPassword);
+
+router.get('/reset-password/:token', controller.viewResetPassword);
+
+router.post('/reset-password/:token', controller.resetPassword);
 
 export default router;

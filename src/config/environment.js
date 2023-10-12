@@ -21,4 +21,11 @@ export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 export const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRATION;
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 export const REFRESH_TOKEN_EXPIRATION = process.env.REFRESH_TOKEN_EXPIRATION;
+export const RESET_PASS_TOKEN_SECRET = process.env.RESET_PASS_TOKEN_SECRET;
+export const RESET_PASS_TOKEN_EXPIRATION = process.env.RESET_PASS_TOKEN_EXPIRATION;
 export const COOKIES_SECRET = process.env.COOKIES_SECRET;
+
+/* ------------------------------ SMTP SERVICE ----------------------------- */
+export const SMTP_SERVICE= process.env.SMTP_SERVICE;
+export const SMTP_EMAIL= process.env.SMTP_EMAIL;
+export const SMTP_PASSWORD= process.env.SMTP_PASSWORD;

@@ -9,8 +9,8 @@ import {
     verifyRefreshToken
 } from "../helpers/helpers.js";
 import UsersRepository from '../persistence/repository/users/users.repository.js';
-import { logger } from '../utils/logger.js';
 const usersRepository = new UsersRepository();
+import { logger } from '../utils/logger.js';
 
 const   namesRegEx = /[a-zÀ-ÿ]{2,30}/i,
         emailRegEx = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
@@ -184,7 +184,7 @@ export const jwtLogout = async (req, res) => {
     try {
         const refreshToken = getRefreshToken(req);
         if (!refreshToken) {
-            logger.warning('QUISO DESLOGEARSE PERO NO MANDÓ REFRESH TOKENS!!!!!!!!!!!!');
+            logger.warn('QUISO DESLOGEARSE PERO NO MANDÓ REFRESH TOKENS!!!!!!!!!!!!');
             return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong authentication: No Token received!');
         }
         
@@ -239,6 +239,12 @@ export const registerOrLogin = async (req, accessToken, refreshToken, profile, d
     return done(null, newUser.toJSON());
 }
 
+export const resetPassword = async (email) => {
+    const user = usersDao.getByEmail(email, true);
+
+}
+
+//! Servicio agregado por solicitud de entrga. Borrar al finalizar el curso.0
 export const current = async (email) => {
     const user = await usersDao.getByEmail(email, true);
     const repositoryUser = usersRepository.formatFromDB(user).sanitize();

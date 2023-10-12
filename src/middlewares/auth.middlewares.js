@@ -66,7 +66,7 @@ export const isNotAuth = (req, res, next) => {
         if (accessToken) payload = verifyAccessToken(accessToken);
 
         if (typeof payload !== 'object') {
-            logger.warning('Se quizo ingresar un token inválido en el middleware isNotAuth');
+            logger.warn('Se quizo ingresar un token inválido en el middleware isNotAuth');
             sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong authentication: Invalid Token when trying to access to a non protected path.')
             return next();
         }

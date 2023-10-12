@@ -17,7 +17,7 @@ const homeRouter = router
         logger.debug('Logging debug');
         logger.http('Logging http');
         logger.info('Logging info');
-        logger.warning('Logging warning');
+        logger.warn('Logging warning');
         logger.error('Logging error');
         logger.fatal('Logging fatal');
         
