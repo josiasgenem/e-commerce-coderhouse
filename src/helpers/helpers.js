@@ -111,7 +111,7 @@ export const getRefreshToken = (req) => {
     if (!refreshToken && req.signedCookies) {
         refreshToken = getCookieByName(req.signedCookies, 'coderhouse-ecommerce-refresh-token');
     }
-    logger.info(`---> getRefreshToken called from: ${req.method} ${req.originalUrl}`, refreshToken);
+    logger.info(`---> getRefreshToken called from: ${req.method} ${req.originalUrl}`, {refreshToken});
 
     return refreshToken || null;
 }

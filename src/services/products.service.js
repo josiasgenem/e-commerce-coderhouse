@@ -4,8 +4,8 @@
 // let productDao;
 // if (process.env.DB_ENGINE === 'MONGODB') productDao = new ProductDaoMongoDB();
 // if (process.env.DB_ENGINE === 'FILESYSTEM') productDao = new ProductDaoFileSystem('./src/daos/filesystem/productos.json');
-import { productsDao } from "../persistence/factory.js";
-import { NotFoundError } from '../config/errors.js';
+import { productsDao, usersDao } from "../persistence/factory.js";
+import { NotFoundError, ServerError } from '../config/errors.js';
 import ProductsRepository from "../persistence/repository/products/product.repository.js";
 const repository = new ProductsRepository();
 import Mocks from "../utils/mocks.js";
@@ -13,13 +13,14 @@ const mock = new Mocks();
 
 export default class ProductService {
 
-    async getAll ({ limit = 10, page = 1, sort, category = null, stock = null }) {
+    async getAll ({ limit = 10, page = 1, sort, category = null, stock = null, owner = null }) {
         try {
             sort === 'asc' ? sort = 1 :
             sort === 'desc' ? sort = -1 : sort = null;
             
             const query = {};
             if (category) query.category = category;
+            if (owner) query.owner = owner;
             if (stock) {
                 if (typeof stock === 'string' && stock === 'existance') query.stock = { $gt: 0 };
                 if (typeof stock === 'string' && stock === 'nonexistance') query.stock = { $eq: 0 };
@@ -45,9 +46,9 @@ export default class ProductService {
         }
     }
     
-    async create (product) {
+    async create (product, user) {
         try {
-            const response = await productsDao.create(product);
+            const response = await productsDao.create({ ...product, owner: user.id});
             const repositoryResp = repository.formatFromDB(response);
             return repositoryResp;
         } catch (err) {
@@ -71,33 +72,62 @@ export default class ProductService {
             throw err;
         }
     }
+
+    async viewUpdateProduct (id, user) {
+        const product = await productsDao.getById(id);
+        if (user.role !== 'admin' && user.role !== 'premium') {
+            return { success: false, message: 'You\'re not authorized!', data: null }
+        }
+        if (user.role !== 'admin' && user.role === 'premium' && user.id !== product.owner) {
+            return { success: false, message: 'As a premium user you can only update products wich you\'re the owner', data: null };
+        }
+        if (product.status) product.status = 'checked';
+        const repositoryResp = repository.formatFromDB(product);
+
+        return { success: true, message: null, data: repositoryResp };
+    }
     
-    async update (id, productUpd) {
+    async update (id, productUpd, user) {
         try {
+            const oldProduct = await productsDao.getById(id);
+            if (user.role !== 'admin' || (user.role === 'premium' && user.id !== oldProduct.owner.toString())) return {
+                success: false,
+                message: 'As a premium user you can only update products wich you\'re the owner'
+            }
             const response = await productsDao.update(id, productUpd);
             const repositoryResp = repository.formatFromDB(response);
-            return repositoryResp;
+            return {success: true, message: `El producto fue actualizado exitosamente.`, data: repositoryResp};
         } catch (err) {
             throw err;
         }
     }
     
-    async updateStock (id, newStock) {
+    async updateStock (id, newStock, user) {
         try {
+            const oldProduct = await productsDao.getById(id);
+            if (user.role !== 'admin' || (user.role === 'premium' && user.id !== oldProduct.owner.toString())) return {
+                success: false,
+                message: 'As a premium user you can only update products wich you\'re the owner'
+            }
             const response = await productsDao.updateStock(id, newStock);
-            // if (!response) return false;
+            if (!response) throw new ServerError();
             const repositoryResp = repository.formatFromDB(response);
-            return repositoryResp;
+            return {success: true, message: `El producto fue actualizado exitosamente.`, data: repositoryResp};
         } catch (err) {
             throw err;
         }
     }
     
-    async remove (id) {
+    async remove (id, user) {
         try {
+            const oldProduct = await productsDao.getById(id);
+            if (user.role !== 'admin' || (user.role === 'premium' && user.id !== oldProduct.owner.toString())) return {
+                success: false,
+                message: 'As a premium user you can only delete products wich you\'re the owner'
+            }
             const response = await productsDao.remove(id);
             const repositoryResp = repository.formatFromDB(response);
-            return repositoryResp;
+            return {success: true, message: `El producto fue eliminado exitosamente.`, data: repositoryResp};
         } catch (err) {
             throw err;
         }

@@ -46,7 +46,7 @@ export default class MailingService {
                 `
                 })
                 .then(resp => {
-                    if (!resp.rejected.length) return true
+                    if (resp.rejected.length > 0) return true
                 })
                 .catch(err => {
                     logger.error('MailingService: sendResetPassword: Error', err)
@@ -79,7 +79,7 @@ export default class MailingService {
             `
         })
         .then(resp => {
-            if (!resp.rejected.length) return true
+            if (resp.rejected.length > 0) return true
         })
         .catch(err => {
             logger.error('MailingService: sendResetPassword: Error', err)

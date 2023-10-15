@@ -1,0 +1,63 @@
+{{> navbar user=user}}
+
+<div>
+    <h1>Products Dashboard</h1>
+</div>
+
+<div>
+    <a href="/api/products/add">
+        <button type="submit">Add product</button>
+    </a>
+</div>
+
+<div class="products-container">
+
+    {{#if resp.payload}}
+    {{#each resp.payload}}
+        <div id="{{id}}" class="product-card">
+                <div class="card-header">
+                    <h3 class="product-title">
+                        {{ title }}
+                    </h3>
+                    <p class="product-price">
+                        $ {{ price }}
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="body-left-content">
+                        <p class="product-description">
+                            {{ description }}
+                        </p>
+                    </div>
+                    <div class="body-right-content">
+                        <button type="submit" class="btn-update-product" data-id="{{id}}">Update</button>
+                        <button type="submit" class="btn-delete-product" data-id="{{id}}">Delete</button>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p class="product-category">
+                        Category: <strong>{{ category }}</strong>
+                    </p>
+                </div>
+
+        </div>
+
+    {{/each}}
+
+        <div class="pagination-container">
+            {{#if resp.hasPrevPage}}
+                <a id="prevPageLink" href="{{resp.prevLink}}" target="_self">Previous Page</a>
+            {{/if}}
+            <div class="current-page">
+                <p> {{resp.page}} </p>
+            </div>
+            {{#if resp.hasNextPage}}
+                <a id="nextPageLink" href="{{resp.nextLink}}" target="_self">Next Page</a>
+            {{/if}}
+        </div>
+    
+    {{else}}
+        <p class="no-data">There are no Products to show</p>
+    {{/if}}
+
+</div>

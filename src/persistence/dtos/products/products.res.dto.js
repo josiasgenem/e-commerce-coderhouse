@@ -9,5 +9,6 @@ export default class ProductsResDTO {
         this.stock = dbProduct.stock;
         this.category = dbProduct.category;
         this.thumbnails = dbProduct.thumbnails;
+        this.owner = dbProduct.owner.toString();
     }
 }

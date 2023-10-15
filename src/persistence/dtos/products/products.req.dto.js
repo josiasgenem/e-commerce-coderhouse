@@ -8,5 +8,6 @@ export default class ProductsReqDTO {
         this.stock = product.stock;
         this.category = product.category;
         this.thumbnails = product.thumbnails;
+        this.owner = product.owner;
     }
 }

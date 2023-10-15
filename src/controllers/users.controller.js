@@ -146,6 +146,20 @@ export const resetPassword = async (req, res, next) => {
     }
 }
 
+export const switchPremiumRole = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const serviceResp = await service.switchPremiumRole(id);
+        console.log(serviceResp, 'RESPUESTA DE SERVICIO');
+        if (!serviceResp.success && serviceResp.error) throw new ServerError(serviceResp.message, serviceResp.error);
+        if (!serviceResp.success) return res.status(400).json({status: 'error', message: serviceResp.message, data: null})
+
+        res.status(200).json({status: 'success', message: serviceResp.message})
+    } catch (err) {
+        return next(err);
+    }
+}
+
 // export const logout = (req, res, next) => {
 //     req.logout((err) => {
 //         if (err) return next(err);

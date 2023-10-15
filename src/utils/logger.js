@@ -30,8 +30,8 @@ const formatter = winston.format.combine(
         const { label, timestamp, level, message, ...meta } = info;
 
         let data; // = JSON.stringify(meta, null, '\r   ');
-        if (typeof meta === 'object' && Object.keys(meta).length) data = JSON.stringify(meta, null, '\r    ');
-        if (level === 'error') Object.keys(meta).length ?
+        if (typeof meta === 'object' && Object.keys(meta).length > 0) data = JSON.stringify(meta, null, '\r    ');
+        if (level === 'error') Object.keys(meta).length > 0 ?
             data = meta.data?.stack :
             null;
         // console.log(meta, 'FROM CONSOLE');

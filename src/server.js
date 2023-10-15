@@ -1,6 +1,7 @@
 import express from "express";
 import "./config/dotenv.js";
 import { engine } from "express-handlebars";
+import hbsHelpers from 'handlebars-helpers';
 import path from 'path';
 import fileDirName from './utils/es6-path.js';
 import { homeRouter, productsRouter, cartsRouter, usersRouter, ticketRouter } from './routes/index.js';
@@ -45,7 +46,7 @@ app.use(passport.session());
  /* -------------------------------------------------------------------------- */
  /*                                    Views                                   */
  /* -------------------------------------------------------------------------- */
-app.engine('.hbs', engine({ extname: '.hbs', partialsDir: path.join(__dirname, '/views/partials') }));
+app.engine('.hbs', engine({ extname: '.hbs', partialsDir: path.join(__dirname, '/views/partials'), helpers: hbsHelpers.comparison() }));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, '/views'));
 

@@ -1,9 +1,13 @@
 const addToCartBtns = document.getElementsByClassName('btn-addToCart');
 const deleteFromCartBtns = document.getElementsByClassName('btn-deleteFromCart');
+const updateProductBtns = document.getElementsByClassName('btn-update-product');
+const deleteProductBtns = document.getElementsByClassName('btn-delete-product');
 const toCartLink = document.getElementById('toCartLink');
 const buyBtn = document.getElementById('buy-btn');
 const reqResetPassBtn = document.getElementById('btn-req-reset');
 const resetPassBtn = document.getElementById('btn-reset-password');
+const saveProductBtn = document.getElementById('btn-save-product');
+
 // const firstNameSpan = document.getElementById('first_name');
 
 let accessToken, cid;
@@ -16,6 +20,7 @@ function init() {
     if (cid && buyBtn) buyBtn.addEventListener('click', () => buyCart(cid));
     if (reqResetPassBtn) reqResetPassBtn.addEventListener('click', () => reqResetPass());
     if (resetPassBtn) resetPassBtn.addEventListener('click', () => resetPass());
+    if (saveProductBtn) saveProductBtn.addEventListener('click', () => saveProduct())
     
     for (const btn of addToCartBtns) {
         let pid = btn.getAttribute('data-id');
@@ -25,6 +30,16 @@ function init() {
     for (const btn of deleteFromCartBtns) {
         let pid = btn.getAttribute('data-id');
         btn.addEventListener('click', () => deleteFromCart(pid));
+    }
+
+    for (const btn of updateProductBtns) {
+        let pid = btn.getAttribute('data-id');
+        btn.addEventListener('click', () => goToUpdateProduct(pid));
+    }
+
+    for (const btn of deleteProductBtns) {
+        let pid = btn.getAttribute('data-id');
+        btn.addEventListener('click', () => deleteProduct(pid));
     }
 }
 
@@ -73,7 +88,10 @@ function addToCart(pid) {
         headers: setHeaders()
     })
     .then(res => res.json())
-    .then(json => checkRedirects(json))
+    .then(json => {
+        checkRedirects(json);
+        alert(json.message);
+    })
     .catch(err => console.log(err));
 }
 
@@ -98,9 +116,8 @@ function reqResetPass() {
     const email = document.getElementsByName('email')[0];
     const data = {
         email: email.value
-        // ! ESTOY OBTENIENDO LOS INPUTS PARA MANDAR LOS DATOS AL BACKEND
-        // ! DESPUÉS TENGO QUE SEGUIR CON LAS OTRAS VISTAS Y POST PARA RESETEAR LA PASS
     }
+
     fetch(`/users/reset-password/`, {
         method: 'POST',
         redirect: 'follow',
@@ -138,6 +155,67 @@ function resetPass() {
     .catch(e => console.log(e))
 }
 
+export function saveProduct() {
+    const data = {
+        title: document.getElementsByName('title')[0].value,
+        description: document.getElementsByName('description')[0].value,
+        price: document.getElementsByName('price')[0].value,
+        code: document.getElementsByName('code')[0].value,
+        status: document.getElementsByName('status')[0].checked,
+        stock: document.getElementsByName('stock')[0].value,
+        category: document.getElementsByName('category')[0].value,
+        thumbnails: document.getElementsByName('thumbnails')[0].value
+    }
+
+    let path, method;
+    if (window.location.pathname.includes('products/add')) {
+        path = '/api/products'
+        method = 'POST';
+    }
+    if (window.location.pathname.includes('products/update/')) {
+        const pid = saveProductBtn.getAttribute('data-id');
+        path = `/api/products/${pid}`;
+        method = 'PUT';
+    }
+
+    fetch(path, {
+        method,
+        redirect: 'follow',
+        headers: setHeaders(),
+        body: JSON.stringify(data)
+    })
+    .then(resp => resp.json())
+    .then(json => {
+        console.log(json);
+        alert(json.message);
+    })
+    .catch(err => {
+        console.log(err);
+        alert(err.message);
+    })
+}
+
+export function goToUpdateProduct(pid) {
+    window.location.href = '/api/products/update/' + pid;
+}
+
+export function deleteProduct(pid) {
+    fetch(`/api/products/${pid}`, {
+        method: 'DELETE',
+        redirect: 'follow',
+        headers: setHeaders()
+    })
+    .then(resp => resp.json())
+    .then(json => {
+        console.log(json);
+        alert(json.message);
+    })
+    .catch(err => {
+        console.log(err);
+        alert(err.message);
+    })
+}
+
 export function buyCart(cid) {
     fetch(`/api/carts/${cid}/purchase`, {
         method: "POST",
@@ -150,6 +228,7 @@ export function buyCart(cid) {
     })
     .then(json => {
         console.log(json);
+        alert(json.message)
     })
     .catch(err => console.log('---> Error:', err));
 }

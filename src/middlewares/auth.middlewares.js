@@ -101,3 +101,8 @@ export const isAdmin = (req, res, next) => {
     if (!req.user || req.user.role !== 'admin') return res.status(403).json({ message: "You're Not Authorized!" })
     return next();
 }
+
+export const isPremium = (req, res, next) => {
+    if (!req.user || (req.user.role !== 'premium' && req.user.role !== 'admin')) return res.status(403).json({ message: "You're Not Authorized!" })
+    return next();
+}

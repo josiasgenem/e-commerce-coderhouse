@@ -6,7 +6,7 @@ const userSchema = new Schema({
     email: { type: String, required: true, unique: true },
     age: { type: Number },
     password: { type: String, select: false },
-    role: { type: String, enum: ['admin', 'user'], default: 'user'},
+    role: { type: String, enum: ['admin', 'premium', 'user'], default: 'user'},
     cart: { type: Schema.ObjectId, unique: true, auto: true },
     isThirdAuth: { type: Boolean, default: false, select: false },
     refreshTokens: { type: [String], default: [] }

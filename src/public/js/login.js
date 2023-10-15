@@ -34,19 +34,21 @@ function login(e) {
         })
         .then(json => {
             console.log(json);
+            alert(json.message);
         })
         .catch(e => console.log(e))
-}
-
-function refreshToken() {
-    fetch('/users/login/refresh', {
-        method: 'POST',
-        redirect: "follow",
-        headers: setHeaders()
-    })
-    .then(resp => resp.json())
-    .then(json => {
-        console.log(json);
+    }
+    
+    function refreshToken() {
+        fetch('/users/login/refresh', {
+            method: 'POST',
+            redirect: "follow",
+            headers: setHeaders()
+        })
+        .then(resp => resp.json())
+        .then(json => {
+            console.log(json);
+            alert(json.message);
         // setAccessToken(json.accessToken);
         // checkRedirects(json);
     })

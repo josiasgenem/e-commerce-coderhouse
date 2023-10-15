@@ -2,6 +2,12 @@
     <p style="font-size: 2rem; font-weight: 800; color: #fafafa;">Coderhouse E/commerce</p>
     {{#if user}}
         <div>
+            {{#eq user.role 'premium'}}
+                <button class="btn-navbar" onclick="location.href='/api/products/dashboard'">Products Dashboard</button>
+            {{/eq}}
+            {{#eq user.role 'admin'}}
+                <button class="btn-navbar" onclick="location.href='/api/products/dashboard'">Products Dashboard</button>
+            {{/eq}}
             <button class="btn-navbar" onclick="location.href='/api/products'">Products</button>
             <button class="btn-navbar" onclick="location.href='/users/profile'">Profile</button>
             <button id="btn-logout" class="btn-navbar" >Logout!</button>

@@ -1,6 +1,6 @@
 import * as controller from '../controllers/users.controller.js';
 import { Router } from 'express';
-import { isAuth, isNotAuth } from '../middlewares/auth.middlewares.js';
+import { isAdmin, isAuth, isNotAuth } from '../middlewares/auth.middlewares.js';
 const router = Router();
 
 router.get('/register', isNotAuth, controller.viewRegister);
@@ -34,5 +34,7 @@ router.post('/reset-password', controller.requestResetPassword);
 router.get('/reset-password/:token', controller.viewResetPassword);
 
 router.post('/reset-password/:token', controller.resetPassword);
+
+router.post('/premium/:id',isAuth, isAdmin, controller.switchPremiumRole);
 
 export default router;

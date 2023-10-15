@@ -1,0 +1,77 @@
+{{> navbar}}
+
+<h2>{{title}}</h2>
+<div id="save-product-card">
+   
+    <label for="title">
+        <p>Title:</p>
+        {{#if product}}
+            <input type="text" name="title" value="{{product.title}}" required>
+        {{else}}
+            <input type="text" name="title" required>
+        {{/if}}
+    </label>
+    <label for="description">
+        <p>Description:</p>
+        {{#if product}}
+            <input type="text" name="description" value="{{product.description}}" required>
+            <pre>{{product.description}}</pre>
+        {{else}}
+            <input type="text" name="description" required>
+        {{/if}}
+    </label>
+    <label for="price">
+        <p>Price:</p>
+        {{#if product}}
+            <input type="number" name="price" value="{{product.price}}" required>
+        {{else}}
+            <input type="number" name="price" required>
+        {{/if}}
+    </label>
+    <label for="code">
+        <p>Code:</p>
+        {{#if product}}
+            <input type="text" name="code" value="{{product.code}}" required>
+        {{else}}
+            <input type="text" name="code" required>
+        {{/if}}
+    </label>
+    <label for="status">
+        <p>Status:</p>
+        {{#if product}}
+            <input type="checkbox" name="status" {{product.status}}>
+        {{else}}
+            <input type="checkbox" name="status">
+        {{/if}}
+    </label>
+    <label for="stock">
+        <p>Stock:</p>
+        {{#if product}}
+            <input type="number" name="stock" value="{{product.stock}}" required>
+        {{else}}
+            <input type="number" name="stock" required>
+        {{/if}}
+    </label>
+    <label for="category">
+        <p>Category:</p>
+        {{#if product}}
+            <input type="text" name="category" value="{{product.category}}" required>
+        {{else}}
+            <input type="text" name="category" required>
+        {{/if}}
+    </label>
+    <label for="thumbnails">
+        <p>Thumbnail:</p>
+        {{#if product}}
+            <input type="text" name="thumbnails" value="{{product.thumbnails}}" required>
+        {{else}}
+            <input type="text" name="thumbnails" required>
+        {{/if}}
+    </label>
+
+    {{#if product}}
+        <button id="btn-save-product" data-id="{{product.id}}">{{title}}!</button>
+    {{else}}
+        <button id="btn-save-product">{{title}}!</button>
+    {{/if}}
+</div>

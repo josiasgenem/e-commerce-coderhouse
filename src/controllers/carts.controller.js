@@ -66,8 +66,8 @@ export const addOneProduct = async (req, res, next) => {
             return res.status(403).redirect(`/api/carts/${userCartId}`);
         }
         
-        const cart = await service.addOneProduct(cid, pid);
-        // if (!cart) return res.status(400).json({ message: "Something went wrong trying to add product to cart. It seems product stock is not enough!"});
+        const cart = await service.addOneProduct(cid, pid, req.user);
+        if (!cart.success) return res.status(400).json({ message: "Something went wrong trying to add product to cart. It seems product stock is not enough!"});
         return res.status(200).json(cart);
     } catch (err) {
         return next(err);

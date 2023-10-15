@@ -11,6 +11,7 @@ import {
 import UsersRepository from '../persistence/repository/users/users.repository.js';
 const usersRepository = new UsersRepository();
 import { logger } from '../utils/logger.js';
+import { ServerError } from '../config/errors.js';
 
 const   namesRegEx = /[a-zÀ-ÿ]{2,30}/i,
         emailRegEx = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
@@ -239,15 +240,38 @@ export const registerOrLogin = async (req, accessToken, refreshToken, profile, d
     return done(null, newUser.toJSON());
 }
 
-export const resetPassword = async (email) => {
-    const user = usersDao.getByEmail(email, true);
+//! Está hecho en el controller!
+// export const resetPassword = async (email) => {
+//     const user = usersDao.getByEmail(email, true);
 
-}
+// }
 
-//! Servicio agregado por solicitud de entrga. Borrar al finalizar el curso.0
+//! Servicio agregado por solicitud de entrga. Borrar al finalizar el curso.
 export const current = async (email) => {
     const user = await usersDao.getByEmail(email, true);
     const repositoryUser = usersRepository.formatFromDB(user).sanitize();
     logger.info('USER FROM CURRENT ENDPOINT', repositoryUser);
     return repositoryUser;
+}
+
+//! Servicio agregado por solicitud de entrga. Borrar al finalizar el curso.
+export const switchPremiumRole = async (userId) => {
+    const user = await usersDao.getById(userId);
+
+    try {
+        if (user.role !== 'premium' && user.role !== 'user') return {success: false, message: 'Only can switch between "premium" and "user" roles!'};
+        if (user.role === 'premium') {
+            user.role = 'user'
+        } else {
+            if(user.role === 'user') user.role = 'premium';
+        }
+        
+        const updUser = await user.save();
+        
+        if (!updUser) throw new ServerError();
+        return {success: true, message: `User role of ${updUser.email} updated to "${updUser.role}"`, data: null}
+    } catch (err) {
+        logger.error('---> Login Service:', err);
+        return { status: 'error', message: err.message, error: err };
+    }
 }
