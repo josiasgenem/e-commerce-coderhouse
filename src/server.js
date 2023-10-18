@@ -13,6 +13,9 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 import { logger } from "./utils/logger.js";
+import swaggerUI from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
+import { info } from "./docs/info.js";
 
 /* -------------------------------------------------------------------------- */
 /*                                Environment                                 */
@@ -43,9 +46,9 @@ app.use(mongoStoreSession)
 app.use(passport.initialize());
 app.use(passport.session());
 
- /* -------------------------------------------------------------------------- */
- /*                                    Views                                   */
- /* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                                    Views                                   */
+/* -------------------------------------------------------------------------- */
 app.engine('.hbs', engine({ extname: '.hbs', partialsDir: path.join(__dirname, '/views/partials'), helpers: hbsHelpers.comparison() }));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, '/views'));
@@ -53,6 +56,8 @@ app.set('views', path.join(__dirname, '/views'));
 /* -------------------------------------------------------------------------- */
 /*                                   Routes                                   */
 /* -------------------------------------------------------------------------- */
+const specs = swaggerJSDoc(info);
+app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(specs));
 app.use('/', homeRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);

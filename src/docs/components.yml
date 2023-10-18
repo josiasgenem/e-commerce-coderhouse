@@ -1,0 +1,72 @@
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        -id
+        -title
+        -description
+        -price
+        -code
+        -status
+        -stock
+        -category
+        -thumbnails
+        -owner
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of a product.
+        title:
+          type: string
+          description: Title of the product.
+        description:
+          type: string
+          description: Description of the product.
+        price:
+          type: integer
+          description: Price of the Product.
+        code:
+          type: string
+          description: SKU of the product (Generally 12 char length).
+        status:
+          type: boolean
+          description: Status of the product.
+        stock:
+          type: integer
+          description: Stock of the product.
+        category:
+          type: string
+          description: Category of the product
+        thumbnails:
+          type: List<string>
+          description: Array of links of thumbnails.
+        owner:
+          type: string
+          description: The id of the product owner.
+      example:
+        id: '65297c31a499c9ee57e581ad'
+        title: 'Casco Raleigh'
+        description: 'Casco de bicicleta MTB marca Raleigh'
+        price: 8900
+        code: SKU123456789
+        status: true
+        stock: 10
+        category: Accesorios
+        thumbnails: ['https://th.bing.com/th/id/R.812e673e6e4da8e45263e8c20c2e9656?rik=17qsB%2fjcjUZggQ&pid=ImgRaw&r=0']
+        owner: '6525e0c4e04e6f0aa620766e'
+    Cart:
+      type: object
+      required:
+        -id
+        -products
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of a cart.
+        products:
+          type: List<object>
+          description: Products added to the cart.
+      example:
+        id: '64f7e4ad529c0f69d8219db9'
+        products: [{product: '65297c31a499c9ee57e581ad', quantity: 50}]

@@ -14,9 +14,9 @@ router.post('/', isAuth, isPremium, controller.create)
 
 router.get('/', isAuth, controller.getAll)
 
-router.get('/:pid', isAuth, controller.getById)
-
 router.post('/mockingproducts', isAuth, isAdmin, controller.mock)
+
+router.get('/:pid', isAuth, controller.getById)
 
 router.put('/:pid', isAuth, isPremium, controller.update)
 

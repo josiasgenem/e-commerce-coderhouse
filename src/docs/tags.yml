@@ -1,0 +1,7 @@
+tags:
+  Products:
+    name: Products
+    description: Products of the e-commerce
+  Carts:
+    name: Carts
+    description: User cart

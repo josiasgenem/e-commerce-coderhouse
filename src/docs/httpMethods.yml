@@ -1,0 +1,141 @@
+paths:
+  /api/products:
+    post:
+      tags: [Products]
+      summary: Create new product.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+    get:
+      tags: [Products]
+      summary: Get all products.
+
+  /api/products/{id}:
+    get:
+      tags: [Products]
+      summary: Get a product by Id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the product.
+          example: '652b066865eeb9c4f432ed1a'
+    put:
+      tags: [Products]
+      summary: Update a product by Id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the product.
+          example: '652b066865eeb9c4f432ed1a'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+    delete:
+      tags: [Products]
+      summary: Delete a product by Id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the product.
+          example: '652b066865eeb9c4f432ed1a'
+
+
+  /api/carts:
+    get:
+      tags: [Carts]
+      summary: Get current user cart.
+
+  /api/carts/{id}:
+    get:
+      tags: [Carts]
+      summary: Get a cart by Id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the cart.
+          example: '64f7e4ad529c0f69d8219db9'
+    put:
+      tags: [Carts]
+      summary: Update a cart by Id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the cart.
+          example: '64f7e4ad529c0f69d8219db9'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              products: 
+                product: ['652b066865eeb9c4f432ed1a']
+                quantity: 20
+    delete:
+      tags: [Carts]
+      summary: Delete a cart by Id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the cart.
+          example: '64f7e4ad529c0f69d8219db9'
+  /api/carts/{id}/products/{pid}:
+    post:
+      tags: [Carts]
+      summary: Add one product to the cart.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the cart.
+          example: '64f7e4ad529c0f69d8219db9'
+        - in: path
+          name: pid
+          required: true
+          description: Id referencing to the product.
+          example: '652b066865eeb9c4f432ed1a'
+    put:
+      tags: [Carts]
+      summary: Update a cart by Id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the cart.
+          example: '64f7e4ad529c0f69d8219db9'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              quantity: 10
+    delete:
+      tags: [Carts]
+      summary: Delete a cart by Id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the cart.
+          example: '64f7e4ad529c0f69d8219db9'
+  /api/carts/{id}/purchase:
+    post:
+      tags: [Carts]
+      summary: Purchase a cart.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id referencing to the cart.
+          example: '64f7e4ad529c0f69d8219db9'
