@@ -194,6 +194,7 @@ export const jwtLogout = async (req, res) => {
 
         const user = await usersDao.getByEmail(payload.email);
         user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+        
         await user.save();
 
         return sendAccessRefreshTokens(res, 201, null, null, '/users/login');
@@ -274,4 +275,28 @@ export const switchPremiumRole = async (userId) => {
         logger.error('---> Login Service:', err);
         return { status: 'error', message: err.message, error: err };
     }
+}
+
+export const getById = async (id) => {
+    const user = await usersDao.getById(id);
+    const repositoryUser = usersRepository.formatFromDB(user).sanitize();
+    return {success: true, message: null, data: { user: repositoryUser }};
+}
+
+export const getAll = async () => {
+    const users = await usersDao.getMany();
+    const repositoryUsers = users.map(user => usersRepository.formatFromDB(user).sanitize());
+    return repositoryUsers;
+}
+
+export const updateUser = async (id, objectToUpdate) => {
+    const user = await usersDao.updateById(id, objectToUpdate);
+    const repositoryUser = usersRepository.formatFromDB(user).sanitize();
+    return {success: true, message: null, data: repositoryUser};
+}
+
+export const deleteUser = async (id) => {
+    const user = await usersDao.remove(id);
+    const repositoryUser = usersRepository.formatFromDB(user).sanitize();
+    return {success: true, message: null, data: repositoryUser};
 }

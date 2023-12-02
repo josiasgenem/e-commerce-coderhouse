@@ -1,5 +1,6 @@
 import { NotFoundError } from '../config/errors.js';
 import CartsService from '../services/carts.service.js';
+import { logger } from '../utils/logger.js';
 const service = new CartsService();
 
 
@@ -67,8 +68,11 @@ export const addOneProduct = async (req, res, next) => {
         }
         
         const cart = await service.addOneProduct(cid, pid, req.user);
-        if (!cart.success) return res.status(400).json({ message: "Something went wrong trying to add product to cart. It seems product stock is not enough!"});
-        return res.status(200).json(cart);
+
+        // logger.debug(cart);
+
+        if (!cart.success) return res.status(400).json({ message: cart.message });
+        return res.status(200).json({ cart: cart.data, message: cart.message });
     } catch (err) {
         return next(err);
         // return res.status(500).send(err.message);
@@ -127,6 +131,18 @@ export const removeOneProduct = async (req, res, next) => {
     } catch (err) {
         return next(err);
         // res.status(500).send(err.message);
+    }
+}
+
+export const checkout = async (req, res, next) => {
+    const { cid } = req.params;
+    try {
+        const cart = await service.getById(cid);
+        if (!cart) return res.status(400).json({ message: 'Not Found!' });
+        console.log(cart, 'CART FROM CHECKOUT CONTROLLER')
+        return res.render('checkout', { user: req.user, cart });
+    } catch (err) {
+        return next(err);
     }
 }
 

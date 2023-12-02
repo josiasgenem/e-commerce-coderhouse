@@ -49,6 +49,17 @@ export default class UserDaoMongoDB extends MongoDao {
             throw err
         }
     }
+
+    async updateById(id, toUpdateObj) {
+        try {
+            const user = await this.model.findByIdAndUpdate(id, toUpdateObj, {new: true})
+            if(!user) return false;
+            return user;
+        } catch (err) {
+            logger.error('---> UserDaoMongo updateById error.', err);
+            throw err
+        }
+    }
     
     async saveRefreshToken(email, refreshToken) {
         try {
@@ -60,6 +71,16 @@ export default class UserDaoMongoDB extends MongoDao {
             return await user.save();
         } catch (err) {
             logger.error('---> UserDaoMongo saveRefreshToken error.', err);
+            throw err
+        }
+    }
+
+    async updateLastConnection(userId) {
+        try {
+            const updatedUser = await this.model.findByIdAndUpdate(userId, {$set: { 'lastConnection': Date.now() }}, { new: true });
+            return true;
+        } catch (err) {
+            logger.error('---> UserDaoMongo updateLastConnection error.', err);
             throw err
         }
     }

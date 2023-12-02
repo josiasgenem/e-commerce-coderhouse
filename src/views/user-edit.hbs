@@ -1,0 +1,30 @@
+{{> navbar user=user  }}
+
+<h2>Edit User</h2>
+<div>
+    <h3>Hello {{ user.first_name }}!</h3>
+    <h4>You're editing user: {{userToEdit.email}}</h4>
+
+    <label for="first_name" style="display: block; margin-bottom: 10px;">
+        <p style="display: inline;">Firstname:</p>
+        <input type="text" name="first_name" value="{{ userToEdit.first_name }}">
+    </label>
+    <label for="last_name" style="display: block; margin-bottom: 10px;">
+        <p style="display: inline;">Lastname:</p>
+        <input type="text" name="last_name" value="{{ userToEdit.last_name }}">
+    </label>
+    <label for="email" style="display: block; margin-bottom: 10px;">
+        <p style="display: inline;">Email:</p>
+        <input type="email" name="email" value="{{ userToEdit.email }}">
+    </label>
+    <label for="age" style="display: block; margin-bottom: 10px;">
+        <p style="display: inline;">Age:</p>
+        <input type="number" name="age" value="{{ userToEdit.age }}">
+    </label>
+    <p>Role: {{ userToEdit.role }}</p>
+    <br>
+    <p id="btn-req-reset" style="display: inline; text-decoration: underline; color:blue; cursor: pointer;">Send email to reset password.</p>
+    
+</div>
+
+<button id="btn-save-user" data-id="{{userToEdit.id}}" style="margin-top: 20px;">Save User</button>

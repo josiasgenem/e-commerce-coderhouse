@@ -1,0 +1,67 @@
+{{> navbar user=user}}
+
+<div>
+    <h1>Users</h1>
+</div>
+
+<div class="users-container">
+
+    {{#if users}}
+    {{#each users}}
+        <div id={{id}} class="user-card">
+                <div class="card-header">
+                    <h3 class="user-fullname">
+                        {{ first_name }} {{ last_name }}
+                    </h3>
+                    <p class="user-age">
+                        Age: {{ age }}
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="body-left-content">
+                    <p class="user-role">
+                        {{ role }}
+                    </p>
+                    </div>
+                    <div class="body-right-content">
+                        {{#eq role 'user'}}
+                            <button type="submit" class="btn-upgrade-user" data-id="{{id}}">Upgrade</button>
+                        {{/eq}}
+                        {{#eq role 'premium'}}
+                            <button type="submit" class="btn-upgrade-user" data-id="{{id}}">Downgrade</button>
+                        {{/eq}}
+                        
+                            <button type="submit" class="btn-edit-user" data-id="{{id}}">Edit</button>
+
+                        {{#isnt role 'admin'}}
+                            <button type="submit" class="btn-delete-user" data-id="{{id}}">Delete</button>
+                        {{/isnt}}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p class="user-email">
+                        Email: <strong>{{ email }}</strong>
+                    </p>
+                </div>
+
+        </div>
+
+    {{/each}}
+
+        <div class="pagination-container">
+            {{#if resp.hasPrevPage}}
+                <a id="prevPageLink" href={{resp.prevLink}} target="_self">Previous Page</a>
+            {{/if}}
+            <div class="current-page">
+                <p> {{resp.page}} </p>
+            </div>
+            {{#if resp.hasNextPage}}
+                <a id="nextPageLink" href={{resp.nextLink}} target="_self">Next Page</a>
+            {{/if}}
+        </div>
+    
+    {{else}}
+        <p class="no-data">There are no Users to show</p>
+    {{/if}}
+
+</div>

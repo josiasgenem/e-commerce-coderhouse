@@ -24,6 +24,8 @@ router.put('/:cid/products/:pid', isAuth, cartsController.updateProductQty);
 
 router.delete('/:cid/products/:pid', isAuth, cartsController.removeOneProduct);
 
+router.get('/:cid/checkout', isAuth, cartsController.checkout)
+
 router.post('/:cid/purchase', isAuth, cartsController.purchase)
 
 export default router;

@@ -30,6 +30,8 @@ export default class CartsService {
         try {
             const cart = await cartsDao.getById(id);
             if (!cart) return false;
+
+            
             // throw new NotFoundError(`Cart with ID: ${id} does not exist!`);
             
             const repositoryCart = cartRepository.formatFromDB(cart);
@@ -109,7 +111,7 @@ async addOneProduct(id, pid, user) {
         if (!isProductAvailable) return {success: false, message: `Product does not exist, is not in stock or the requested amount is higher than the stock.`, data: null};
         
         const updRepositoryCart = await this.updateAllProducts(id, cartRepository.formatToDB(repositoryCart).products);
-        return {message: 'Producto agregado al carrito!', data: updRepositoryCart};
+        return {success: true, message: 'Producto agregado al carrito!', data: updRepositoryCart};
     } catch (err) {
         throw err;
     }
@@ -168,23 +170,21 @@ async purchase(id, user) {
             if (!isAvailableProduct) notAvailablesProducts.push({product, quantity});
         }
         if (notAvailablesProducts.length > 0) throw new BadRequestError('Some products in the cart do not have enough stock!', { notAvailablesProducts });
-        
+
         for (const { product, quantity } of repositoryCart.products) {
             const repositoryProductUpdated = await productsService.updateStock(product.id, `-${quantity}`, user);
-            if (!repositoryProductUpdated) notUpdatedProducts.push(
-                {
-                    id: product.id,
-                    modification: `-${quantity}`,
-                    datetime: Date.now()
-                }
-                )
-                cartAmount += product.price * quantity;
-            }
+            if (!repositoryProductUpdated) notUpdatedProducts.push({
+                id: product.id,
+                modification: `-${quantity}`,
+                datetime: Date.now()
+            })
+            cartAmount += product.price * quantity;
+        }
             
             //! All errors behind this comment should be handled in its own called service function, I think.
             if (notUpdatedProducts.length > 0) throw new ServerError('Some products weren\'t updated', notUpdatedProducts);
             const repositoryCartUpdated = await this.removeAllProducts(id);
-            if (!repositoryCartUpdated) throw new ServerError(`Cart ${id} weren\'t updated.`);
+            if (!repositoryCartUpdated) throw new ServerError(`Cart ${id} failed to update.`);
             
             const ticket = await ticketService.create({amount: cartAmount, purchaser: user.id})
             

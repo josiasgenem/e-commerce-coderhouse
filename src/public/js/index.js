@@ -3,10 +3,15 @@ const deleteFromCartBtns = document.getElementsByClassName('btn-deleteFromCart')
 const updateProductBtns = document.getElementsByClassName('btn-update-product');
 const deleteProductBtns = document.getElementsByClassName('btn-delete-product');
 const toCartLink = document.getElementById('toCartLink');
+const checkoutBtn = document.getElementById('checkout-btn');
 const buyBtn = document.getElementById('buy-btn');
 const reqResetPassBtn = document.getElementById('btn-req-reset');
 const resetPassBtn = document.getElementById('btn-reset-password');
 const saveProductBtn = document.getElementById('btn-save-product');
+const changeUserRoleBtns = document.getElementsByClassName('btn-upgrade-user');
+const viewEditUserBtns = document.getElementsByClassName('btn-edit-user');
+const deleteUserBtns = document.getElementsByClassName('btn-delete-user');
+const saveUserBtn = document.getElementById('btn-save-user');
 
 // const firstNameSpan = document.getElementById('first_name');
 
@@ -17,10 +22,12 @@ document.addEventListener("DOMContentLoaded", init);
 function init() {
     cid = getCartId();
     if (cid) toCartLink?.setAttribute('href', `/api/carts/${cid}`);
+    if (cid && checkoutBtn) checkoutBtn.addEventListener('click', () => checkoutCart(cid));
     if (cid && buyBtn) buyBtn.addEventListener('click', () => buyCart(cid));
     if (reqResetPassBtn) reqResetPassBtn.addEventListener('click', () => reqResetPass());
     if (resetPassBtn) resetPassBtn.addEventListener('click', () => resetPass());
-    if (saveProductBtn) saveProductBtn.addEventListener('click', () => saveProduct())
+    if (saveProductBtn) saveProductBtn.addEventListener('click', () => saveProduct());
+    if (saveUserBtn) saveUserBtn.addEventListener('click', (e) => saveUser(e));
     
     for (const btn of addToCartBtns) {
         let pid = btn.getAttribute('data-id');
@@ -40,6 +47,21 @@ function init() {
     for (const btn of deleteProductBtns) {
         let pid = btn.getAttribute('data-id');
         btn.addEventListener('click', () => deleteProduct(pid));
+    }
+
+    for (const btn of changeUserRoleBtns) {
+        let userId = btn.getAttribute('data-id');
+        btn.addEventListener('click', () => changeUserRole(userId));
+    }
+
+    for (const btn of viewEditUserBtns) {
+        let userId = btn.getAttribute('data-id');
+        btn.addEventListener('click', () => viewEditUser(userId));
+    }
+
+    for (const btn of deleteUserBtns) {
+        let userId = btn.getAttribute('data-id');
+        btn.addEventListener('click', () => deleteUser(userId));
     }
 }
 
@@ -90,7 +112,7 @@ function addToCart(pid) {
     .then(res => res.json())
     .then(json => {
         checkRedirects(json);
-        alert(json.message);
+        if (json.message) alert(json.message);
     })
     .catch(err => console.log(err));
 }
@@ -127,7 +149,7 @@ function reqResetPass() {
     .then(resp => resp.json())
     .then(json => {
         console.log(json);
-        alert(json.message);
+        if (json.message) alert(json.message);
     })
     .catch(e => console.log(e))
 }
@@ -150,7 +172,7 @@ function resetPass() {
     .then(resp => resp.json())
     .then(json => {
         console.log(json);
-        alert(json.message);
+        if (json.message) alert(json.message);
     })
     .catch(e => console.log(e))
 }
@@ -187,7 +209,7 @@ export function saveProduct() {
     .then(resp => resp.json())
     .then(json => {
         console.log(json);
-        alert(json.message);
+        if (json.message) alert(json.message);
     })
     .catch(err => {
         console.log(err);
@@ -208,12 +230,30 @@ export function deleteProduct(pid) {
     .then(resp => resp.json())
     .then(json => {
         console.log(json);
-        alert(json.message);
+        if (json.message) alert(json.message);
     })
     .catch(err => {
         console.log(err);
         alert(err.message);
     })
+}
+
+export function checkoutCart(cid) {
+    window.location.href = `/api/carts/${cid}/checkout`;
+    // fetch(`/api/carts/${cid}/checkout`, {
+    //     method: "GET",
+    //     redirect: 'follow',
+    //     headers: setHeaders()
+    // })
+    // .then(res => {
+    //     checkRedirects(res);
+    //     return res.json();
+    // })
+    // .then(json => {
+    //     console.log(json);
+    //     if (json.message) alert(json.message);
+    // })
+    // .catch(err => console.log('---> Error:', err));
 }
 
 export function buyCart(cid) {
@@ -228,7 +268,75 @@ export function buyCart(cid) {
     })
     .then(json => {
         console.log(json);
-        alert(json.message)
+        if (json.message) alert(json.message);
+    })
+    .catch(err => console.log('---> Error:', err));
+}
+
+function changeUserRole(userId) {
+    fetch(`/users/premium/${userId}`, {
+        method: "POST",
+        redirect: 'follow',
+        headers: setHeaders()
+    })
+    .then(res => {
+        checkRedirects(res);
+        return res.json();
+    })
+    .then(json => {
+        if (json.message) alert(json.message);
+        if (json.status === 'success') window.location.reload();
+    })
+    .catch(err => console.log('---> Error:', err))
+}
+
+function viewEditUser(userId) {
+    window.location.href = '/users/edit/' + userId
+}
+
+function saveUser(e) {
+    const id = e.target.dataset.id;
+    const data = {
+        first_name: document.getElementsByName('first_name')[0].value,
+        last_name: document.getElementsByName('last_name')[0].value,
+        email: document.getElementsByName('email')[0].value,
+        age: document.getElementsByName('age')[0].value
+    }
+    
+    // ! Falta crear los endpoints de aquí en adelante
+
+    fetch(`/users/${id}`, {
+        method: "PUT",
+        redirect: 'follow',
+        headers: setHeaders(),
+        body: JSON.stringify(data)
+    })
+    .then(res => {
+        checkRedirects(res);
+        return res.json();
+    })
+    .then(json => {
+        console.log(json);
+        if (json.message) alert(json.message);
+        if (json.status === 'success') window.location.reload();
+    })
+    .catch(err => console.log('---> Error:', err));
+}
+
+function deleteUser(userId) {
+    fetch(`/users/${userId}`, {
+        method: "DELETE",
+        redirect: 'follow',
+        headers: setHeaders()
+    })
+    .then(res => {
+        checkRedirects(res);
+        return res.json();
+    })
+    .then(json => {
+        console.log(json);
+        if (json.message) alert(json.message);
+        if (json.status === 'success') window.location.reload();
     })
     .catch(err => console.log('---> Error:', err));
 }

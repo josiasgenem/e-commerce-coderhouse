@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", initlogin);
 
 function initlogin() {
     btnLogin?.addEventListener('click', e => login(e));
+    window.addEventListener('keypress', e => { if (e.key === 'Enter' && window.location.pathname === '/users/login') return login(e) });
     btnRefresh?.addEventListener('click', e => refreshToken());
     logoutBtn?.addEventListener('click', () => logout())
 }

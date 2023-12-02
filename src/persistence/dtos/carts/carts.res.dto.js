@@ -10,5 +10,6 @@ export default class CartsResDTO {
                 product: (new ProductsRepository).formatFromDB(cartElement.product)
             }
         });
+        this.totalAmount = dbCart.products.reduce((acc, curr) => acc + curr.product.price * curr.quantity, 0);
     }
 }

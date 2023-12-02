@@ -9,7 +9,8 @@ const userSchema = new Schema({
     role: { type: String, enum: ['admin', 'premium', 'user'], default: 'user'},
     cart: { type: Schema.ObjectId, unique: true, auto: true },
     isThirdAuth: { type: Boolean, default: false, select: false },
-    refreshTokens: { type: [String], default: [] }
+    refreshTokens: { type: [String], default: [] },
+    lastConnection: { type: Date }
 })
 
 userSchema.set('toJSON', {
@@ -20,6 +21,8 @@ userSchema.set('toJSON', {
         return document;
     }
 })
+
+// userSchema.add(lastConnection)
 
 userSchema.methods.toSecuredObj = function(...othersFieldsToDelete) {
     const returnedObj = { ...this }._doc;

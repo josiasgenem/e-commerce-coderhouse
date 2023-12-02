@@ -1,5 +1,6 @@
 import { checkCartIdCookie, getAccessToken, getRefreshToken, sendAccessRefreshTokens, verifyAccessToken } from "../helpers/helpers.js"
 import { logger } from "../utils/logger.js";
+import { usersDao } from '../persistence/factory.js';
 
 // export const isAuth = (req, res, next) => {
 //     if (!req.isAuthenticated()) return res.redirect('/users/login');
@@ -17,6 +18,10 @@ import { logger } from "../utils/logger.js";
 //         status: 'error',
 //         error: 'Forbidden! Only Admin members!'
 //     });
+// }
+
+// const setLastConnection = (userId) => {
+//      usersDao.updateLastConnection(userId)
 // }
 
 export const isAuth = (req, res, next) => {
@@ -44,6 +49,11 @@ export const isAuth = (req, res, next) => {
     }
 
     req.user = payload;
+    
+    new Promise((resolve, reject) => {
+        usersDao.updateLastConnection(req.user.id);
+      });
+
     checkCartIdCookie(req, res);
 
     return next();

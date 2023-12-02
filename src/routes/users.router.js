@@ -27,6 +27,14 @@ router.get('/profile', isAuth, controller.viewProfile);
 
 router.get('/current', isAuth, controller.current);
 
+router.get('/dashboard', isAuth, isAdmin, controller.viewAllUsers);
+
+router.get('/edit/:id', isAuth, isAdmin, controller.viewEditUser);
+
+router.put('/:id', isAuth, isAdmin, controller.updateUser);
+
+router.delete('/:id', isAuth, isAdmin, controller.deleteUser);
+
 router.get('/reset-password', controller.viewRequestResetPassword);
 
 router.post('/reset-password', controller.requestResetPassword);

@@ -87,4 +87,23 @@ export default class MailingService {
         })
     }
 
+    async notifyProductDeleted (product, owner, responsableEmail) {
+        return this.transporter.sendMail({
+            from: config.SMTP_EMAIL,
+            to: owner.email,
+            subject: 'Coderhouse e-commerce - Product Deleted',
+            html: `
+            <h1>Coderhouse e-commerce</h1>
+            <p>Hi ${owner.first_name},your product ${product.title} with ID: ${product.id} was deleted</p></br>
+            <p>The action was done by: ${responsableEmail}</p>
+            `
+        })
+        .then(resp => {
+            if (resp.rejected.length > 0) return true
+        })
+        .catch(err => {
+            logger.error('MailingService: notifyProductDeleted: Error', err)
+            return false;
+        })
+    }
 }

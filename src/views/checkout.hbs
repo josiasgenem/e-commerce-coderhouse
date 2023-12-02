@@ -1,0 +1,49 @@
+{{> navbar user=user}}
+
+<h1>Checkout</h1>
+
+<h2>Shipping</h2>
+<div style="margin-top: 10px;">
+    <label for="first_name">Firstname:</label>
+    <input type="text" name="first_name" value="{{ user.first_name }}">
+    <label for="last_name">Lastname:</label>
+    <input type="text" name="last_name" value="{{ user.last_name }}">
+</div>
+<div style="margin-top: 10px;">
+    <label for="country">Country:</label>
+    <input type="text">
+    <label for="state_province">State / Province:</label>
+    <input type="text">
+    <label for="city">City:</label>
+    <input type="text">
+</div>
+<div style="margin-top: 10px;">
+    <label for="address_line">Address Line:</label>
+    <input type="text">
+</div>
+<div style="margin-top: 10px;">
+    <label for="stage_appartement">Stage / Appartement:</label>
+    <input type="text">
+    <label for="cp">CP:</label>
+    <input type="number">
+</div>
+<div style="margin-top: 10px;">
+    <label for="cellphone">Cellphone:</label>
+    <input type="number">
+</div>
+
+
+<h2>Card Payment</h2>
+<label for="card_number">Card Number:</label>
+<input type="number">
+<label for="card_name">Card Name:</label>
+<input type="text">
+<label for="card_expiration">Expiration:</label>
+<input type="number">
+<label for="card_cvc">CVC:</label>
+<input type="number">
+
+<div style="text-align: center; margin-top: 20px">
+    <p style="font-weight: bolder;">Total amount: ${{cart.totalAmount}}</p>
+    <button id="buy-btn" data-id={{resp.id}}>Buy!</button>
+</div>

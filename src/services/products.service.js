@@ -10,6 +10,8 @@ import ProductsRepository from "../persistence/repository/products/product.repos
 const repository = new ProductsRepository();
 import Mocks from "../utils/mocks.js";
 const mock = new Mocks();
+import MailingService from "./mailing.service.js";
+const mailingService = new MailingService();
 
 export default class ProductService {
 
@@ -121,12 +123,16 @@ export default class ProductService {
     async remove (id, user) {
         try {
             const oldProduct = await productsDao.getById(id);
+            const owner = await usersDao.getById(oldProduct.owner.toString());
             if (user.role !== 'admin' || (user.role === 'premium' && user.id !== oldProduct.owner.toString())) return {
                 success: false,
                 message: 'As a premium user you can only delete products wich you\'re the owner'
             }
             const response = await productsDao.remove(id);
             const repositoryResp = repository.formatFromDB(response);
+            
+            await mailingService.notifyProductDeleted(repositoryResp, owner, user.email);
+
             return {success: true, message: `El producto fue eliminado exitosamente.`, data: repositoryResp};
         } catch (err) {
             throw err;

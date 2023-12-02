@@ -8,6 +8,11 @@ import { verifyResetPassToken } from '../helpers/helpers.js';
 import { usersDao } from '../persistence/factory.js';
 import { logger } from '../utils/logger.js';
 
+export const viewAllUsers = async (req, res, next) => {
+    const users = await service.getAll();
+    res.render('users-dashboard', { user: req.user, users })
+}
+
 export const viewRegister = async (req, res, next) => {
     res.render('register'); 
 }
@@ -150,11 +155,50 @@ export const switchPremiumRole = async (req, res, next) => {
     try {
         const { id } = req.params;
         const serviceResp = await service.switchPremiumRole(id);
-        console.log(serviceResp, 'RESPUESTA DE SERVICIO');
+        
         if (!serviceResp.success && serviceResp.error) throw new ServerError(serviceResp.message, serviceResp.error);
         if (!serviceResp.success) return res.status(400).json({status: 'error', message: serviceResp.message, data: null})
 
         res.status(200).json({status: 'success', message: serviceResp.message})
+    } catch (err) {
+        return next(err);
+    }
+}
+
+export const viewEditUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const serviceResp = await service.getById(id);
+        if (!serviceResp.success) return res.json({status: 'error', message: serviceResp.message});
+        
+        return res.render('user-edit', { user: req.user, userToEdit: serviceResp.data.user})
+    } catch (err) {
+        return next(err);
+    }
+}
+
+export const updateUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const objectToUpdate = req.body;
+        const serviceResp = await service.updateUser(id, objectToUpdate);
+        if (!serviceResp.success) return res.json({status: 'error', message: serviceResp.message});
+        
+        return res.json({status: 'success', data: serviceResp.data});
+        
+    } catch (err) {
+        return next(err);
+    }
+}
+
+export const deleteUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const serviceResp = await service.deleteUser(id);
+        if (!serviceResp.success) return res.json({status: 'error', message: serviceResp.message});
+        
+        return res.json({status: 'success', data: serviceResp.data});
+        
     } catch (err) {
         return next(err);
     }
