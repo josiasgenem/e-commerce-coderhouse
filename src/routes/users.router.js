@@ -45,4 +45,6 @@ router.post('/reset-password/:token', controller.resetPassword);
 
 router.post('/premium/:id',isAuth, isAdmin, controller.switchPremiumRole);
 
+router.delete('/', isAuth, isAdmin, controller.deleteInactiveUsers)
+
 export default router;

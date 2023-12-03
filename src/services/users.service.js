@@ -82,26 +82,26 @@ export const jwtLogin = async (req, res) => {
 
         if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
             if(!user) {
-                // Intenta registrar al admin en la DB utilizando la estrategia de register.
-                // req.body.first_name = payload.first_name;
-                // req.body.last_name = payload.last_name;
-                // req.body.email = payload.email;
-                // req.body.role = payload.role;
-                // req.body.password = password;
-                
-                req.body = {
-                    ...req.body,
-                    ...usersRepository.formatToDB({first_name, last_name, email, role, password, isThirdAuth: false})
-                }
+                const salt = await bcrypt.genSalt(10);
+                const hash = await bcrypt.hash(password, salt);
 
-                passport.authenticate('register', { 
-                    successRedirect: '/users/login',
-                    failureRedirect: '/users/register'
-                })
+                await usersDao.create(usersRepository.formatToDB({
+                    first_name: 'Coder',
+                    last_name: 'House',
+                    email: email,
+                    role: 'admin',
+                    password: hash,
+                    isThirdAuth: false
+                }));
+
+                // passport.authenticate('register', { 
+                //     successRedirect: '/users/login',
+                //     failureRedirect: '/users/register'
+                // });
+                
+                user = await usersDao.getByEmail(email, true);
                 
                 logger.info('ADMIN USER', user);
-            
-                user = await usersDao.getByEmail(email, true);
             }
         }
 
@@ -299,4 +299,11 @@ export const deleteUser = async (id) => {
     const user = await usersDao.remove(id);
     const repositoryUser = usersRepository.formatFromDB(user).sanitize();
     return {success: true, message: null, data: repositoryUser};
+}
+
+export const deleteInactiveUsers = async () => {
+    const lastConnectionGreaterThan = Date.now() - 1000 * 60 * 60 * 24 * 14;
+    const deletedObjs = await usersDao.removeMany({ lastConnection: { $lte: new Date(lastConnectionGreaterThan) } });
+    // const repositoryUser = usersRepository.formatFromDB(user).sanitize();
+    return {success: true, message: null, data: null};
 }

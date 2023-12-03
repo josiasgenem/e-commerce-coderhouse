@@ -80,7 +80,7 @@ export default class ProductService {
         if (user.role !== 'admin' && user.role !== 'premium') {
             return { success: false, message: 'You\'re not authorized!', data: null }
         }
-        if (user.role !== 'admin' && user.role === 'premium' && user.id !== product.owner) {
+        if (user.role !== 'admin' && user.role === 'premium' && user.id !== product.owner.toString()) {
             return { success: false, message: 'As a premium user you can only update products wich you\'re the owner', data: null };
         }
         if (product.status) product.status = 'checked';
@@ -92,7 +92,7 @@ export default class ProductService {
     async update (id, productUpd, user) {
         try {
             const oldProduct = await productsDao.getById(id);
-            if (user.role !== 'admin' || (user.role === 'premium' && user.id !== oldProduct.owner.toString())) return {
+            if (user.role !== 'admin' && user.role === 'premium' && user.id !== oldProduct.owner.toString()) return {
                 success: false,
                 message: 'As a premium user you can only update products wich you\'re the owner'
             }

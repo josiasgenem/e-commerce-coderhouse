@@ -75,4 +75,14 @@ export class MongoDao {
             throw err;
         }
     }
+    
+    async removeMany(filteredObj) {
+        try {
+            const result = await this.model.deleteMany(filteredObj);
+            return result;
+        } catch (err) {
+            logger.error('---> MongoDao removeMany error.', err);
+            throw err;
+        }
+    }
 }

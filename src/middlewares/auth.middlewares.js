@@ -43,8 +43,10 @@ export const isAuth = (req, res, next) => {
             }
         }
         req.session.context = {
-            originalUrl: req.originalUrl
+            originalUrl: req.originalUrl,
+            method: req.method
         }
+        
         return res.redirect('/users/refresh');
     }
 
@@ -89,7 +91,8 @@ export const isNotAuth = (req, res, next) => {
             //     originalUrl: req.originalUrl
             // })
             req.session.context = {
-                originalUrl: req.originalUrl
+                originalUrl: req.originalUrl,
+                method: req.method
             }
             return res.redirect('/users/refresh');
         }

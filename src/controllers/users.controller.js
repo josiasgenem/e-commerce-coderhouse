@@ -204,6 +204,18 @@ export const deleteUser = async (req, res, next) => {
     }
 }
 
+export const deleteInactiveUsers = async (req, res, next) => {
+    try {
+        const serviceResp = await service.deleteInactiveUsers();
+        if (!serviceResp.success) return res.json({status: 'error', message: serviceResp.message});
+        
+        return res.json({status: 'success', data: serviceResp.data});
+        
+    } catch (err) {
+        return next(err);
+    }
+}
+
 // export const logout = (req, res, next) => {
 //     req.logout((err) => {
 //         if (err) return next(err);

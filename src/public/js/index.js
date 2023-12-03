@@ -11,9 +11,8 @@ const saveProductBtn = document.getElementById('btn-save-product');
 const changeUserRoleBtns = document.getElementsByClassName('btn-upgrade-user');
 const viewEditUserBtns = document.getElementsByClassName('btn-edit-user');
 const deleteUserBtns = document.getElementsByClassName('btn-delete-user');
+const deleteOldUserBtn = document.getElementById('btn-delete-old-users');
 const saveUserBtn = document.getElementById('btn-save-user');
-
-// const firstNameSpan = document.getElementById('first_name');
 
 let accessToken, cid;
 
@@ -28,6 +27,7 @@ function init() {
     if (resetPassBtn) resetPassBtn.addEventListener('click', () => resetPass());
     if (saveProductBtn) saveProductBtn.addEventListener('click', () => saveProduct());
     if (saveUserBtn) saveUserBtn.addEventListener('click', (e) => saveUser(e));
+    if (deleteOldUserBtn) deleteOldUserBtn.addEventListener('click', () => deleteOldUsers())
     
     for (const btn of addToCartBtns) {
         let pid = btn.getAttribute('data-id');
@@ -240,20 +240,6 @@ export function deleteProduct(pid) {
 
 export function checkoutCart(cid) {
     window.location.href = `/api/carts/${cid}/checkout`;
-    // fetch(`/api/carts/${cid}/checkout`, {
-    //     method: "GET",
-    //     redirect: 'follow',
-    //     headers: setHeaders()
-    // })
-    // .then(res => {
-    //     checkRedirects(res);
-    //     return res.json();
-    // })
-    // .then(json => {
-    //     console.log(json);
-    //     if (json.message) alert(json.message);
-    // })
-    // .catch(err => console.log('---> Error:', err));
 }
 
 export function buyCart(cid) {
@@ -325,6 +311,24 @@ function saveUser(e) {
 
 function deleteUser(userId) {
     fetch(`/users/${userId}`, {
+        method: "DELETE",
+        redirect: 'follow',
+        headers: setHeaders()
+    })
+    .then(res => {
+        checkRedirects(res);
+        return res.json();
+    })
+    .then(json => {
+        console.log(json);
+        if (json.message) alert(json.message);
+        if (json.status === 'success') window.location.reload();
+    })
+    .catch(err => console.log('---> Error:', err));
+}
+
+function deleteOldUsers() {
+    fetch(`/users`, {
         method: "DELETE",
         redirect: 'follow',
         headers: setHeaders()
