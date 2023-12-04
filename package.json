@@ -25,6 +25,7 @@
     "express-session": "^1.17.3",
     "faker-js": "^1.0.0",
     "handlebars-helpers": "^0.10.0",
+    "handlebars.moment": "^1.0.4",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.0",
     "mongoose-paginate-v2": "^1.7.23",
