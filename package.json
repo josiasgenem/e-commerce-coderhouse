@@ -37,10 +37,10 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "winston": "^3.10.0",
+    "@faker-js/faker": "^8.1.0",
     "winston-mongodb": "^5.1.1"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.1.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.22"
   }
