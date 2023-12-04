@@ -1,78 +1,22 @@
 import express from "express";
-import "./config/dotenv.js";
-import { engine } from "express-handlebars";
-import hbsHelpers from 'handlebars-helpers';
-import path from 'path';
-import fileDirName from './utils/es6-path.js';
-import { homeRouter, productsRouter, cartsRouter, usersRouter, ticketRouter } from './routes/index.js';
-import { mongoStoreSession } from "./middlewares/sessions.middlewares.js";
-import passport from "passport";
-import './config/passport.js';
-import { COOKIES_SECRET, PORT } from "./config/environment.js";
-import cookieParser from "cookie-parser";
-import session from "express-session";
-import { errorHandler } from "./middlewares/errorHandler.middleware.js";
-import { logger } from "./utils/logger.js";
-import swaggerUI from "swagger-ui-express";
-import swaggerJSDoc from "swagger-jsdoc";
-import { info } from "./docs/info.js";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+dotenv.config();
+import {productsRouter, cartsRouter} from './routes/index.js';
 
-/* -------------------------------------------------------------------------- */
-/*                                Environment                                 */
-/* -------------------------------------------------------------------------- */
-export const { __dirname } = fileDirName(import.meta);
+const port = (process.env.STATUS === 'production' ?
+                process.env.PROD_PORT : 
+                process.env.DEV_PORT) || 8080;
 
-/* -------------------------------------------------------------------------- */
-/*                              Iniitializations                              */
-/* -------------------------------------------------------------------------- */
 const app = express();
-app.listen(PORT, () => {
-    logger.info(`Server listening on port ${PORT}`);
-})
 
-/* -------------------------------------------------------------------------- */
-/*                                 Middlewares                                */
-/* -------------------------------------------------------------------------- */
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(session({
-    secret: COOKIES_SECRET,
-    resave: true,
-    saveUninitialized: true
-}));
-app.use(cookieParser(COOKIES_SECRET));
-app.use(express.static(path.join(__dirname, '/public')));
-app.use(mongoStoreSession)
-app.use(passport.initialize());
-app.use(passport.session());
+// Settings
+app.use(bodyParser.json());
 
-/* -------------------------------------------------------------------------- */
-/*                                    Views                                   */
-/* -------------------------------------------------------------------------- */
-app.engine('.hbs', engine({ extname: '.hbs', partialsDir: path.join(__dirname, '/views/partials'), helpers: hbsHelpers.comparison() }));
-app.set('view engine', '.hbs');
-app.set('views', path.join(__dirname, '/views'));
-
-/* -------------------------------------------------------------------------- */
-/*                                   Routes                                   */
-/* -------------------------------------------------------------------------- */
-const specs = swaggerJSDoc(info);
-app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(specs));
-app.use('/', homeRouter);
+// Routes
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
-app.use('/api/tickets', ticketRouter);
-app.use('/users', usersRouter);
 
-/* -------------------------------------------------------------------------- */
-/*                               Error Catching                               */
-/* -------------------------------------------------------------------------- */
-
-app.use(async (err, req, res, next) => {
-    await errorHandler.handleError(err, req, res, next);
-});
-
-process.on('unhandledRejection', (err) => {
-    errorHandler.handleError(err);
-    if (!errorHandler.isTrustedError(err)) process.exit(1);
-});
+app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+})

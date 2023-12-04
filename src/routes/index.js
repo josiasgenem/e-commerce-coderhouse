@@ -1,5 +1,6 @@
 import productsRouter from './products.router.js';
 import cartsRouter from './carts.router.js';
+<<<<<<< HEAD
 import usersRouter from './users.router.js';
 import ticketRouter from './ticket.router.js';
 import { logger } from '../utils/logger.js';
@@ -23,12 +24,19 @@ const homeRouter = router
         
         res.status(200).json({message: 'Logger tester executed'});
     })
+=======
+import realTimeRouter from './realTime.router.js';
+>>>>>>> 3ece0304e4b66010567558f375e091e96d16b35f
 
 export {
     homeRouter,
     // viewsRouter,
     productsRouter,
     cartsRouter,
+<<<<<<< HEAD
     ticketRouter,
     usersRouter
+=======
+    realTimeRouter
+>>>>>>> 3ece0304e4b66010567558f375e091e96d16b35f
 }

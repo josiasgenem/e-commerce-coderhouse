@@ -50,13 +50,15 @@ export default class ProductsDaoFileSystem {
 
     async create(product) {
         try {
-            // Verifica si el producto está completo.
             this.#isCompleteProduct(product)
 
+<<<<<<< HEAD:src/persistence/daos/filesystem/products.dao.js
             // Obtiene los productos del archivo.
             const products = await this.getMany();
+=======
+            const products = await this.getProducts();
+>>>>>>> 3ece0304e4b66010567558f375e091e96d16b35f:src/helpers/productManager.js
             
-            // Verifica que el código del producto a ingresar no exista previamente.
             this.#isUniqueCode(product.code, products)
             
             // Agrega el producto como objeto al array y actualiza el archivo completo.
@@ -67,7 +69,6 @@ export default class ProductsDaoFileSystem {
             products.push(product);
             await this.#updateFileProducts(products);
             
-            // Devuelve el producto
             // console.info("---> addProduct", "El producto fue agregado exitósamente", product);
             return product;
             
@@ -79,9 +80,48 @@ export default class ProductsDaoFileSystem {
     async update(id, productUpd) {
         id = parseInt(id);
         try {
+<<<<<<< HEAD:src/persistence/daos/filesystem/products.dao.js
             const products = await this.getMany();
+=======
+            // Retorna todos los productos en un Array.
+            // Si el archivo está vacío o contiene un error retorna un array vacío.
+            const json = await fs.promises.readFile(this.path, 'utf-8');
+            if(json) {
+                const fileProducts = await JSON.parse(json);
+                // console.log("---> getProducts", [...fileProducts]);
+                return [...fileProducts];
+            }
+            // console.log("---> getProducts Vacío", []);
+            return [];
             
-            // Verifica si el producto está completo y si tiene un código único.
+        } catch (err) {
+            // El archivo con el path dado no existe. Por lo que devuelve un array vacío de los productos.
+            if(err.code === "ENOENT") {
+                // console.log("---> getProducts Error", `El archivo con el path "${this.path}" no existe.`, err);
+                return [];
+            }
+            // console.log("---> getProducts Error", "Ocurrió un error al intentar conectarse con la DB. Vuelva a intentarlo!", err);
+            return [];
+        }
+    }
+    
+    async getProductById(id) {
+        const products = await this.getProducts();
+        const product = products.filter(product => product.id === id);
+        
+        if (product.length === 0) {
+            throw new Error(`El producto con id ${id} no existe`)
+        }
+        
+        // console.info("---> getProductById", `El producto con Id ${id} es:`, product[0]);
+        return product[0];
+    }
+    
+    async updateProduct(id, productUpd) {
+        try {    
+            const products = await this.getProducts();
+>>>>>>> 3ece0304e4b66010567558f375e091e96d16b35f:src/helpers/productManager.js
+            
             this.#isCompleteProduct(productUpd);
             this.#isUniqueCode(productUpd.code, products, id);
             
@@ -94,11 +134,9 @@ export default class ProductsDaoFileSystem {
                 }
                 return product;
             })
-            
 
             await this.#updateFileProducts(newProductsList);
             
-            // Devuelve el producto actualizado.
             // console.info("---> updateProduct", "El producto fue actualizado exitósamente", productUpd);
             return {id, ...productUpd};
 
@@ -160,7 +198,6 @@ export default class ProductsDaoFileSystem {
     }
 
     async #updateFileProducts(newProductsList) {
-        // Actualiza todos los productos reemplazando el contenido del archivo.
         try {
             const json = await JSON.stringify(newProductsList)
             await fs.promises.writeFile(this.path, json);
