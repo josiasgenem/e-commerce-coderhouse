@@ -32,7 +32,7 @@ export default class MailingService {
             const token = generateResetPassToken(repositoryUser);
             logger.debug(`MailingService: sendResetToken: token`, {token});
             
-            const resetLink = `http://localhost:${config.PORT}/users/reset-password/${token}`
+            const resetLink = `${config.DOMAIN}/users/reset-password/${token}`
             const isEmailSent = this.transporter.sendMail({
                 from: config.SMTP_EMAIL,
                 to: user.email,
@@ -65,7 +65,7 @@ export default class MailingService {
     }
 
     async #sendResetPasswordEmail (user, token) {
-        const resetLink = `http://localhost:${config.PORT}/users/reset-password/${token}`
+        const resetLink = `${config.DOMAIN}/users/reset-password/${token}`
         return this.transporter.sendMail({
             from: config.SMTP_EMAIL,
             to: user.email,

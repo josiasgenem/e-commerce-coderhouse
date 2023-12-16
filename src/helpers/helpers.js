@@ -121,7 +121,7 @@ export const generateAccessToken = (payload) => {
     try {
         const accessToken = jwt.sign(payload, config.ACCESS_TOKEN_SECRET, {
             issuer: 'https://coderhouse.com.ar',
-            audience: `http:/localhost:${config.PORT}`,
+            audience: `${config.DOMAIN}`,
             expiresIn: config.ACCESS_TOKEN_EXPIRATION
         })
         
@@ -138,7 +138,7 @@ export const generateRefreshToken = (payload) => {
     try {
         const refreshToken = jwt.sign(payload, config.REFRESH_TOKEN_SECRET, {
             issuer: 'https://coderhouse.com.ar',
-            audience: `http:/localhost:${config.PORT}`,
+            audience: `${config.DOMAIN}`,
             expiresIn: config.REFRESH_TOKEN_EXPIRATION
         })
         
@@ -155,7 +155,7 @@ export const generateResetPassToken = (payload) => {
     try {
         const token = jwt.sign(payload, config.RESET_PASS_TOKEN_SECRET, {
             issuer: 'https://coderhouse.com.ar',
-            audience: `http:/localhost:${config.PORT}`,
+            audience: `${config.DOMAIN}`,
             expiresIn: config.RESET_PASS_TOKEN_EXPIRATION
         })
         
@@ -172,7 +172,7 @@ export const verifyAccessToken = (accessToken) => {
     try {
         const payload = jwt.verify(accessToken, config.ACCESS_TOKEN_SECRET, {
             issuer: 'https://coderhouse.com.ar',
-            audience: `http:/localhost:${config.PORT}`,
+            audience: `${config.DOMAIN}`,
             expiresIn: config.ACCESS_TOKEN_EXPIRATION
         });
         
@@ -203,7 +203,7 @@ export const verifyRefreshToken = (refreshToken) => {
     try {
         const payload = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET, {
             issuer: 'https://coderhouse.com.ar',
-            audience: `http:/localhost:${config.PORT}`,
+            audience: `${config.DOMAIN}`,
             expiresIn: config.REFRESH_TOKEN_EXPIRATION
         });
         
@@ -233,7 +233,7 @@ export const verifyResetPassToken = (token) => {
     try {
         const payload = jwt.verify(token, config.RESET_PASS_TOKEN_SECRET, {
             issuer: 'https://coderhouse.com.ar',
-            audience: `http:/localhost:${config.PORT}`,
+            audience: `${config.DOMAIN}`,
             expiresIn: config.RESET_PASS_TOKEN_EXPIRATION
         });
         
