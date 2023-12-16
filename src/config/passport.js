@@ -4,6 +4,7 @@ import { Strategy as GithubStrategy } from "passport-github2";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import * as userService from "../services/users.service.js";
 import UserDaoMongoDB from "../persistence/daos/mongodb/users.dao.js";
+import { DOMAIN } from "./environment.js";
 const userDao = new UserDaoMongoDB();
 
 
@@ -15,14 +16,14 @@ const localStrategyOptions = {
 const githubStrategyOptions = {
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: `http://localhost:8080/users/github/callback`,
+    callbackURL: `${DOMAIN}/users/github/callback`,
     passReqToCallback: true
 }
 
 const googleStrategyOptions = {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `http://localhost:8080/users/google/callback`,
+    callbackURL: `${DOMAIN}/users/google/callback`,
     passReqToCallback: true
 }
 

@@ -47,17 +47,19 @@ export const isAuth = (req, res, next) => {
             method: req.method
         }
         
+        /* ------------------- ACÁ SE GENERA "TOO MANY REDIRECTS" ------------------- */
+        console.log('------------- ENTRÓ A TOO MAY REDIRECTS !!!!!!!!!! ---------------');
         return res.redirect('/users/refresh');
     }
-
+    
     req.user = payload;
     
     new Promise((resolve, reject) => {
         usersDao.updateLastConnection(req.user.id);
-      });
-
+    });
+    
     checkCartIdCookie(req, res);
-
+    
     return next();
 }
 

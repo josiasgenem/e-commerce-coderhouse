@@ -37,17 +37,23 @@ export const refreshToken = service.refreshToken;
 
 export const authGitHub = passport.authenticate('github', { scope: ['user:email'] })
 
-export const authGitHubCallback = passport.authenticate('github', {
-    successRedirect: '/users/profile',
-    failureRedirect: '/users/login'
-})
+export const authGitHubCallback = async (req, res, next) => {
+    passport.authenticate('github', { failureRedirect: '/users/login', session: false}, (err, user, info) => {
+        if (err) console.log(err, 'ERROR FROM PASSPORT');
+        req.user = user;
+        return service.thirdAuthLogin(req, res);
+    })(req, res, next);
+} 
 
 export const authGoogle = passport.authenticate('google', { scope: ['email', 'profile'] })
 
-export const authGoogleCallback = passport.authenticate('google', {
-    successRedirect: '/users/profile',
-    failureRedirect: '/users/login'
-})
+export const authGoogleCallback = async (req, res, next) => {
+    passport.authenticate('google', {failureRedirect: '/users/login', session: false}, (err, user, info) => {
+        if (err) console.log(err, 'ERROR FROM PASSPORT');
+        req.user = user;
+        return service.thirdAuthLogin(req, res);
+    })(req, res, next);
+} 
 
 export const viewProfile = async (req, res, next) => {
     res.render('profile', { user: req.user })

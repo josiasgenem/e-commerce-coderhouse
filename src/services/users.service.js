@@ -105,19 +105,19 @@ export const jwtLogin = async (req, res) => {
             }
         }
 
-            if (!user) return res.status(401).json({message: "Email or Password wrong"});
-            if (!user.password) return res.status(401).json({message: "You've registered with a Third part service. \n Try to login with Google or Github, and then set a password to enable local login."});
-            const match = await bcrypt.compare(password, user.password);
-            if (!match) return res.status(401).json({message: "Email or Password wrong"});
-            
-            payload = usersRepository.formatFromDB(user).sanitize();
-            // payload = {
-            //     first_name: user.first_name,
-            //     last_name: user.last_name,
-            //     email: user.email,
-            //     cartId: user.cart,
-            //     role: user.role
-            // }
+        if (!user) return res.status(401).json({ message: "Email or Password wrong" });
+        if (!user.password) return res.status(401).json({ message: "You've registered with a Third part service. \n Try to login with Google or Github, and then set a password to enable local login." });
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) return res.status(401).json({ message: "Email or Password wrong" });
+
+        payload = usersRepository.formatFromDB(user).sanitize();
+        // payload = {
+        //     first_name: user.first_name,
+        //     last_name: user.last_name,
+        //     email: user.email,
+        //     cartId: user.cart,
+        //     role: user.role
+        // }
         
         accessToken = generateAccessToken(payload);
         refreshToken = generateRefreshToken(payload);
@@ -135,7 +135,8 @@ export const jwtLogin = async (req, res) => {
 
 export const refreshToken = async (req, res) => {
     try {
-        const { originalUrl } = req.session?.context;
+        const { originalUrl } = req.session?.context ? req.session.context : { originalUrl: null };
+        if (!originalUrl) return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: Unknown origin');
         const refreshToken = getRefreshToken(req);
         if (!refreshToken) return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: No Token received')
         
@@ -143,14 +144,15 @@ export const refreshToken = async (req, res) => {
         if (typeof payload !== 'object') {
             if (req && req.user && req.user.email) {
 
-                const user = await usersDao.getByEmail(req.user.email)
+                const user = await usersDao.getByEmail(req .user.email)
                 user.refreshTokens = [];
                 await user.save();
             }
-            return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: Invalid Token received');
+            return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: Invalid ingress');
         }
         
         const user = await usersDao.getByEmail(payload.email);
+        if (!user) return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: Token Expired');
         if (!user.refreshTokens.some(token => token === refreshToken)) {
             user.refreshTokens = [];
             await user.save();
@@ -185,18 +187,18 @@ export const jwtLogout = async (req, res) => {
     try {
         const refreshToken = getRefreshToken(req);
         if (!refreshToken) {
-            logger.warn('QUISO DESLOGEARSE PERO NO MANDÓ REFRESH TOKENS!!!!!!!!!!!!');
+            logger.warn('¡QUISO DESLOGEARSE PERO NO MANDÓ REFRESH TOKENS!');
             return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong authentication: No Token received!');
         }
         
         const payload = verifyRefreshToken(refreshToken);
         if (typeof payload !== 'object') return sendAccessRefreshTokens(res, 401, null, null, '/users/login', 'Wrong Authentication: Invalid Token received');
-
+        
         const user = await usersDao.getByEmail(payload.email);
         user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
         
         await user.save();
-
+        
         return sendAccessRefreshTokens(res, 201, null, null, '/users/login');
 
     } catch (err) {
@@ -206,39 +208,71 @@ export const jwtLogout = async (req, res) => {
 }
 
 export const registerOrLogin = async (req, accessToken, refreshToken, profile, done) => {
+    
     const email = profile._json.email || profile._json.blog;
     const first_name = profile.given_name || profile._json.name?.split(' ').slice(0,1)[0] || profile.username;
     const last_name = profile.family_name || profile._json.name?.split(' ').slice(1).join(' ');
     
     if (!email) return done(`Debes poner tu email como público en tu cuenta de GitHub!\nDeselecciona la opción: "Keep my email addresses private." en "email settings" de GitHub.`, false)
     
-    // THIRD AUTH LOGIN
-    const user = await usersDao.getByEmail(email);
-    if (user) {
-        const payload = {
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            role: user.role
-        },
-        accessToken = generateAccessToken(payload),
-        refreshToken = generateRefreshToken(payload);
-        
-        user.refreshTokens.push(refreshToken);
-        const updUser = await user.save();
-        if(!updUser) {
-            res.status(500).json({message: "Something went wrong!"});
-            return done("Something went wrong!", null);
-        }
-        
-        sendAccessRefreshTokens(res, 201, accessToken, refreshToken, '/users/profile')
-        
-        return done(null, user.toJSON());
+    let user = await usersDao.getByEmail(email);
+    if (!user) {
+        user = await usersDao.create({first_name, last_name, email, isThirdAuth: true})
     }
     
-    // THIRD AUTH REGISTER
-    const newUser = await usersDao.create({first_name, last_name, email, isThirdAuth: true})
-    return done(null, newUser.toJSON());
+    
+    req._user = {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role
+    }
+    // req.user = { first_name, last_name, email, role } = user;
+    
+    return done(null, req._user);
+
+    /* -------------------------------------------------------------------------- */
+    /*                                     OLD                                    */
+    /* -------------------------------------------------------------------------- */
+    // THIRD AUTH LOGIN
+    // const user = await usersDao.getByEmail(email);
+    // if (user) {
+    //     const payload = {
+    //         first_name: user.first_name,
+    //         last_name: user.last_name,
+    //         email: user.email,
+    //         role: user.role
+    //     },
+    //     accessToken = generateAccessToken(payload),
+    //     refreshToken = generateRefreshToken(payload);
+        
+    //     user.refreshTokens.push(refreshToken);
+    //     const updUser = await user.save();
+    //     if(!updUser) {
+    //         res.status(500).json({message: "Something went wrong!"});
+    //         return done("Something went wrong!", null);
+    //     }
+        
+    //     sendAccessRefreshTokens(res, 201, accessToken, refreshToken, '/users/profile')
+        
+    //     return done(null, user.toJSON());
+    // }
+    
+    // // THIRD AUTH REGISTER
+    // const newUser = await usersDao.create({first_name, last_name, email, isThirdAuth: true})
+    // return done(null, newUser.toJSON());
+}
+
+export const thirdAuthLogin = async (req, res) => {
+    let user = await usersDao.getByEmail(req.user.email, true),
+        payload = usersRepository.formatFromDB(user).sanitize(),
+        accessToken = generateAccessToken(payload),
+        refreshToken = generateRefreshToken(payload);
+
+    const updUser = await usersDao.saveRefreshToken(user.email, refreshToken);
+    if (!updUser) return res.status(500).json({ message: "Something went wrong!" })
+
+    return sendAccessRefreshTokens(res, 201, accessToken, refreshToken, '/users/profile');
 }
 
 //! Está hecho en el controller!

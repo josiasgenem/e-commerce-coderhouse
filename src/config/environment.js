@@ -1,7 +1,8 @@
 export const isProdEnvironment = () => process.env.STATUS === 'production';
 
 export const PORT = isProdEnvironment() ? process.env.PROD_PORT :
-    process.env.DEV_PORT || 8080;
+                    process.env.DEV_PORT || 8080;
+export const DOMAIN = `${process.env.DOMAIN}:${PORT}`;
 
 
 /* ----------------------------------- DBs ---------------------------------- */

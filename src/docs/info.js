@@ -11,7 +11,7 @@ export const info = {
         },
         servers: [
             {
-                url: `http://localhost:${env.PORT}`,
+                url: env.DOMAIN,
                 description: 'Local Server'
             }
         ]
