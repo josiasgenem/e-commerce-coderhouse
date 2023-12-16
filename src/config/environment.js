@@ -2,7 +2,7 @@ export const isProdEnvironment = () => process.env.STATUS === 'production';
 
 export const PORT = isProdEnvironment() ? process.env.PROD_PORT :
                     process.env.DEV_PORT || 8080;
-export const DOMAIN = `${process.env.DOMAIN}:${PORT}`;
+export const DOMAIN = `${process.env.DOMAIN}`; //! QUITÉ EL PUERTO PORQUE DABA ERROR CON LOS CALLBACKS DE GOOGLE Y GITHUB.
 
 
 /* ----------------------------------- DBs ---------------------------------- */
